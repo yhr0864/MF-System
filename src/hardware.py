@@ -245,7 +245,8 @@ class Hardware:
             str or False: Arduino feedback message if available.
         """
         # Dip in the probe tip
-        if self.dip_in_probe_dls() != "Cylinder2 Retraction Finished":
+        fb = self.dip_in_probe_dls()
+        if fb != "Cylinder2 Retraction Finished":
             raise RequestFailed(
                 "Cylinder_dls dip in request failed. Measurement cannot proceed."
             )
@@ -279,3 +280,9 @@ if __name__ == "__main__":
     print("finish init")
     # hardware.prepare_pump()
     # hardware.fill_bottle()
+
+    f = hardware.measure_DLS(
+        setup_id=5, num_of_measure=3, save_path="./database/measurement_dls.csv"
+    )
+
+    f.result()

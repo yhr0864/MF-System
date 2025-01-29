@@ -299,9 +299,9 @@ if __name__ == "__main__":
 
     # time.sleep(1)
 
-    # dls.select_measurement_setup(5)
+    dls.select_measurement_setup(5)
 
     # time.sleep(1)
     # # dls.set_zero()
 
-    # dls.request_data(num_of_runs=10)
+    dls.request_data(num_of_runs=3)

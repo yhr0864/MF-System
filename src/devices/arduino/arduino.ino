@@ -216,7 +216,7 @@ public:
                 homingPhase = 0;
 
                 // Send back the feedback message
-                String message = "Motor" + String(motorID) + " Homing Completed";
+                String message = "Motor" + String(motorID) + " Homing Finished";
                 Serial.println(message);
             }
         }
@@ -355,7 +355,6 @@ public:
     digitalWrite(valvePin2, LOW);
 
     if (!digitalRead(signalEx)) {
-      Serial.println("Not in place. Extending...");
       extend();
     }
     else {

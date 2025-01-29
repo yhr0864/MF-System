@@ -14,7 +14,7 @@ class ArduinoBoard:
             port=self.port, baudrate=self.baudrate, timeout=self.timeout
         )
 
-    def send_command(self, cmd, timeout=20):
+    def send_command(self, cmd, timeout=30):
         # Send command to Arduino
         self.arduino.write(bytes(cmd, "utf-8"))
 
@@ -36,5 +36,5 @@ if __name__ == "__main__":
     time.sleep(1)
 
     # f = arduino.send_command("motor1 home \n motor2 home")
-    f = arduino.send_command("cylinder1 retract")
+    f = arduino.send_command("cylinder2 home")
     print(f)
