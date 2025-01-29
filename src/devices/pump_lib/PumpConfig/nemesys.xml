@@ -1,0 +1,2021 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Plugin Valid="true">
+	<labbCAN>
+		<DeviceList>
+			<Device Name="Nemesys_M_1_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="2">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40008588"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_1_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_1_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_1_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_1_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_1_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_1_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_1_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_1_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_1_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_1_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+			<Device Name="Nemesys_M_2_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="3">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007666"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_2_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_2_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_2_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_2_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_2_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_2_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_2_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_2_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_2_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_2_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+			<Device Name="Nemesys_M_3_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="4">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40008570"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_3_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_3_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_3_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_3_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_3_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_3_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_3_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_3_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_3_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_3_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+			<Device Name="Nemesys_M_4_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="5">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007626"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_4_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_4_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_4_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_4_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_4_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_4_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_4_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_4_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_4_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_4_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+			<Device Name="Nemesys_M_5_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="6">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007792"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_5_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_5_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_5_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_5_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_5_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_5_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_5_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_5_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_5_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_5_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+			<Device Name="Nemesys_M_6_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="7">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40010414"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_6_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_6_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_6_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_6_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_6_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_6_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_6_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_6_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_6_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_6_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+			<Device Name="Nemesys_M_7_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="8">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007689"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_7_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_7_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_7_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_7_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_7_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_7_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_7_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_7_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_7_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_7_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+			<Device Name="Nemesys_M_8_EposDrive">
+				<Type>Lcl::CNemesys4Axis</Type>
+				<Bus>CANopenBus1</Bus>
+				<CANopenDevice NodeId="9">Usl::Epos4::CEpos4Drive</CANopenDevice>
+				<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007756"/>
+				<ReadAxisConfigFromDevice>false</ReadAxisConfigFromDevice>
+				<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+				<MinPosition>-10705306</MinPosition>
+				<MaxPosition>0</MaxPosition>
+				<MaxVelocity>7840800</MaxVelocity>
+				<PositionUnitsPerRevolution>178421.76</PositionUnitsPerRevolution>
+				<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+				<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+				<AxisFlags AbsoluteEncoder="1"/>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaxAcceleration>200000</MaxAcceleration>
+				<MinimumAbsoluteVelocity>1</MinimumAbsoluteVelocity>
+				<HomingMethod comment="Actual Position">37</HomingMethod>
+				<ForceSensor Channel="Nemesys_M_8_ForceSensor"/>
+				<ForceLimitOutput Channel="Nemesys_M_8_ForceLimit" Max_kN="1.3"/>
+				<SafetyStopInput Channel="Nemesys_M_8_SafetyStop"/>
+				<EmergencyStopInput Channel="Nemesys_M_8_ExtEmergencyStop"/>
+				<LedOutput Channel="Nemesys_M_8_PowerLED"/>
+				<Simulated>false</Simulated>
+				<ObjDictEntries>
+					<ObjDictEntry Index="1016" SubIndex="1" ValueHex="7F0BB8" Size="4" comment="Consumer Heartbeat Time #1 - 3 seconds"/>
+					<ObjDictEntry Index="1017" SubIndex="0" Value="1000" Size="2" comment="Producer Heartbeat Time - 1 second"/>
+				</ObjDictEntries>
+			</Device>
+			<Device Name="Nemesys_M_8_Valve">
+				<Type>Lcl::CDigitalIoValve</Type>
+				<DigitalOutDevice>Nemesys_M_8_EposDriveDigitalOut</DigitalOutDevice>
+				<PositionBitfields Pos0="0x00000" Pos1="0x10000" Pos2="0x20000" Pos3="0x30000"/>
+				<NamedPositions In="1" Out="0" Res="1" App="2" Closed="0"/>
+			</Device>
+			<Device Name="Nemesys_M_8_Pump">
+				<Type>Lcl::CNemesysEposSyringePump</Type>
+				<DriveDevice>Nemesys_M_8_EposDrive</DriveDevice>
+				<Syringe PistonStroke_mm="60" InnerDiameter_mm="5"/>
+				<Valve>Nemesys_M_8_Valve</Valve>
+				<ProductType comment="Nemesys_M">6</ProductType>
+				<MaximumForce_N comment="1000 * 130%">1300</MaximumForce_N>
+			</Device>
+		</DeviceList>
+		<ChannelList>
+			<Channel Name="Nemesys_M_1_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_1_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_1_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_1_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_1_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_1_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_1_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_1_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+			<Channel Name="Nemesys_M_2_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_2_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_2_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_2_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_2_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_2_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_2_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_2_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+			<Channel Name="Nemesys_M_3_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_3_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_3_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_3_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_3_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_3_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_3_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_3_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+			<Channel Name="Nemesys_M_4_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_4_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_4_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_4_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_4_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_4_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_4_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_4_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+			<Channel Name="Nemesys_M_5_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_5_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_5_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_5_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_5_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_5_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_5_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_5_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+			<Channel Name="Nemesys_M_6_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_6_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_6_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_6_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_6_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_6_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_6_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_6_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+			<Channel Name="Nemesys_M_7_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_7_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_7_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_7_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_7_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_7_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_7_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_7_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+			<Channel Name="Nemesys_M_8_DigOUT1">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose A">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_DigOUT2">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalOut</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_DigOUT3">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 3">3</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_PowerLED">
+				<Type>Lcl::CDigitalOutChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalOut</Device>
+				<ChannelNo comment="Analog Out 1 - Dig Out channel 4">4</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_DigINA">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose A ">16</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_DigINB">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose B">17</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_ExtEmergencyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalIn</Device>
+				<ChannelNo comment="General purpose C">18</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_SafetyStop">
+				<Type>Lcl::CDigitalInChannel</Type>
+				<Device>Nemesys_M_8_EposDriveDigitalIn</Device>
+				<ChannelNo comment="Quick Stop">28</ChannelNo>
+			</Channel>
+			<Channel Name="Nemesys_M_8_AnIN1">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_8_EposDriveAnalogIn</Device>
+				<ChannelNo>0</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5000" y2="5000"/>
+			</Channel>
+			<Channel Name="Nemesys_M_8_ForceSensor">
+				<Type>Lcl::CAnalogInChannel</Type>
+				<Device>Nemesys_M_8_EposDriveAnalogIn</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="0" y1="0" x2="5650" y2="1"/>
+			</Channel>
+			<Channel Name="Nemesys_M_8_ForceLimit">
+				<Type>Lcl::CAnalogOutChannel</Type>
+				<Device>Nemesys_M_8_EposDriveAnalogOut</Device>
+				<ChannelNo>1</ChannelNo>
+				<Scaling x1="1650" y1="1" x2="3920" y2="0"/>
+			</Channel>
+		</ChannelList>
+	</labbCAN>
+	<DosingModuleList>
+		<DosingModule Name="Nemesys_M_1">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 1</Caption>
+			<LabbCANPump>Nemesys_M_1_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_1_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_1_DigOUT1" DO1="Nemesys_M_1_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_1_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_1_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_1_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_1_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_1_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_1_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_1_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_1_AnIN1">
+					<Caption>Nemesys M 1 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_1_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_1_ForceSensor">
+					<Caption>Nemesys M 1 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_1_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_1_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 1 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_1_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_1_DigOUT1">
+					<Caption>Nemesys M 1 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_1_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_1_DigOUT2">
+					<Caption>Nemesys M 1 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_1_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_1_DigOUT3">
+					<Caption>Nemesys M 1 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_1_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_1_PowerLED">
+					<Caption>Nemesys M 1 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_1_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_1_DigIN1">
+					<Caption>Nemesys M 1 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_1_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_1_DigIN2">
+					<Caption>Nemesys M 1 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_1_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_1_ExtEmergencyStop">
+					<Caption>Nemesys M 1 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_1_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_1_SafetyStop">
+					<Caption>Nemesys M 1 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_1_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+		<DosingModule Name="Nemesys_M_2">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 2</Caption>
+			<LabbCANPump>Nemesys_M_2_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_2_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_2_DigOUT1" DO1="Nemesys_M_2_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_2_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_2_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_2_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_2_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_2_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_2_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_2_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_2_AnIN1">
+					<Caption>Nemesys M 2 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_2_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_2_ForceSensor">
+					<Caption>Nemesys M 2 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_2_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_2_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 2 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_2_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_2_DigOUT1">
+					<Caption>Nemesys M 2 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_2_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_2_DigOUT2">
+					<Caption>Nemesys M 2 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_2_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_2_DigOUT3">
+					<Caption>Nemesys M 2 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_2_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_2_PowerLED">
+					<Caption>Nemesys M 2 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_2_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_2_DigIN1">
+					<Caption>Nemesys M 2 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_2_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_2_DigIN2">
+					<Caption>Nemesys M 2 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_2_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_2_ExtEmergencyStop">
+					<Caption>Nemesys M 2 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_2_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_2_SafetyStop">
+					<Caption>Nemesys M 2 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_2_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+		<DosingModule Name="Nemesys_M_3">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 3</Caption>
+			<LabbCANPump>Nemesys_M_3_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_3_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_3_DigOUT1" DO1="Nemesys_M_3_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_3_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_3_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_3_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_3_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_3_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_3_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_3_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_3_AnIN1">
+					<Caption>Nemesys M 3 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_3_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_3_ForceSensor">
+					<Caption>Nemesys M 3 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_3_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_3_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 3 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_3_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_3_DigOUT1">
+					<Caption>Nemesys M 3 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_3_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_3_DigOUT2">
+					<Caption>Nemesys M 3 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_3_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_3_DigOUT3">
+					<Caption>Nemesys M 3 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_3_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_3_PowerLED">
+					<Caption>Nemesys M 3 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_3_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_3_DigIN1">
+					<Caption>Nemesys M 3 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_3_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_3_DigIN2">
+					<Caption>Nemesys M 3 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_3_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_3_ExtEmergencyStop">
+					<Caption>Nemesys M 3 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_3_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_3_SafetyStop">
+					<Caption>Nemesys M 3 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_3_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+		<DosingModule Name="Nemesys_M_4">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 4</Caption>
+			<LabbCANPump>Nemesys_M_4_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_4_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_4_DigOUT1" DO1="Nemesys_M_4_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_4_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_4_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_4_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_4_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_4_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_4_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_4_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_4_AnIN1">
+					<Caption>Nemesys M 4 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_4_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_4_ForceSensor">
+					<Caption>Nemesys M 4 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_4_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_4_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 4 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_4_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_4_DigOUT1">
+					<Caption>Nemesys M 4 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_4_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_4_DigOUT2">
+					<Caption>Nemesys M 4 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_4_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_4_DigOUT3">
+					<Caption>Nemesys M 4 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_4_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_4_PowerLED">
+					<Caption>Nemesys M 4 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_4_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_4_DigIN1">
+					<Caption>Nemesys M 4 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_4_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_4_DigIN2">
+					<Caption>Nemesys M 4 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_4_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_4_ExtEmergencyStop">
+					<Caption>Nemesys M 4 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_4_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_4_SafetyStop">
+					<Caption>Nemesys M 4 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_4_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+		<DosingModule Name="Nemesys_M_5">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 5</Caption>
+			<LabbCANPump>Nemesys_M_5_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_5_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_5_DigOUT1" DO1="Nemesys_M_5_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_5_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_5_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_5_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_5_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_5_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_5_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_5_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_5_AnIN1">
+					<Caption>Nemesys M 5 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_5_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_5_ForceSensor">
+					<Caption>Nemesys M 5 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_5_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_5_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 5 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_5_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_5_DigOUT1">
+					<Caption>Nemesys M 5 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_5_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_5_DigOUT2">
+					<Caption>Nemesys M 5 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_5_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_5_DigOUT3">
+					<Caption>Nemesys M 5 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_5_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_5_PowerLED">
+					<Caption>Nemesys M 5 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_5_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_5_DigIN1">
+					<Caption>Nemesys M 5 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_5_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_5_DigIN2">
+					<Caption>Nemesys M 5 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_5_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_5_ExtEmergencyStop">
+					<Caption>Nemesys M 5 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_5_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_5_SafetyStop">
+					<Caption>Nemesys M 5 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_5_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+		<DosingModule Name="Nemesys_M_6">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 6</Caption>
+			<LabbCANPump>Nemesys_M_6_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_6_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_6_DigOUT1" DO1="Nemesys_M_6_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_6_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_6_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_6_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_6_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_6_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_6_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_6_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_6_AnIN1">
+					<Caption>Nemesys M 6 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_6_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_6_ForceSensor">
+					<Caption>Nemesys M 6 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_6_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_6_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 6 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_6_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_6_DigOUT1">
+					<Caption>Nemesys M 6 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_6_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_6_DigOUT2">
+					<Caption>Nemesys M 6 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_6_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_6_DigOUT3">
+					<Caption>Nemesys M 6 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_6_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_6_PowerLED">
+					<Caption>Nemesys M 6 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_6_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_6_DigIN1">
+					<Caption>Nemesys M 6 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_6_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_6_DigIN2">
+					<Caption>Nemesys M 6 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_6_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_6_ExtEmergencyStop">
+					<Caption>Nemesys M 6 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_6_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_6_SafetyStop">
+					<Caption>Nemesys M 6 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_6_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+		<DosingModule Name="Nemesys_M_7">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 7</Caption>
+			<LabbCANPump>Nemesys_M_7_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_7_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_7_DigOUT1" DO1="Nemesys_M_7_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_7_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_7_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_7_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_7_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_7_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_7_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_7_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_7_AnIN1">
+					<Caption>Nemesys M 7 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_7_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_7_ForceSensor">
+					<Caption>Nemesys M 7 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_7_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_7_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 7 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_7_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_7_DigOUT1">
+					<Caption>Nemesys M 7 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_7_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_7_DigOUT2">
+					<Caption>Nemesys M 7 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_7_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_7_DigOUT3">
+					<Caption>Nemesys M 7 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_7_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_7_PowerLED">
+					<Caption>Nemesys M 7 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_7_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_7_DigIN1">
+					<Caption>Nemesys M 7 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_7_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_7_DigIN2">
+					<Caption>Nemesys M 7 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_7_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_7_ExtEmergencyStop">
+					<Caption>Nemesys M 7 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_7_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_7_SafetyStop">
+					<Caption>Nemesys M 7 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_7_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+		<DosingModule Name="Nemesys_M_8">
+			<Type>QtLabb::CNemesys4Pump</Type>
+			<Caption>Nemesys M 8</Caption>
+			<LabbCANPump>Nemesys_M_8_Pump</LabbCANPump>
+			<Syringe ScaleVolume_ml="5" ScaleLength_mm="58.8" MaxStroke_mm="60" Material="Steel" MaxLevel_mm="60" PumpType="6" MaxPressure_bar="118" Caption="5 ml Nemesys M"/>
+			<AnalogIn1>Nemesys_M_8_AnIN1</AnalogIn1>
+			<ValveControlOutputs DO0="Nemesys_M_8_DigOUT1" DO1="Nemesys_M_8_DigOUT2"/>
+			<ValveControlInputs DI0="Nemesys_M_8_DigIN1"/>
+			<ForceLimitOutput Channel="Nemesys_M_8_ForceLimit"/>
+			<ForceSensor Channel="Nemesys_M_8_ForceSensor"/>
+			<SafetyStopInput Channel="Nemesys_M_8_SafetyStop"/>
+			<EmergencyStopInput Channel="Nemesys_M_8_ExtEmergencyStop"/>
+			<LedOutput Channel="Nemesys_M_8_PowerLED"/>
+			<FrontpanelSensors>
+				<Sensor AnalogChannel="Nemesys_M_8_ForceSensor" Widget="RoundProgressBar" Caption="Force"/>
+			</FrontpanelSensors>
+			<DeviceList>
+				<Device Name="Nemesys_M_8_AnIN1">
+					<Caption>Nemesys M 8 AnalogIN 1</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_8_AnIN1</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue>5000</MaxValue>
+					<Unit>mV</Unit>
+					<SensorClass>Voltage</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>0</Decimals>
+					<Presets Default="0..5000mV">
+						<Preset>0..0.5bar (500..4500mV)</Preset>
+						<Preset>0..1bar (500..4500mV)</Preset>
+						<Preset>0..2bar (500..4500mV)</Preset>
+						<Preset>0..5bar (500..4500mV)</Preset>
+						<Preset>0..10bar (500..4500mV)</Preset>
+						<Preset>0..20bar (500..4500mV)</Preset>
+						<Preset>0..50bar (500..4500mV)</Preset>
+						<Preset>0..100bar (500..4500mV)</Preset>
+						<Preset>0..200bar (500..4500mV)</Preset>
+						<Preset>0..400bar (500..4500mV)</Preset>
+						<Preset>0..600bar (500..4500mV)</Preset>
+						<Preset>0..10bar (0..5000mV)</Preset>
+						<Preset>0..20bar (0..5000mV)</Preset>
+						<Preset>0..40bar (0..5000mV)</Preset>
+						<Preset>0..60bar (0..5000mV)</Preset>
+						<Preset>0..100bar (0..5000mV)</Preset>
+						<Preset>0..160bar (0..5000mV)</Preset>
+						<Preset>0..250bar (0..5000mV)</Preset>
+						<Preset>0..400bar (0..5000mV)</Preset>
+						<Preset>0..600bar (0..5000mV)</Preset>
+						<Preset>0..1000bar (0..5000mV)</Preset>
+					</Presets>
+				</Device>
+				<Device Name="Nemesys_M_8_ForceSensor">
+					<Caption>Nemesys M 8 Force Sensor</Caption>
+					<Type>QtLabb::CAnalogInChannelDevice</Type>
+					<AnalogInChannel>Nemesys_M_8_ForceSensor</AnalogInChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+				</Device>
+				<Device Name="Nemesys_M_8_ForceLimit">
+					<Type>QtLabb::CAnalogOutChannelDevice</Type>
+					<Caption>Nemesys M 8 Force Limit</Caption>
+					<AnalogOutChannel>Nemesys_M_8_ForceLimit</AnalogOutChannel>
+					<MinValue>0</MinValue>
+					<MaxValue comment="1.0 * 130%">1.3</MaxValue>
+					<Unit>kN</Unit>
+					<SensorClass>Force</SensorClass>
+					<Color>FF00FF00</Color>
+					<Decimals>2</Decimals>
+					<HasOnOffSwitch>false</HasOnOffSwitch>
+					<ModelViewHints NotEditable="true"/>
+				</Device>
+				<Device Name="Nemesys_M_8_DigOUT1">
+					<Caption>Nemesys M 8 DO1</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_8_DigOUT1</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_8_DigOUT2">
+					<Caption>Nemesys M 8 DO2</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_8_DigOUT2</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_8_DigOUT3">
+					<Caption>Nemesys M 8 DO3</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_8_DigOUT3</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_8_PowerLED">
+					<Caption>Nemesys M 8 LED</Caption>
+					<Type>QtLabb::CDigitalOutChannelDevice</Type>
+					<DigOutChannel>Nemesys_M_8_PowerLED</DigOutChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_8_DigIN1">
+					<Caption>Nemesys M 8 DI1</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_8_DigINA</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_8_DigIN2">
+					<Caption>Nemesys M 8 DI2</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_8_DigINB</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_8_ExtEmergencyStop">
+					<Caption>Nemesys M 8 Ext. Emergency Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_8_ExtEmergencyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+				<Device Name="Nemesys_M_8_SafetyStop">
+					<Caption>Nemesys M 8 Safety Stop</Caption>
+					<Type>QtLabb::CDigitalInChannelDevice</Type>
+					<DigInChannel>Nemesys_M_8_SafetyStop</DigInChannel>
+					<Color>FF00FF00</Color>
+				</Device>
+			</DeviceList>
+		</DosingModule>
+	</DosingModuleList>
+	<IoDeviceList/>
+	<log4cplus>
+            log4cplus.logger.NemesysLogger=WARN, LogAppender;
+            log4cplus.logger.ContiFlowLogger=INFO, LogAppender;
+        </log4cplus>
+	<PluginLogger>NemesysLogger</PluginLogger>
+	<IoChannelPresets>
+		<Preset Name="0..0.5bar (500..4500mV)" Caption="Pressure: 0..0.5 bar (500..4500mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="2" Min="0" Max="0.5"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="0.5"/>
+		</Preset>
+		<Preset Name="0..1bar (500..4500mV)" Caption="Pressure: 0..1 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="2" Min="0" Max="1"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="1"/>
+		</Preset>
+		<Preset Name="0..2bar (500..4500mV)" Caption="Pressure: 0..2 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="2" Min="0" Max="2"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="2"/>
+		</Preset>
+		<Preset Name="0..5bar (500..4500mV)" Caption="Pressure: 0..5 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="5"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="5"/>
+		</Preset>
+		<Preset Name="0..10bar (500..4500mV)" Caption="Pressure: 0..10 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="10"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="10"/>
+		</Preset>
+		<Preset Name="0..20bar (500..4500mV)" Caption="Pressure: 0..20 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="20"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="20"/>
+		</Preset>
+		<Preset Name="0..50bar (500..4500mV)" Caption="Pressure: 0..50 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="50"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="50"/>
+		</Preset>
+		<Preset Name="0..100bar (500..4500mV)" Caption="Pressure: 0..100 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="100"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="100"/>
+		</Preset>
+		<Preset Name="0..200bar (500..4500mV)" Caption="Pressure: 0..200 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="200"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="200"/>
+		</Preset>
+		<Preset Name="0..400bar (500..4500mV)" Caption="Pressure: 0..400 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="400"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="400"/>
+		</Preset>
+		<Preset Name="0..600bar (500..4500mV)" Caption="Pressure: 0..600 bar (500..4500 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="600"/>
+			<Scaling x1="500" y1="0" x2="4500" y2="600"/>
+		</Preset>
+		<Preset Name="0..10bar (0..5000mV)" Caption="Pressure: 0..10 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="10"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="10"/>
+		</Preset>
+		<Preset Name="0..20bar (0..5000mV)" Caption="Pressure: 0..20 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="20"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="20"/>
+		</Preset>
+		<Preset Name="0..40bar (0..5000mV)" Caption="Pressure: 0..40 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="40"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="40"/>
+		</Preset>
+		<Preset Name="0..60bar (0..5000mV)" Caption="Pressure: 0..60 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="60"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="60"/>
+		</Preset>
+		<Preset Name="0..100bar (0..5000mV)" Caption="Pressure: 0..100 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="100"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="100"/>
+		</Preset>
+		<Preset Name="0..160bar (0..5000mV)" Caption="Pressure: 0..160 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="160"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="160"/>
+		</Preset>
+		<Preset Name="0..250bar (0..5000mV)" Caption="Pressure: 0..250 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="250"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="250"/>
+		</Preset>
+		<Preset Name="0..400bar (0..5000mV)" Caption="Pressure: 0..400 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="400"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="400"/>
+		</Preset>
+		<Preset Name="0..600bar (0..5000mV)" Caption="Pressure: 0..600 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="600"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="600"/>
+		</Preset>
+		<Preset Name="0..1000bar (0..5000mV)" Caption="Pressure: 0..1000 bar (0..5000 mV)">
+			<ScaledValue Sensor="Pressure" Unit="bar" Decimals="1" Min="0" Max="1000"/>
+			<Scaling x1="0" y1="0" x2="5000" y2="1000"/>
+		</Preset>
+	</IoChannelPresets>
+	<PressureControlledContiFlow enabled="1">
+		<AbsPressureErrPercent>0.5</AbsPressureErrPercent>
+		<GainPresets k1="10=0.1" k2="1500=0.002"/>
+		<Tuning InitialK="0.002" KStepFactor="1.25" SafePressureFactor="0.5" MaxPressureOvershot="1.02"/>
+		<PressurizingTimeSafetyFactor min="1.2" max="4" default="3"/>
+		<PressurizingVolumeSafetyFactor>3</PressurizingVolumeSafetyFactor>
+		<Valve PreSwitchDelay_ms="500" PostSwitchDelay_ms="500"/>
+		<ErrorMeasuring enabled="0" Duration_ms="4000" PressurePercent="1"/>
+		<Times PressureSensing_ms="50" MinPressurizing_s="0.5" Safety_s="1" CrossFlow_s="2" Settling_ms="2000"/>
+	</PressureControlledContiFlow>
+</Plugin>
+<MetaInfo>
+	<QmixDevices>
+		<QmixDevice Type="Nemesys_M" NodeId="2" ManualNodeId="false" Index="0" DeviceId="1" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40008588"/>
+		</QmixDevice>
+		<QmixDevice Type="Nemesys_M" NodeId="3" ManualNodeId="false" Index="1" DeviceId="2" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007666"/>
+		</QmixDevice>
+		<QmixDevice Type="Nemesys_M" NodeId="4" ManualNodeId="false" Index="2" DeviceId="3" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40008570"/>
+		</QmixDevice>
+		<QmixDevice Type="Nemesys_M" NodeId="5" ManualNodeId="false" Index="3" DeviceId="4" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007626"/>
+		</QmixDevice>
+		<QmixDevice Type="Nemesys_M" NodeId="6" ManualNodeId="false" Index="4" DeviceId="5" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007792"/>
+		</QmixDevice>
+		<QmixDevice Type="Nemesys_M" NodeId="7" ManualNodeId="false" Index="5" DeviceId="6" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40010414"/>
+		</QmixDevice>
+		<QmixDevice Type="Nemesys_M" NodeId="8" ManualNodeId="false" Index="6" DeviceId="7" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007689"/>
+		</QmixDevice>
+		<QmixDevice Type="Nemesys_M" NodeId="9" ManualNodeId="false" Index="7" DeviceId="8" Simulated="false" CANBitrate="1000" SerialNumber="" DrawingNumber="" Configured="true">
+			<Name/>
+			<MinPosition>-10705306</MinPosition>
+			<MaxPosition>0</MaxPosition>
+			<MaxVelocity>7840800</MaxVelocity>
+			<MaxAcceleration>200000</MaxAcceleration>
+			<RevolutionsPerMeter>1000</RevolutionsPerMeter>
+			<PositionUnitsPerRevolution>178421.76000000001</PositionUnitsPerRevolution>
+			<VelocityUnitsPerRPM>21780</VelocityUnitsPerRPM>
+			<AccelerationUnitsPerRPSperS>1306.8000000000002</AccelerationUnitsPerRPSperS>
+			<Identity VendorId="0xfb" ProductCode="0x60500000" Revision="0x1700000" SerialNo="0x40007756"/>
+		</QmixDevice>
+	</QmixDevices>
+</MetaInfo>

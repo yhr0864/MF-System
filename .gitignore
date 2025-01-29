@@ -1,8 +1,5 @@
-Multip_env/*
+**.venv/
 **__pycache__/
-devices/__pycache__/*
-
-devices/pump_lib/PumpConfig/*
 
 *.csv
 *.dll
