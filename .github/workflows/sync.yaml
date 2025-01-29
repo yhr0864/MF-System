@@ -2,37 +2,33 @@ name: Sync GitLab to GitHub
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
-  workflow_dispatch:  # Allows manual trigger
+    - cron: '0 * * * *'  
+  workflow_dispatch:  
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  
     steps:
       - name: Checkout GitHub repo
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
+          token: ${{ secrets.GITHUB_TOKEN }}  
 
       - name: Configure Git identity
         run: |
-          git config --global user.name "yhr0864"
-          git config --global user.email "yuhaoran0864@gmail.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Pull latest changes from GitLab
         run: |
-          git remote add gitlab https://oauth2:${{ secrets.GITLAB_ACCESS_TOKEN }}@gitlab.kit.edu/haoran.yu/mf-system.git
+          git remote add gitlab https://oauth2:${{ secrets.GITLAB_ACCESS_TOKEN }}@gitlab.com/haoran.yu/mf-system.git
           git fetch gitlab
           git merge gitlab/main --allow-unrelated-histories -m "Sync GitLab to GitHub"
-          git push origin main
 
       - name: Push changes to GitHub
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/yhr0864/MF-System.git
           git push origin main
           
-      - name: Debug
-        run: |
-          git config --list
-          git remote -v
