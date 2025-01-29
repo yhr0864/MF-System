@@ -1,6 +1,6 @@
 # MF-System
 
-![](https://gitlab.kit.edu/haoran.yu/mf-system/blob/main/images/MF.png)
+![](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/main/images/MF.png)
 
 ## Getting started
 
