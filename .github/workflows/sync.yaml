@@ -31,3 +31,8 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/yhr0864/MF-System.git
           git push origin main
+          
+      - name: Debug
+        run: |
+          git config --list
+          git remote -v
