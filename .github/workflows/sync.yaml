@@ -26,3 +26,8 @@ jobs:
           git fetch gitlab
           git merge gitlab/main --allow-unrelated-histories -m "Sync GitLab to GitHub"
           git push origin main
+
+      - name: Push changes to GitHub
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/yhr0864/MF-System.git
+          git push origin main
