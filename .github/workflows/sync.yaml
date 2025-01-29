@@ -12,6 +12,11 @@ jobs:
       - name: Checkout GitHub repo
         uses: actions/checkout@v3
 
+      - name: Configure Git identity
+        run: |
+          git config --global user.name "yhr0864"
+          git config --global user.email "yuhaoran0864@gmail.com"
+
       - name: Pull latest changes from GitLab
         run: |
           git remote add gitlab https://oauth2:${{ secrets.GITLAB_ACCESS_TOKEN }}@gitlab.kit.edu/haoran.yu/mf-system.git
