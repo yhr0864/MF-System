@@ -1,3 +1,4 @@
+import time
 import yaml
 import json
 import functools
@@ -7,6 +8,7 @@ from devices.arduino import ArduinoBoard
 from devices.gantry import Gantry
 from devices.pump import SyringePump
 from devices.dls import DLS_Analyzer
+from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
 
 
 # Create a single global ThreadPoolExecutor
@@ -26,23 +28,23 @@ def decorator_parallel_executor(func):
 class Hardware:
     def __init__(
         self,
-        pump_config_path="pump_config.yaml",
-        sample_config_path="sample_config.json",
+        pump_config_path="./database/pump_config.yaml",
+        sample_config_path="./database/sample_config.json",
     ):
         # self.gantry = Gantry()
-        # self.arduino = ArduinoBoard()
+        self.arduino = ArduinoBoard(port="COM14", baudrate=9600, timeout=0.1)
         # self.pump1 = SyringePump(
         #     pump_name="Nemesys_M_1_Pump",
         #     pressure_limit=10,
         #     inner_diameter_mm=14.70520755382068,
         #     max_piston_stroke_mm=60,
         # )
-        self.pump2 = SyringePump(
-            pump_name="Nemesys_M_2_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=14.70520755382068,
-            max_piston_stroke_mm=60,
-        )
+        # self.pump2 = SyringePump(
+        #     pump_name="Nemesys_M_2_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=14.70520755382068,
+        #     max_piston_stroke_mm=60,
+        # )
         # self.pump3 = SyringePump(
         #     pump_name="Nemesys_M_3_Pump",
         #     pressure_limit=10,
@@ -61,12 +63,12 @@ class Hardware:
         #     inner_diameter_mm=23.207658393177034,
         #     max_piston_stroke_mm=60,
         # )
-        self.pump6 = SyringePump(
-            pump_name="Nemesys_M_6_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=23.207658393177034,
-            max_piston_stroke_mm=60,
-        )
+        # self.pump6 = SyringePump(
+        #     pump_name="Nemesys_M_6_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=23.207658393177034,
+        #     max_piston_stroke_mm=60,
+        # )
         # self.pump7 = SyringePump(
         #     pump_name="Nemesys_M_7_Pump",
         #     pressure_limit=10,
@@ -80,7 +82,7 @@ class Hardware:
         #     max_piston_stroke_mm=60,
         # )
 
-        # self.dls = DLS_Analyzer()
+        self.dls = DLS_Analyzer(port="COM7", baudrate=9600, timeout=1)
 
         # self.pump6 = "Pump 6 is ready"
         # self.pump2 = "Pump 2 is ready"
@@ -96,18 +98,22 @@ class Hardware:
 
     def initialize(self):
         # self.gantry.initialize()
-        # self.arduino.initialize()
-        # self.dls.initialize()
+        self.arduino.initialize()
+        time.sleep(1)
+        print(self.home_table_p())
+        print(self.home_table_m())
+        print(self.home_probe_dls())
+        print(self.home_probe_uv())
+
+        self.dls.initialize()
         # self.pump1.initialize()
-        self.pump2.initialize()
+        # self.pump2.initialize()
         # self.pump3.initialize()
         # self.pump4.initialize()
         # self.pump5.initialize()
-        self.pump6.initialize()
+        # self.pump6.initialize()
         # self.pump7.initialize()
         # self.pump8.initialize()
-
-        print("hardwares are initializing")
 
     @decorator_parallel_executor
     def tray_to_pump(self, coord: tuple):
@@ -130,13 +136,38 @@ class Hardware:
         # self.gantry.move_from_to(coord_on_table_m, coord_on_tray)
         print("measure to tray")
 
+    # def home_both_tables(self):
+    #     return self.arduino.send_command("motor1 home \n motor2 home")
+
+    def home_table_p(self):
+        return self.arduino.send_command("motor1 home")
+
+    def home_table_m(self):
+        return self.arduino.send_command("motor2 home")
+
     def rotate_table_p(self):
-        # return self.arduino.send_command("motor1 rotate")
-        print("rotate p")
+        return self.arduino.send_command("motor1 rotate")
 
     def rotate_table_m(self):
-        # return self.arduino.send_command("motor2 rotate")
-        print("rotate m")
+        return self.arduino.send_command("motor2 rotate")
+
+    def home_probe_uv(self):
+        return self.arduino.send_command("cylinder1 home")
+
+    def home_probe_dls(self):
+        return self.arduino.send_command("cylinder2 home")
+
+    def dip_out_probe_uv(self):
+        return self.arduino.send_command("cylinder1 extend")
+
+    def dip_in_probe_uv(self):
+        return self.arduino.send_command("cylinder1 retract")
+
+    def dip_out_probe_dls(self):
+        return self.arduino.send_command("cylinder2 extend")
+
+    def dip_in_probe_dls(self):
+        return self.arduino.send_command("cylinder2 retract")
 
     def prepare_pump(self):
         """
@@ -201,15 +232,33 @@ class Hardware:
             future.result()
 
     @decorator_parallel_executor
-    def measure_DLS(self):
-        # # Dip the measure rod in the sample
-        # self.arduino.send_command("rod_DLS extend")
+    def measure_DLS(self, setup_id: int, num_of_measure: int, save_path: str):
+        """
+        Measures DLS (Dynamic Light Scattering) data using the specified setup.
 
-        # # Measuring
+        Args:
+            setup_id (int): The measurement setup index.
+            num_of_measure (int): The number of measurements to take.
+            save_path (str): The file path to save the measurement data.
 
-        # # Measure finished
-        # self.arduino.send_command("rod_DLS retract")
-        print("measure dls")
+        Returns:
+            str or False: Arduino feedback message if available.
+        """
+        # Dip in the probe tip
+        if self.dip_in_probe_dls() != "Cylinder2 Retraction Finished":
+            raise RequestFailed(
+                "Cylinder_dls dip in request failed. Measurement cannot proceed."
+            )
+
+        # Step 1: Select the DLS measurement setup
+        self.dls.select_measurement_setup(setup_index=setup_id)
+
+        # Step 2: Run the measurement and request data
+        if self.dls.request_data(num_of_runs=num_of_measure, data_file=save_path):
+            # Retract the rod only if the measurement was successful
+            return self.dip_out_probe_dls()
+
+        return False
 
     @decorator_parallel_executor
     def measure_UV(self):
@@ -225,6 +274,8 @@ class Hardware:
 
 if __name__ == "__main__":
     hardware = Hardware()
+    print("start init")
     hardware.initialize()
+    print("finish init")
     # hardware.prepare_pump()
-    hardware.fill_bottle()
+    # hardware.fill_bottle()

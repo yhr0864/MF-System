@@ -1,11 +1,10 @@
 import time
 
 import serial
-import pyautogui
 from tqdm import tqdm
 import pandas as pd
 
-from .utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
 
 
 class DLS_Analyzer:
@@ -31,16 +30,19 @@ class DLS_Analyzer:
 
     def initialize(self):
         """
-        Initializes the serial connection to the DLS device.
+        Initialize and check the serial connection to the DLS device.
 
         This method sets up the serial communication using the specified port,
         baudrate, and timeout. The connection is established via the `serial.Serial`
         interface, enabling communication with the device.
         """
 
+        # Initialize the serial port
         self.dls_ser = serial.Serial(
             port=self.port, baudrate=self.baudrate, timeout=self.timeout
         )
+        # Check COM port
+        self.com_check()
 
     def send_command(self, cmd: bytes, timeout=5):
         """
@@ -192,10 +194,14 @@ class DLS_Analyzer:
             num_of_runs (int): The number of measurements to perform.
             data_file (str, optional): The file path where the data will be saved. Defaults to "measurement.csv".
 
+        Returns:
+            bool: The feedback is True if requested data is ready, else False.
+
         Raises:
             RequestFailed: If any of the measurements fail or return invalid data (response 'N').
             UnexpectedResponse: If the device returns an unexpected response.
         """
+
         DATA_COMMANDS = {
             "Sample Loading": bytes([0x37, 1]),
             "Mean Volume Diameter": bytes([0x37, 2]),
@@ -222,6 +228,9 @@ class DLS_Analyzer:
             "d(90%)",
             "d(95%)",
         ]
+
+        # Flag
+        isFinished = False
 
         # DataFrame to store all measurements
         results_df = pd.DataFrame(columns=headers)
@@ -277,18 +286,22 @@ class DLS_Analyzer:
         # Save the results to a CSV file
         results_df.to_csv(data_file, index=False)
 
+        isFinished = True
         print(f"Measurement finished, data is saved under {data_file}")
+        return isFinished
 
 
 if __name__ == "__main__":
     dls = DLS_Analyzer()
+    print("start init")
     dls.initialize()
-    time.sleep(1)
-    dls.com_check()
-    time.sleep(1)
-    dls.select_measurement_setup(5)
+    print("finish init")
 
-    time.sleep(1)
-    # dls.set_zero()
+    # time.sleep(1)
 
-    dls.request_data(num_of_runs=10)
+    # dls.select_measurement_setup(5)
+
+    # time.sleep(1)
+    # # dls.set_zero()
+
+    # dls.request_data(num_of_runs=10)

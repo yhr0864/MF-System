@@ -355,7 +355,7 @@ public:
     digitalWrite(valvePin2, LOW);
 
     if (!digitalRead(signalEx)) {
-      Serial.println("Not in place");
+      Serial.println("Not in place. Extending...");
       extend();
     }
     else {
