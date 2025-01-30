@@ -105,7 +105,7 @@ class Hardware:
         print(self.home_probe_dls())
         print(self.home_probe_uv())
 
-        self.dls.initialize()
+        # self.dls.initialize()
         # self.pump1.initialize()
         # self.pump2.initialize()
         # self.pump3.initialize()

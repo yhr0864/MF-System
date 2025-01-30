@@ -1,4 +1,4 @@
-from asyncio import futures
+import sys
 import time
 import logging
 from concurrent.futures import ThreadPoolExecutor
@@ -23,7 +23,7 @@ class StateMachine:
         )
 
         self.hardware = Hardware()
-
+        self.feedback = None
         # Simulate 3 bottles
         self.cnt = 3
         self.is_bottle_on_tray = True
@@ -46,11 +46,13 @@ class StateMachine:
 
     def before_cycle_stage_2(self):
         # Send command
-        self.hardware.rotate_table_p()
+        self.feedback = self.hardware.rotate_table_p()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_3(self):
         # Send command
@@ -68,11 +70,13 @@ class StateMachine:
 
     def before_cycle_stage_4(self):
         # Send command
-        self.hardware.rotate_table_p()
+        self.feedback = self.hardware.rotate_table_p()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_5(self):
         # Send command
@@ -90,11 +94,13 @@ class StateMachine:
 
     def before_cycle_stage_6(self):
         # Send command
-        self.hardware.rotate_table_m()
+        self.feedback = self.hardware.rotate_table_m()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_7(self):
         # Send command
@@ -112,11 +118,13 @@ class StateMachine:
 
     def before_cycle_stage_8(self):
         # Send command
-        self.hardware.rotate_table_p()
+        self.feedback = self.hardware.rotate_table_p()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_9(self):
         # Send command
@@ -134,11 +142,14 @@ class StateMachine:
 
     def before_cycle_stage_10(self):
         # Send command
-        self.hardware.rotate_table_m()
+        self.feedback = self.hardware.rotate_table_m()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_11(self):
         # Send command
@@ -150,11 +161,13 @@ class StateMachine:
 
     def before_cycle_stage_12(self):
         # Send command
-        self.hardware.rotate_table_p()
+        self.feedback = self.hardware.rotate_table_p()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_13(self):
         # Send command
@@ -176,11 +189,13 @@ class StateMachine:
 
     def before_cycle_stage_14(self):
         # Send command
-        self.hardware.rotate_table_m()
+        self.feedback = self.hardware.rotate_table_m()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_15(self):
         # Send command
@@ -192,11 +207,13 @@ class StateMachine:
 
     def before_cycle_stage_16(self):
         # Send command
-        self.hardware.rotate_table_p()
+        self.feedback = self.hardware.rotate_table_p()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def before_cycle_stage_17(self):
         # Send command
@@ -234,11 +251,13 @@ class StateMachine:
 
     def cycle_stage_3(self):
         # Send command
-        self.hardware.rotate_table_m()
+        self.feedback = self.hardware.rotate_table_m()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def cycle_stage_4(self):
         # Send command
@@ -268,11 +287,13 @@ class StateMachine:
 
     def cycle_stage_6(self):
         # Send command
-        self.hardware.rotate_table_p()
+        self.feedback = self.hardware.rotate_table_p()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def cycle_stage_7(self):
         # Send command
@@ -286,11 +307,13 @@ class StateMachine:
 
     def after_cycle_stage(self):
         # Send command
-        self.hardware.rotate_table_p()
+        self.feedback = self.hardware.rotate_table_p()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def after_cycle_stage_2(self):
         # Send command
@@ -310,11 +333,13 @@ class StateMachine:
 
     def after_cycle_stage_4(self):
         # Send command
-        self.hardware.rotate_table_m()
+        self.feedback = self.hardware.rotate_table_m()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def after_cycle_stage_5(self):
         # Send command
@@ -334,11 +359,13 @@ class StateMachine:
 
     def after_cycle_stage_6(self):
         # Send command
-        self.hardware.rotate_table_m()
+        self.feedback = self.hardware.rotate_table_m()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def after_cycle_stage_7(self):
         # Send command
@@ -356,11 +383,13 @@ class StateMachine:
 
     def after_cycle_stage_8(self):
         # Send command
-        self.hardware.rotate_table_m()
+        self.feedback = self.hardware.rotate_table_m()
         time.sleep(1)
 
-        # transition
-        self.trigger("command_finished")
+        if self.feedback:
+            self.feedback = None
+            # transition
+            self.trigger("command_finished")
 
     def after_cycle_stage_9(self):
         # Send command
@@ -369,6 +398,7 @@ class StateMachine:
 
         # transition: last state finished => end the server
         self.machine.stop_server()
+        sys.exit()
 
     def auto_run(self):
         while True:
