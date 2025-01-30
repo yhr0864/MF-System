@@ -90,7 +90,7 @@ class StateMachine:
 
     def before_cycle_stage_6(self):
         # Send command
-        # self.hardware.rotate_table_m()
+        self.hardware.rotate_table_m()
         time.sleep(1)
 
         # transition
@@ -112,7 +112,7 @@ class StateMachine:
 
     def before_cycle_stage_8(self):
         # Send command
-        # self.hardware.rotate_table_p()
+        self.hardware.rotate_table_p()
         time.sleep(1)
 
         # transition
@@ -134,7 +134,7 @@ class StateMachine:
 
     def before_cycle_stage_10(self):
         # Send command
-        # self.hardware.rotate_table_m()
+        self.hardware.rotate_table_m()
         time.sleep(1)
 
         # transition
@@ -150,7 +150,7 @@ class StateMachine:
 
     def before_cycle_stage_12(self):
         # Send command
-        # self.hardware.rotate_table_p()
+        self.hardware.rotate_table_p()
         time.sleep(1)
 
         # transition
@@ -176,7 +176,7 @@ class StateMachine:
 
     def before_cycle_stage_14(self):
         # Send command
-        # self.hardware.rotate_table_m()
+        self.hardware.rotate_table_m()
         time.sleep(1)
 
         # transition
@@ -192,7 +192,7 @@ class StateMachine:
 
     def before_cycle_stage_16(self):
         # Send command
-        # self.hardware.rotate_table_p()
+        self.hardware.rotate_table_p()
         time.sleep(1)
 
         # transition
@@ -234,7 +234,7 @@ class StateMachine:
 
     def cycle_stage_3(self):
         # Send command
-        # self.hardware.rotate_table_m()
+        self.hardware.rotate_table_m()
         time.sleep(1)
 
         # transition
@@ -268,7 +268,7 @@ class StateMachine:
 
     def cycle_stage_6(self):
         # Send command
-        # self.hardware.rotate_table_p()
+        self.hardware.rotate_table_p()
         time.sleep(1)
 
         # transition
@@ -286,7 +286,7 @@ class StateMachine:
 
     def after_cycle_stage(self):
         # Send command
-        # self.hardware.rotate_table_p()
+        self.hardware.rotate_table_p()
         time.sleep(1)
 
         # transition
@@ -310,7 +310,7 @@ class StateMachine:
 
     def after_cycle_stage_4(self):
         # Send command
-        # self.hardware.rotate_table_m()
+        self.hardware.rotate_table_m()
         time.sleep(1)
 
         # transition
@@ -334,7 +334,7 @@ class StateMachine:
 
     def after_cycle_stage_6(self):
         # Send command
-        # self.hardware.rotate_table_m()
+        self.hardware.rotate_table_m()
         time.sleep(1)
 
         # transition
@@ -356,7 +356,7 @@ class StateMachine:
 
     def after_cycle_stage_8(self):
         # Send command
-        # self.hardware.rotate_table_m()
+        self.hardware.rotate_table_m()
         time.sleep(1)
 
         # transition
