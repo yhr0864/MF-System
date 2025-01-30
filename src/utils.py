@@ -1,6 +1,5 @@
 states = [
     "initialize",
-    "pump_preparing",
     "end",
     "before_cycle_stage_1",
     "before_cycle_stage_2",
@@ -41,11 +40,6 @@ transitions = [
     {
         "trigger": "initialize_finished",
         "source": "initialize",
-        "dest": "pump_preparing",
-    },
-    {
-        "trigger": "command_finished",
-        "source": "pump_preparing",
         "dest": "before_cycle_stage_1",
     },
     {

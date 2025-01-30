@@ -22,15 +22,13 @@ class StateMachine:
             port=8083,
         )
 
-        self.hardware = Hardware()
-
-        # Simulate 3 bottles
+        # self.hardware = Hardware()
         self.cnt = 3
         self.is_bottle_on_tray = True
 
     def initialize(self):
         # Initialize all the hardwares
-        self.hardware.initialize()
+        # self.hardware.initialize()
         time.sleep(1)
 
         # transition
@@ -46,7 +44,7 @@ class StateMachine:
 
     def before_cycle_stage_2(self):
         # Send command
-        self.hardware.rotate_table_p()
+        # self.hardware.rotate_table_p()
         time.sleep(1)
 
         # transition
@@ -68,7 +66,7 @@ class StateMachine:
 
     def before_cycle_stage_4(self):
         # Send command
-        self.hardware.rotate_table_p()
+        # self.hardware.rotate_table_p()
         time.sleep(1)
 
         # transition

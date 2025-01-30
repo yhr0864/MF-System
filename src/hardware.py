@@ -114,30 +114,25 @@ class Hardware:
         # self.pump6.initialize()
         # self.pump7.initialize()
         # self.pump8.initialize()
+        # self.prepare_pump()
 
-    @decorator_parallel_executor
     def tray_to_pump(self, coord: tuple):
         coord_on_tray = coord[0]
         coord_on_table_p = coord[1]
         # self.gantry.move_from_to(coord_on_tray, coord_on_table_p)
         print("tray to pump")
 
-    @decorator_parallel_executor
     def pump_to_measure(self, coord: tuple):
         coord_on_table_p = coord[0]
         coord_on_table_m = coord[1]
         # self.gantry.move_from_to(coord_on_table_p, coord_on_table_m)
         print("pump to measure")
 
-    @decorator_parallel_executor
     def measure_to_tray(self, coord: tuple):
         coord_on_table_m = coord[0]
         coord_on_tray = coord[1]
         # self.gantry.move_from_to(coord_on_table_m, coord_on_tray)
         print("measure to tray")
-
-    # def home_both_tables(self):
-    #     return self.arduino.send_command("motor1 home \n motor2 home")
 
     def home_table_p(self):
         return self.arduino.send_command("motor1 home")
@@ -182,19 +177,15 @@ class Hardware:
             if isinstance(pump, SyringePump):
                 self.refill(pump=pump, flow=float(flow))
 
-    @decorator_parallel_executor
     def refill(self, pump: SyringePump, flow: float):
         pump.refill(flow)
 
-    @decorator_parallel_executor
     def empty(self, pump: SyringePump, flow: float):
         pump.empty(flow)
 
-    @decorator_parallel_executor
     def dose(self, pump: SyringePump, volume: float, flow: float):
         pump.dispense(volume, flow)
 
-    @decorator_parallel_executor
     def fill_bottle(self):
         # 1. Load sample data
         num_samples = self.sample_data["num_samples"]
@@ -210,28 +201,34 @@ class Hardware:
         solution = sample_info["solution"]
         pumps = sample_info["pumps"]
 
-        # Parallelly dispensing
-        futures = []
-        for i in range(len(proportion)):
-            ratio = proportion[i] / sum(proportion)
-            sub_flow = out_flow * ratio
-            sub_volume = volume * ratio
-            p = pumps[i]
-            # print(ratio)
-            # print(sub_flow)
-            # print(sub_volume)
-            # print(p)
-            pump = getattr(self, p)
-            if isinstance(pump, SyringePump):
-                futures.append(
-                    self.dose(pump=pump, volume=float(sub_volume), flow=float(sub_flow))
-                )
+        # Parallelly dispensing with multi-threading
+        with ThreadPoolExecutor() as executor:
+            futures = []
+            for i in range(len(proportion)):
+                ratio = proportion[i] / sum(proportion)
+                sub_flow = out_flow * ratio
+                sub_volume = volume * ratio
+                p = pumps[i]
+                # print(ratio)
+                # print(sub_flow)
+                # print(sub_volume)
+                # print(p)
+                pump = getattr(self, p)
+                if isinstance(pump, SyringePump):
+                    futures.append(
+                        executor.submit(
+                            self.dose(
+                                pump=pump,
+                                volume=float(sub_volume),
+                                flow=float(sub_flow),
+                            )
+                        )
+                    )
 
-        # Wait for all sub-functions to complete
-        for future in futures:
-            future.result()
+            # Wait for all tasks to complete
+            for future in futures:
+                future.result()
 
-    @decorator_parallel_executor
     def measure_DLS(self, setup_id: int, num_of_measure: int, save_path: str):
         """
         Measures DLS (Dynamic Light Scattering) data using the specified setup.
@@ -261,7 +258,6 @@ class Hardware:
 
         return False
 
-    @decorator_parallel_executor
     def measure_UV(self):
         # # Dip the measure rod in the sample
         # self.arduino.send_command("rod_UV extend")
