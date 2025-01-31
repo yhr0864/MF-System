@@ -11,20 +11,6 @@ from devices.dls import DLS_Analyzer
 from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
 
 
-# Create a single global ThreadPoolExecutor
-executor = ThreadPoolExecutor()
-
-
-def decorator_parallel_executor(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        # Submit the function to the shared executor
-        future = executor.submit(func, *args, **kwargs)
-        return future
-
-    return wrapper
-
-
 class Hardware:
     def __init__(
         self,
