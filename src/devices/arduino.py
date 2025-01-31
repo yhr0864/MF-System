@@ -36,5 +36,5 @@ if __name__ == "__main__":
     time.sleep(1)
 
     # f = arduino.send_command("motor1 home \n motor2 home")
-    f = arduino.send_command("cylinder2 home")
+    f = arduino.send_command("motor2 home")
     print(f)

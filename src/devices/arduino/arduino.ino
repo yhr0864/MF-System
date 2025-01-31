@@ -56,7 +56,7 @@ const int numBottlesTable1 = 2;     ///< Number of bottle slots for motor 1
 const int numBottlesTable2 = 6;     ///< Number of bottle slots for motor 2
 
 // Offset steps between home position and working position
-const int motor1_home_offset = 267; ///< Home offset for motor 1 (60 degrees)
+const int motor1_home_offset = 133; ///< Home offset for motor 1 (30 degrees)
 const int motor2_home_offset = 133; ///< Home offset for motor 2 (30 degrees)
 
 /**
