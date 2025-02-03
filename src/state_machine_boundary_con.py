@@ -34,7 +34,8 @@ class StateMachine:
         self.hardware = Hardware()
         self.feedback = None
         # Simulate 3 bottles
-        self.current_num_bottles = 3
+        self.num_bottles = 3
+        self.current_num_bottles = self.num_bottles
         self.is_bottle_on_tray = True
 
     def initialize(self):
@@ -46,7 +47,14 @@ class StateMachine:
 
     def before_cycle_stage_1(self):
         # Send command
-        # self.hardware.tray_to_pump()
+        # Check the boundary condition
+        if self.num_bottles >= 1:
+            self.hardware.tray_to_pump()
+            self.current_num_bottles -= 1
+
+        else:
+            print("No bottles. Experiment stops!")
+            sys.exit()
 
         # transition
         self.trigger("command_finished")
@@ -62,7 +70,15 @@ class StateMachine:
 
     def before_cycle_stage_3(self):
         # Send command
-        # parallel_action_handle(self.hardware.fill_bottle, self.hardware.tray_to_pump)
+        # Check the boundary condition
+        if self.num_bottles >= 2:
+            parallel_action_handle(
+                self.hardware.fill_bottle, self.hardware.tray_to_pump
+            )
+            self.current_num_bottles = max(0, self.current_num_bottles - 1)
+
+        else:
+            self.hardware.fill_bottle()
 
         # transition
         self.trigger("command_finished")
@@ -78,7 +94,14 @@ class StateMachine:
 
     def before_cycle_stage_5(self):
         # Send command
-        # parallel_action_handle(self.hardware.fill_bottle, self.hardware.pump_to_measure)
+        # Check the boundary condition
+        if self.num_bottles >= 2:
+            parallel_action_handle(
+                self.hardware.fill_bottle, self.hardware.pump_to_measure
+            )
+
+        else:
+            self.hardware.pump_to_measure()
 
         # transition
         self.trigger("command_finished")
@@ -94,7 +117,12 @@ class StateMachine:
 
     def before_cycle_stage_7(self):
         # Send command
-        # parallel_action_handle(self.hardware.tray_to_pump, self.hardware.measure_UV)
+        # Check the boundary condition
+        if self.num_bottles >= 3:
+            parallel_action_handle(self.hardware.tray_to_pump, self.hardware.measure_UV)
+            self.current_num_bottles = max(0, self.current_num_bottles - 1)
+        else:
+            self.hardware.measure_UV()
 
         # transition
         self.trigger("command_finished")
@@ -110,7 +138,16 @@ class StateMachine:
 
     def before_cycle_stage_9(self):
         # Send command
-        # parallel_action_handle(self.hardware.fill_bottle, self.hardware.pump_to_measure)
+        # Check the boundary condition
+        match self.num_bottles:
+            case 1:
+                pass
+            case 2:
+                self.hardware.pump_to_measure()
+            case _:
+                parallel_action_handle(
+                    self.hardware.fill_bottle, self.hardware.pump_to_measure
+                )
 
         # transition
         self.trigger("command_finished")
@@ -127,7 +164,12 @@ class StateMachine:
 
     def before_cycle_stage_11(self):
         # Send command
-        # self.hardware.tray_to_pump()
+        # Check the boundary condition
+        if self.num_bottles >= 4:
+            self.hardware.tray_to_pump()
+            self.current_num_bottles = max(0, self.current_num_bottles - 1)
+        else:
+            pass
 
         # transition
         self.trigger("command_finished")
@@ -143,12 +185,27 @@ class StateMachine:
 
     def before_cycle_stage_13(self):
         # Send command
-        # parallel_action_handle(
-        #     self.hardware.fill_bottle,
-        #     self.hardware.pump_to_measure,
-        #     self.hardware.measure_DLS,
-        #     self.hardware.measure_UV,
-        # )
+        # Check the boundary condition
+        match self.num_bottles:
+            case 1:
+                self.hardware.measure_DLS()
+            case 2:
+                parallel_action_handle(
+                    self.hardware.measure_DLS, self.hardware.measure_UV
+                )
+            case 3:
+                parallel_action_handle(
+                    self.hardware.pump_to_measure,
+                    self.hardware.measure_DLS,
+                    self.hardware.measure_UV,
+                )
+            case _:
+                parallel_action_handle(
+                    self.hardware.fill_bottle,
+                    self.hardware.pump_to_measure,
+                    self.hardware.measure_DLS,
+                    self.hardware.measure_UV,
+                )
 
         # transition
         self.trigger("command_finished")
@@ -164,7 +221,12 @@ class StateMachine:
 
     def before_cycle_stage_15(self):
         # Send command
-        # self.hardware.tray_to_pump()
+        # Check the boundary condition
+        if self.num_bottles >= 5:
+            self.hardware.tray_to_pump()
+            self.current_num_bottles = max(0, self.current_num_bottles - 1)
+        else:
+            pass
 
         # transition
         self.trigger("command_finished")
@@ -180,11 +242,28 @@ class StateMachine:
 
     def before_cycle_stage_17(self):
         # Send command
-        # parallel_action_handle(
-        #     self.hardware.fill_bottle,
-        #     self.hardware.measure_DLS,
-        #     self.hardware.measure_UV,
-        # )
+        # Check the boundary condition
+        match self.num_bottles:
+            case 1:
+                pass
+            case 2:
+                self.hardware.measure_DLS()
+            case 3:
+                parallel_action_handle(
+                    self.hardware.measure_DLS,
+                    self.hardware.measure_UV,
+                )
+            case 4:
+                parallel_action_handle(
+                    self.hardware.measure_DLS,
+                    self.hardware.measure_UV,
+                )
+            case _:
+                parallel_action_handle(
+                    self.hardware.fill_bottle,
+                    self.hardware.measure_DLS,
+                    self.hardware.measure_UV,
+                )
 
         # transition
         self.trigger("command_finished")
@@ -193,14 +272,18 @@ class StateMachine:
 
     def cycle_stage_1(self):
         # Send command
-        # self.hardware.measure_to_tray()
+        self.hardware.measure_to_tray()  # 1st measure_to_tray
 
         # transition
         self.trigger("command_finished")
 
     def cycle_stage_2(self):
         # Send command
-        # self.hardware.pump_to_measure()
+        # Check the boundary condition
+        if self.num_bottles >= 4:
+            self.hardware.pump_to_measure()
+        else:
+            pass
 
         # transition
         self.trigger("command_finished")
@@ -216,19 +299,29 @@ class StateMachine:
 
     def cycle_stage_4(self):
         # Send command
-        # parallel_action_handle(self.hardware.measure_DLS, self.hardware.measure_UV)
+        # Check the boundary condition (3rd DLS and 4th UV)
+        match self.num_bottles:
+            case 1:
+                pass
+            case 2:
+                pass
+            case 3:
+                self.hardware.measure_DLS()
+            case _:
+                parallel_action_handle(
+                    self.hardware.measure_DLS, self.hardware.measure_UV
+                )
 
         if self.current_num_bottles == 0:
             self.is_bottle_on_tray = False
-
-        self.current_num_bottles -= 1
 
         # transition
         self.trigger("command_finished")
 
     def cycle_stage_branch(self):
         # Send command
-        # self.hardware.tray_to_pump()
+        self.hardware.tray_to_pump()
+        self.current_num_bottles = max(0, self.current_num_bottles - 1)
 
         # transition
         self.trigger("command_finished")
@@ -244,7 +337,7 @@ class StateMachine:
 
     def cycle_stage_7(self):
         # Send command
-        # self.hardware.fill_bottle()
+        self.hardware.fill_bottle()
 
         # transition
         self.trigger("command_finished")
@@ -262,14 +355,22 @@ class StateMachine:
 
     def after_cycle_stage_2(self):
         # Send command
-        # self.hardware.measure_to_tray()
+        # Check the boundary condition (2nd measure_to_tray)
+        if self.num_bottles >= 2:
+            self.hardware.measure_to_tray()
+        else:
+            pass
 
         # transition
         self.trigger("command_finished")
 
     def after_cycle_stage_3(self):
         # Send command
-        # self.hardware.pump_to_measure()
+        # Check the boundary condition (5th pump_to_measure)
+        if self.num_bottles >= 5:
+            self.hardware.pump_to_measure()
+        else:
+            pass
 
         # transition
         self.trigger("command_finished")
@@ -285,11 +386,24 @@ class StateMachine:
 
     def after_cycle_stage_5(self):
         # Send command
-        parallel_action_handle(
-            self.hardware.measure_DLS,
-            self.hardware.measure_UV,
-            self.hardware.measure_to_tray,
-        )
+        # Check the boundary condition
+        match self.num_bottles:
+            case 1:
+                pass
+            case 2:
+                pass
+            case 3:
+                self.hardware.measure_to_tray()
+            case 4:
+                parallel_action_handle(
+                    self.hardware.measure_DLS, self.hardware.measure_to_tray
+                )
+            case _:
+                parallel_action_handle(
+                    self.hardware.measure_DLS,
+                    self.hardware.measure_UV,
+                    self.hardware.measure_to_tray,
+                )
 
         # transition
         self.trigger("command_finished")
@@ -305,7 +419,20 @@ class StateMachine:
 
     def after_cycle_stage_7(self):
         # Send command
-        # parallel_action_handle(self.hardware.measure_DLS, self.hardware.measure_to_tray)
+        # Check the boundary condition
+        match self.num_bottles:
+            case 1:
+                pass
+            case 2:
+                pass
+            case 3:
+                pass
+            case 4:
+                self.hardware.measure_to_tray()
+            case _:
+                parallel_action_handle(
+                    self.hardware.measure_DLS, self.hardware.measure_to_tray
+                )
 
         # transition
         self.trigger("command_finished")
@@ -321,10 +448,14 @@ class StateMachine:
 
     def after_cycle_stage_9(self):
         # Send command
-        # self.hardware.measure_to_tray()
+        # Check the boundary condition
+        if self.num_bottles >= 5:
+            self.hardware.measure_to_tray()
+        else:
+            pass
 
         # transition: last state finished => end the server
-        self.machine.stop_server()
+
         sys.exit()
 
     def auto_run(self):
