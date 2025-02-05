@@ -2,9 +2,9 @@ import os
 import time
 
 import unittest
-from devices.pump_lib.qmixsdk import qmixbus
-from devices.pump_lib.qmixsdk import qmixpump
-from devices.pump_lib.qmixsdk import qmixanalogio
+from src.devices.pump_lib.qmixsdk import qmixbus
+from src.devices.pump_lib.qmixsdk import qmixpump
+from src.devices.pump_lib.qmixsdk import qmixanalogio
 
 
 class SyringePump(unittest.TestCase):

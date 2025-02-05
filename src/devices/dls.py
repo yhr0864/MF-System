@@ -4,7 +4,7 @@ import serial
 from tqdm import tqdm
 import pandas as pd
 
-from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from src.devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
 
 
 class DLS_Analyzer:
@@ -28,13 +28,16 @@ class DLS_Analyzer:
         self.timeout = timeout
         self.feedback = None
 
-    def initialize(self):
+    def initialize(self, skip_com_check=False):
         """
         Initialize and check the serial connection to the DLS device.
 
         This method sets up the serial communication using the specified port,
         baudrate, and timeout. The connection is established via the `serial.Serial`
         interface, enabling communication with the device.
+
+        Args:
+            skip_com_check (bool): Flag to be used for testing only.
         """
 
         # Initialize the serial port
@@ -42,7 +45,8 @@ class DLS_Analyzer:
             port=self.port, baudrate=self.baudrate, timeout=self.timeout
         )
         # Check COM port
-        self.com_check()
+        if not skip_com_check:
+            self.com_check()
 
     def send_command(self, cmd: bytes, timeout=5):
         """

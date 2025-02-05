@@ -5,8 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 from transitions import Machine
 
-from hardware import Hardware
-from utils import states, transitions
+from src.hardware import Hardware
+from src.utils import states, transitions
 
 
 def parallel_action_handle(*args):
