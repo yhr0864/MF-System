@@ -209,3 +209,151 @@ transitions = [
         "dest": "after_cycle_stage_9",
     },
 ]
+
+states_dispense = [
+    "initialize",
+    "before_cycle_stage_1",
+    "before_cycle_stage_2",
+    "before_cycle_stage_3",
+    "cycle_stage_1",
+    "cycle_stage_2",
+    "cycle_stage_3",
+    "after_cycle_stage",
+    "after_cycle_stage_2",
+]
+
+transitions_dispense = [
+    {
+        "trigger": "initialize_finished",
+        "source": "initialize",
+        "dest": "before_cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_1",
+        "dest": "before_cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_2",
+        "dest": "before_cycle_stage_3",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_3",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_1",
+        "dest": "cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "cycle_stage_3",
+        "conditions": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_3",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "after_cycle_stage",
+        "unless": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage",
+        "dest": "after_cycle_stage_2",
+    },
+]
+
+states_measure = [
+    "initialize",
+    "before_cycle_stage_1",
+    "before_cycle_stage_2",
+    "before_cycle_stage_3",
+    "before_cycle_stage_4",
+    "before_cycle_stage_5",
+    "cycle_stage_1",
+    "cycle_stage_2",
+    "cycle_stage_3",
+    "after_cycle_stage",
+    "after_cycle_stage_2",
+    "after_cycle_stage_3",
+    "after_cycle_stage_4",
+]
+
+transitions_measure = [
+    {
+        "trigger": "initialize_finished",
+        "source": "initialize",
+        "dest": "before_cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_1",
+        "dest": "before_cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_2",
+        "dest": "before_cycle_stage_3",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_3",
+        "dest": "before_cycle_stage_4",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_4",
+        "dest": "before_cycle_stage_5",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_5",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_1",
+        "dest": "cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "cycle_stage_3",
+        "conditions": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_3",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "after_cycle_stage",
+        "unless": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage",
+        "dest": "after_cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage_2",
+        "dest": "after_cycle_stage_3",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage_3",
+        "dest": "after_cycle_stage_4",
+    },
+]

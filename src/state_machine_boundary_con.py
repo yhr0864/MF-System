@@ -20,7 +20,7 @@ def parallel_action_handle(*args):
 
 
 class StateMachine:
-    def __init__(self) -> None:
+    def __init__(self, num_bottles, hardware=None) -> None:
         self.machine = Machine(
             model=self,
             states=states,
@@ -31,11 +31,11 @@ class StateMachine:
             auto_transitions=False,
         )
 
-        self.hardware = Hardware()
+        self.hardware = hardware if hardware else Hardware()  # For testing only
         self.feedback = None
         # Simulate 3 bottles
-        self.num_bottles = 7
-        self.current_num_bottles = self.num_bottles
+        self.num_bottles = num_bottles
+        self.current_num_bottles = num_bottles
         self.is_bottle_on_tray = True
 
     def initialize(self):
@@ -598,6 +598,6 @@ class StateMachine:
 
 if __name__ == "__main__":
     # Create the table state machine
-    table = StateMachine()
+    table = StateMachine(num_bottles=7)
 
     table.auto_run()

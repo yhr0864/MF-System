@@ -4,7 +4,7 @@ import serial
 from tqdm import tqdm
 import pandas as pd
 
-from src.devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
 
 
 class DLS_Analyzer:

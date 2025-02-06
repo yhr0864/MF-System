@@ -4,71 +4,71 @@ import json
 import functools
 from concurrent.futures import ThreadPoolExecutor
 
-from src.devices.arduino import ArduinoBoard
-from src.devices.gantry import Gantry
-from src.devices.pump import SyringePump
-from src.devices.dls import DLS_Analyzer
-from src.devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from devices.arduino import ArduinoBoard
+from devices.gantry import Gantry
+from devices.pump import SyringePump
+from devices.dls import DLS_Analyzer
+from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
 
 
 class Hardware:
     def __init__(
         self,
-        pump_config_path="src/database/pump_config.yaml",
-        sample_config_path="src/database/sample_config.json",
+        pump_config_path="./database/pump_config.yaml",
+        sample_config_path="./database/sample_config.json",
     ):
-        self.gantry = Gantry(excl_ip="", excl_port="")
-        self.arduino = ArduinoBoard(port="COM14", baudrate=9600, timeout=0.1)
-        self.pump1 = SyringePump(
-            pump_name="Nemesys_M_1_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=14.70520755382068,
-            max_piston_stroke_mm=60,
-        )
-        self.pump2 = SyringePump(
-            pump_name="Nemesys_M_2_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=14.70520755382068,
-            max_piston_stroke_mm=60,
-        )
-        self.pump3 = SyringePump(
-            pump_name="Nemesys_M_3_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=32.80671055737278,
-            max_piston_stroke_mm=60,
-        )
-        self.pump4 = SyringePump(
-            pump_name="Nemesys_M_4_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=32.80671055737278,
-            max_piston_stroke_mm=60,
-        )
-        self.pump5 = SyringePump(
-            pump_name="Nemesys_M_5_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=23.207658393177034,
-            max_piston_stroke_mm=60,
-        )
-        self.pump6 = SyringePump(
-            pump_name="Nemesys_M_6_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=23.207658393177034,
-            max_piston_stroke_mm=60,
-        )
-        self.pump7 = SyringePump(
-            pump_name="Nemesys_M_7_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=23.207658393177034,
-            max_piston_stroke_mm=60,
-        )
-        self.pump8 = SyringePump(
-            pump_name="Nemesys_M_8_Pump",
-            pressure_limit=10,
-            inner_diameter_mm=10.40522314849599,
-            max_piston_stroke_mm=60,
-        )
+        # self.gantry = Gantry(excl_ip="", excl_port="")
+        # self.arduino = ArduinoBoard(port="COM14", baudrate=9600, timeout=0.1)
+        # self.pump1 = SyringePump(
+        #     pump_name="Nemesys_M_1_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=14.70520755382068,
+        #     max_piston_stroke_mm=60,
+        # )
+        # self.pump2 = SyringePump(
+        #     pump_name="Nemesys_M_2_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=14.70520755382068,
+        #     max_piston_stroke_mm=60,
+        # )
+        # self.pump3 = SyringePump(
+        #     pump_name="Nemesys_M_3_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=32.80671055737278,
+        #     max_piston_stroke_mm=60,
+        # )
+        # self.pump4 = SyringePump(
+        #     pump_name="Nemesys_M_4_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=32.80671055737278,
+        #     max_piston_stroke_mm=60,
+        # )
+        # self.pump5 = SyringePump(
+        #     pump_name="Nemesys_M_5_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=23.207658393177034,
+        #     max_piston_stroke_mm=60,
+        # )
+        # self.pump6 = SyringePump(
+        #     pump_name="Nemesys_M_6_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=23.207658393177034,
+        #     max_piston_stroke_mm=60,
+        # )
+        # self.pump7 = SyringePump(
+        #     pump_name="Nemesys_M_7_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=23.207658393177034,
+        #     max_piston_stroke_mm=60,
+        # )
+        # self.pump8 = SyringePump(
+        #     pump_name="Nemesys_M_8_Pump",
+        #     pressure_limit=10,
+        #     inner_diameter_mm=10.40522314849599,
+        #     max_piston_stroke_mm=60,
+        # )
 
-        self.dls = DLS_Analyzer(port="COM7", baudrate=9600, timeout=1)
+        # self.dls = DLS_Analyzer(port="COM7", baudrate=9600, timeout=1)
 
         # self.pump6 = "Pump 6 is ready"
         # self.pump2 = "Pump 2 is ready"
@@ -83,24 +83,24 @@ class Hardware:
             self.sample_data = json.load(file)
 
     def initialize(self):
-        self.gantry.initialize()
-        self.arduino.initialize()
+        # self.gantry.initialize()
+        # self.arduino.initialize()
         time.sleep(1)
-        print(self.home_table_p())
-        print(self.home_table_m())
-        print(self.home_probe_dls())
-        print(self.home_probe_uv())
+        # print(self.home_table_p())
+        # print(self.home_table_m())
+        # print(self.home_probe_dls())
+        # print(self.home_probe_uv())
 
-        self.dls.initialize()
-        self.pump1.initialize()
-        self.pump2.initialize()
-        self.pump3.initialize()
-        self.pump4.initialize()
-        self.pump5.initialize()
-        self.pump6.initialize()
-        self.pump7.initialize()
-        self.pump8.initialize()
-        self.prepare_pump()
+        # self.dls.initialize()
+        # self.pump1.initialize()
+        # self.pump2.initialize()
+        # self.pump3.initialize()
+        # self.pump4.initialize()
+        # self.pump5.initialize()
+        # self.pump6.initialize()
+        # self.pump7.initialize()
+        # self.pump8.initialize()
+        # self.prepare_pump()
 
     def tray_to_pump(self, coord: tuple):
         coord_on_tray = coord[0]
@@ -108,11 +108,23 @@ class Hardware:
         # self.gantry.move_from_to(coord_on_tray, coord_on_table_p)
         print("tray to pump")
 
+    def tray_to_measure(self, coord: tuple):
+        coord_on_tray = coord[0]
+        coord_on_table_m = coord[1]
+        # self.gantry.move_from_to(coord_on_tray, coord_on_table_m)
+        print("tray to measure")
+
     def pump_to_measure(self, coord: tuple):
         coord_on_table_p = coord[0]
         coord_on_table_m = coord[1]
         # self.gantry.move_from_to(coord_on_table_p, coord_on_table_m)
         print("pump to measure")
+
+    def pump_to_tray(self, coord: tuple):
+        coord_on_table_p = coord[0]
+        coord_on_tray = coord[1]
+        # self.gantry.move_from_to(coord_on_table_p, coord_on_tray)
+        print("pump to tray")
 
     def measure_to_tray(self, coord: tuple):
         coord_on_table_m = coord[0]

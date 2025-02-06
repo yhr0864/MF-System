@@ -1,30 +1,25 @@
 import pytest
-import time
 from unittest.mock import MagicMock, patch
-from src.devices.dls import DLS_Analyzer  # Replace with the actual module name
+
+from src.devices.dls import DLS_Analyzer
 
 
 @patch("serial.Serial")
 def test_initialize(mock_serial):
     """Test if DLS_Analyzer initializes the serial connection correctly and handles COM check."""
 
-    # Mock serial instance
     mock_serial_instance = MagicMock()
     mock_serial.return_value = mock_serial_instance
 
-    # Mock successful COM check response
     mock_serial_instance.in_waiting = True
     mock_serial_instance.readline.return_value = b"K\n"
 
-    # Create and initialize DLS_Analyzer
     dls = DLS_Analyzer(port="COM7", baudrate=9600, timeout=1)
     dls.initialize()
 
-    # Assertions
     mock_serial.assert_called_once_with(port="COM7", baudrate=9600, timeout=1)
     assert dls.dls_ser is mock_serial.return_value
 
-    # Ensure COM check command was sent
     mock_serial_instance.write.assert_called_once_with(bytes([0x31]))
 
 
@@ -35,7 +30,6 @@ def test_send_command_success(mock_serial):
     mock_serial_instance = MagicMock()
     mock_serial.return_value = mock_serial_instance
 
-    # Mock device response
     mock_serial_instance.in_waiting = True
     mock_serial_instance.readline.return_value = b"K\n"
 
@@ -55,7 +49,6 @@ def test_send_command_timeout(mock_serial):
     mock_serial_instance = MagicMock()
     mock_serial.return_value = mock_serial_instance
 
-    # Simulate no response
     mock_serial_instance.in_waiting = False
 
     dls = DLS_Analyzer()
@@ -74,7 +67,6 @@ def test_com_check_unexpected_response(mock_serial):
     mock_serial_instance = MagicMock()
     mock_serial.return_value = mock_serial_instance
 
-    # Mock unexpected response
     mock_serial_instance.in_waiting = True
     mock_serial_instance.readline.return_value = b"X\n"
 
@@ -92,7 +84,6 @@ def test_request_data(mock_serial):
     mock_serial_instance = MagicMock()
     mock_serial.return_value = mock_serial_instance
 
-    # Mock successful "run" response
     mock_serial_instance.in_waiting = True
     mock_serial_instance.readline.side_effect = [
         b"K\n",  # Run()

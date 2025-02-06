@@ -1,340 +1,56 @@
-import sys
 import time
 import logging
-from concurrent.futures import ThreadPoolExecutor
+from typing import List, Optional
 
 from transitions import Machine
 
 from hardware import Hardware
-from utils import states, transitions
-
-
-def parallel_action_handle(*args):
-    futures = []
-    with ThreadPoolExecutor() as executor:
-        for arg in args:
-            futures.append(executor.submit(arg))
-
-        for future in futures:
-            future.result()
 
 
 class StateMachine:
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        states: List[str],
+        transitions: List[dict],
+        name: str,
+        num_bottles: int,
+        test_mode: bool = False,
+        initial: str = "initialize",
+        ignore_invalid_triggers: bool = True,
+        auto_transitions: bool = False,
+    ):
         self.machine = Machine(
             model=self,
             states=states,
             transitions=transitions,
-            initial="initialize",
-            name="Micro Fluidic System",
-            ignore_invalid_triggers=True,
-            auto_transitions=False,
+            initial=initial,
+            name=name,
+            ignore_invalid_triggers=ignore_invalid_triggers,
+            auto_transitions=auto_transitions,
         )
 
-        self.hardware = Hardware()
+        self.hardware: Optional[Hardware] = None if test_mode else Hardware()
         self.feedback = None
-        # Simulate 3 bottles
-        self.current_num_bottles = 3
-        self.is_bottle_on_tray = True
+
+        self.num_bottles = num_bottles
+        self.current_num_bottles = num_bottles
+        self.running = True  # To control `auto_run` execution
+
+    @property
+    def is_bottle_on_tray(self) -> bool:
+        return self.current_num_bottles > 0
 
     def initialize(self):
-        # Initialize all the hardwares
-        self.hardware.initialize()
-
-        # transition
+        if self.hardware:
+            self.hardware.initialize()
         self.trigger("initialize_finished")
 
-    def before_cycle_stage_1(self):
-        # Send command
-        # self.hardware.tray_to_pump()
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_2(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_p()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_3(self):
-        # Send command
-        # parallel_action_handle(self.hardware.fill_bottle, self.hardware.tray_to_pump)
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_4(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_p()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_5(self):
-        # Send command
-        # parallel_action_handle(self.hardware.fill_bottle, self.hardware.pump_to_measure)
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_6(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_m()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_7(self):
-        # Send command
-        # parallel_action_handle(self.hardware.tray_to_pump, self.hardware.measure_UV)
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_8(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_p()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_9(self):
-        # Send command
-        # parallel_action_handle(self.hardware.fill_bottle, self.hardware.pump_to_measure)
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_10(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_m()
-
-        if self.feedback:
-            self.feedback = None
-
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_11(self):
-        # Send command
-        # self.hardware.tray_to_pump()
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_12(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_p()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_13(self):
-        # Send command
-        # parallel_action_handle(
-        #     self.hardware.fill_bottle,
-        #     self.hardware.pump_to_measure,
-        #     self.hardware.measure_DLS,
-        #     self.hardware.measure_UV,
-        # )
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_14(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_m()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_15(self):
-        # Send command
-        # self.hardware.tray_to_pump()
-
-        # transition
-        self.trigger("command_finished")
-
-    def before_cycle_stage_16(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_p()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def before_cycle_stage_17(self):
-        # Send command
-        # parallel_action_handle(
-        #     self.hardware.fill_bottle,
-        #     self.hardware.measure_DLS,
-        #     self.hardware.measure_UV,
-        # )
-
-        # transition
-        self.trigger("command_finished")
-
-    ############################
-
-    def cycle_stage_1(self):
-        # Send command
-        # self.hardware.measure_to_tray()
-
-        # transition
-        self.trigger("command_finished")
-
-    def cycle_stage_2(self):
-        # Send command
-        # self.hardware.pump_to_measure()
-
-        # transition
-        self.trigger("command_finished")
-
-    def cycle_stage_3(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_m()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def cycle_stage_4(self):
-        # Send command
-        # parallel_action_handle(self.hardware.measure_DLS, self.hardware.measure_UV)
-
-        if self.current_num_bottles == 0:
-            self.is_bottle_on_tray = False
-
-        self.current_num_bottles -= 1
-
-        # transition
-        self.trigger("command_finished")
-
-    def cycle_stage_branch(self):
-        # Send command
-        # self.hardware.tray_to_pump()
-
-        # transition
-        self.trigger("command_finished")
-
-    def cycle_stage_6(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_p()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def cycle_stage_7(self):
-        # Send command
-        # self.hardware.fill_bottle()
-
-        # transition
-        self.trigger("command_finished")
-
-    ########################################
-
-    def after_cycle_stage(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_p()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def after_cycle_stage_2(self):
-        # Send command
-        # self.hardware.measure_to_tray()
-
-        # transition
-        self.trigger("command_finished")
-
-    def after_cycle_stage_3(self):
-        # Send command
-        # self.hardware.pump_to_measure()
-
-        # transition
-        self.trigger("command_finished")
-
-    def after_cycle_stage_4(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_m()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def after_cycle_stage_5(self):
-        # Send command
-        parallel_action_handle(
-            self.hardware.measure_DLS,
-            self.hardware.measure_UV,
-            self.hardware.measure_to_tray,
-        )
-
-        # transition
-        self.trigger("command_finished")
-
-    def after_cycle_stage_6(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_m()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def after_cycle_stage_7(self):
-        # Send command
-        # parallel_action_handle(self.hardware.measure_DLS, self.hardware.measure_to_tray)
-
-        # transition
-        self.trigger("command_finished")
-
-    def after_cycle_stage_8(self):
-        # Send command
-        self.feedback = self.hardware.rotate_table_m()
-
-        if self.feedback:
-            self.feedback = None
-            # transition
-            self.trigger("command_finished")
-
-    def after_cycle_stage_9(self):
-        # Send command
-        # self.hardware.measure_to_tray()
-
-        # transition: last state finished => end the server
-        self.machine.stop_server()
-        sys.exit()
-
     def auto_run(self):
-        while True:
-            action = getattr(self, self.state, lambda: "No action for this state")
-            if action:
-                action()
+        while self.running:
+            action = getattr(self, self.state, lambda: None)
+            action()
             time.sleep(1)
 
-
-if __name__ == "__main__":
-    # Create the table state machine
-    table = StateMachine()
+    def stop(self):
+        """Gracefully stop the auto-run loop."""
+        self.running = False
