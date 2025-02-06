@@ -119,7 +119,7 @@ class SyringePump:
         max_flow = self.pump.get_flow_rate_max()
         print(f"Max. flow: {max_flow} {self.pump.get_flow_unit()}")
 
-    def aspirate(self, volume, flow):
+    def aspirate(self, volume, flow, timeout=600):
         """
         Aspirate a certain volume with a certain flow rate.
         """
@@ -127,43 +127,43 @@ class SyringePump:
         self.switch_valve_to(1)
         self.pump.aspirate(volume, flow)
 
-        isFinished = self.wait_dosage_finished(600)
+        isFinished = self.wait_dosage_finished(timeout)
         self.switch_valve_to(0)
         return isFinished
 
-    def dispense(self, volume, flow):
+    def dispense(self, volume, flow, timeout=600):
         """
         Dispense a certain volume with a certain flow rate.
         """
 
         self.switch_valve_to(2)
         self.pump.dispense(volume, flow)
-        isFinished = self.wait_dosage_finished(600)
+        isFinished = self.wait_dosage_finished(timeout)
         self.switch_valve_to(0)
         return isFinished
 
-    def refill(self, flow):
+    def refill(self, flow, timeout=1200):
         """
         Refill the syringe with a certain flow rate.
         """
 
         self.switch_valve_to(1)
         flow = 0 - flow
-        isFinished = self.generate_flow(flow)
+        isFinished = self.generate_flow(flow, timeout)
         self.switch_valve_to(0)
         return isFinished
 
-    def empty(self, flow):
+    def empty(self, flow, timeout=1200):
         """
         Empty the syringe with a certain flow rate.
         """
 
         self.switch_valve_to(2)
-        isFinished = self.generate_flow(flow)
+        isFinished = self.generate_flow(flow, timeout)
         self.switch_valve_to(0)
         return isFinished
 
-    def generate_flow(self, flow):
+    def generate_flow(self, flow, timeout):
         """
         Generate a continuous flow.
 
@@ -172,7 +172,7 @@ class SyringePump:
         """
 
         self.pump.generate_flow(flow)
-        isFinished = self.wait_dosage_finished(1200)
+        isFinished = self.wait_dosage_finished(timeout)
         return isFinished
 
     def switch_valve_to(self, position: int):

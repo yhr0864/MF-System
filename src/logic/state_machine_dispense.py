@@ -3,21 +3,9 @@ import time
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from transitions import Machine
-
 from state_machine import StateMachine
-from hardware import Hardware
-from utils import states_dispense, transitions_dispense
-
-
-def parallel_action_handle(*args):
-    futures = []
-    with ThreadPoolExecutor() as executor:
-        for arg in args:
-            futures.append(executor.submit(arg))
-
-        for future in futures:
-            future.result()
+from hardware.hardware import Hardware
+from utils import states_dispense, transitions_dispense, parallel_action_handle
 
 
 class StateMachineDispense(StateMachine):
@@ -92,9 +80,6 @@ class StateMachineDispense(StateMachine):
 
             print("Experiment Finished!")
             sys.exit()
-
-        if self.current_num_bottles == 0:
-            self.is_bottle_on_tray = False
 
         # transition
         self.trigger("command_finished")

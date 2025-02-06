@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from transitions_gui import WebMachine
 
-from hardware import Hardware
+from hardware.hardware import Hardware
 from utils import states, transitions
 
 

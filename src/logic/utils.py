@@ -1,3 +1,16 @@
+from concurrent.futures import ThreadPoolExecutor
+
+
+def parallel_action_handle(*args):
+    futures = []
+    with ThreadPoolExecutor() as executor:
+        for arg in args:
+            futures.append(executor.submit(arg))
+
+        for future in futures:
+            future.result()
+
+
 states = [
     "initialize",
     "before_cycle_stage_1",

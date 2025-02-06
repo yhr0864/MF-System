@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from transitions import Machine
 
-from hardware import Hardware
+from hardware.hardware import Hardware
 
 
 class StateMachine:
@@ -34,7 +34,7 @@ class StateMachine:
 
         self.num_bottles = num_bottles
         self.current_num_bottles = num_bottles
-        self.running = True  # To control `auto_run` execution
+        self.running = True
 
     @property
     def is_bottle_on_tray(self) -> bool:
