@@ -4,7 +4,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 update-requirements-job:
   stage: update_requirements
-  image: python:3.9
+  image: python:3.12
   before_script:
     - apt-get update && apt-get install -y docker.io
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -26,7 +26,7 @@ update-requirements-job:
 
 test-job:   
   stage: test
-  image: python:3.9
+  image: python:3.12
   before_script:
     - apt-get update && apt-get install -y docker.io
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
