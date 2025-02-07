@@ -9,6 +9,7 @@ update-requirements-job:
     - apt-get update && apt-get install -y docker.io
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
+    - git checkout $CI_COMMIT_REF_NAME
     - echo "Setting up virtual environment"
     - python -m venv venv
     - source venv/bin/activate
@@ -22,7 +23,7 @@ update-requirements-job:
     - git config --global user.email "ci@gitlab.com"
     - git add requirements.txt
     - git commit -m "Update requirements.txt"
-    - git push origin main
+    - git push origin $CI_COMMIT_REF_NAME
 
 test-job:   
   stage: test
