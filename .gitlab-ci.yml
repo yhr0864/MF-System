@@ -23,6 +23,7 @@ update-requirements-job:
     - git config --global user.email "ci@gitlab.com"
     - git add requirements.txt
     - git commit -m "Update requirements.txt"
+    - git remote set-url origin https://<deploy_token_username>:<deploy_token_password>@gitlab.kit.edu/haoran.yu/mf-system.git
     - git push origin $CI_COMMIT_REF_NAME
 
 test-job:   
