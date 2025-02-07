@@ -4,7 +4,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 update-requirements-job:
   stage: update_requirements
-  image: python:3.12
+  image: python:3.9
   before_script:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
@@ -25,7 +25,7 @@ update-requirements-job:
 
 test-job:   
   stage: test
-  image: python:3.12
+  image: python:3.9
   before_script:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
