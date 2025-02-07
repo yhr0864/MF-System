@@ -5,9 +5,8 @@ stages:          # List of stages for jobs, and their order of execution
 update-requirements-job:
   stage: update_requirements
   image: python:3.12
-  cache:
-    paths:
-      - /root/.cache/pip 
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
     - echo "Setting up virtual environment"
     - python -m venv venv
@@ -27,9 +26,8 @@ update-requirements-job:
 test-job:   
   stage: test
   image: python:3.12
-  cache:
-    paths:
-      - /root/.cache/pip  
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
     - echo "Setting up virtual environment"
     - python -m venv venv
