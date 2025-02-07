@@ -1,5 +1,5 @@
 stages:          # List of stages for jobs, and their order of execution
-  # - update_requirements
+  - update_requirements
   - test
 
 update-requirements-job:
