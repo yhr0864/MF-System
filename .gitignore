@@ -3,3 +3,5 @@
 **.vscode/
 *.csv
 *.dll
+**.egg-info/
+**dist/

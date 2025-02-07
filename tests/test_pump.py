@@ -7,11 +7,13 @@ from src.hardware.devices.pump import SyringePump
 @pytest.fixture
 def mock_pump():
     """Fixture to create a mocked SyringePump instance."""
-    with patch("src.devices.pump_lib.qmixsdk.qmixbus.Bus") as mock_bus, patch(
-        "src.devices.pump_lib.qmixsdk.qmixpump.Pump"
-    ) as mock_pump, patch(
-        "src.devices.pump_lib.qmixsdk.qmixanalogio.AnalogInChannel"
-    ) as mock_analog:
+    with (
+        patch("src.hardware.devices.pump_lib.qmixsdk.qmixbus.Bus") as mock_bus,
+        patch("src.hardware.devices.pump_lib.qmixsdk.qmixpump.Pump") as mock_pump,
+        patch(
+            "src.hardware.devices.pump_lib.qmixsdk.qmixanalogio.AnalogInChannel"
+        ) as mock_analog,
+    ):
 
         # Mock Bus
         mock_bus_instance = MagicMock()
@@ -77,7 +79,7 @@ def test_stop_pump(mock_pump):
 def test_stop_all_pumps():
     """Test stopping all pumps."""
     with patch(
-        "src.devices.pump_lib.qmixsdk.qmixpump.Pump.stop_all_pumps"
+        "src.hardware.devices.pump_lib.qmixsdk.qmixpump.Pump.stop_all_pumps"
     ) as mock_stop_all:
         SyringePump.stop_all_pumps()
         mock_stop_all.assert_called_once()

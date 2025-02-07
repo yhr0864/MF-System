@@ -1,9 +1,7 @@
 import os
 import time
 
-from devices.pump_lib.qmixsdk import qmixbus
-from devices.pump_lib.qmixsdk import qmixpump
-from devices.pump_lib.qmixsdk import qmixanalogio
+from src.hardware.devices.pump_lib.qmixsdk import qmixbus, qmixpump, qmixanalogio
 
 
 class SyringePump:

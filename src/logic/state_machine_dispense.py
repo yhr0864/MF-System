@@ -3,9 +3,13 @@ import time
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from state_machine import StateMachine
+from logic.state_machine import StateMachine
 from hardware.hardware import Hardware
-from utils import states_dispense, transitions_dispense, parallel_action_handle
+from logic.utils import (
+    states_dispense,
+    transitions_dispense,
+    parallel_action_handle,
+)
 
 
 class StateMachineDispense(StateMachine):

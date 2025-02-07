@@ -1,7 +1,15 @@
 import pytest
 from unittest import mock
-from src.logic.state_machine_boundary_con import StateMachine
-from src.hardware.hardware import Hardware
+from logic.state_machine_boundary_con import StateMachine
+from hardware.hardware import Hardware
+from logic.utils import (
+    states,
+    states_dispense,
+    states_measure,
+    transitions,
+    transitions_dispense,
+    transitions_measure,
+)
 
 
 @pytest.fixture
@@ -25,7 +33,13 @@ def mock_hardware():
 @pytest.fixture
 def state_machine(mock_hardware):
     # Initialize the StateMachine with the mocked hardware
-    sm = StateMachine(num_bottles=7, hardware=mock_hardware)
+    sm = StateMachine(
+        states=states,
+        transitions=transitions,
+        name="test state machine",
+        num_bottles=7,
+        # test_mode=True,
+    )
 
     return sm
 
@@ -34,7 +48,6 @@ def test_initialize(state_machine, mock_hardware):
     # Test the initialize state
     state_machine.initialize()
 
-    # Verify that the hardware initialize method was called
     mock_hardware.initialize.assert_called_once()
 
     # Verify that the state transition happens as expected

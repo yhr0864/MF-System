@@ -4,7 +4,8 @@ import serial
 from tqdm import tqdm
 import pandas as pd
 
-from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from hardware import devices
+from hardware.devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
 
 
 class DLS_Analyzer:
@@ -296,16 +297,17 @@ class DLS_Analyzer:
 
 
 if __name__ == "__main__":
-    dls = DLS_Analyzer()
-    print("start init")
-    dls.initialize()
-    print("finish init")
+    # dls = DLS_Analyzer()
+    # print("start init")
+    # dls.initialize()
+    # print("finish init")
 
-    # time.sleep(1)
+    # # time.sleep(1)
 
-    dls.select_measurement_setup(5)
+    # dls.select_measurement_setup(5)
 
-    # time.sleep(1)
-    # # dls.set_zero()
+    # # time.sleep(1)
+    # # # dls.set_zero()
 
-    dls.request_data(num_of_runs=3)
+    # dls.request_data(num_of_runs=3)
+    pass

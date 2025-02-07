@@ -21,3 +21,4 @@ p1 = Pump()
 p2 = Pump()
 p1._name = "bump"
 print(p1._name)
+import hardware, logic, ui

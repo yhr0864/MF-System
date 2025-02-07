@@ -3,8 +3,8 @@ import time
 import logging
 
 from hardware.hardware import Hardware
-from utils import states, transitions, parallel_action_handle
-from state_machine import StateMachine
+from logic.utils import states, transitions, parallel_action_handle
+from logic.state_machine import StateMachine
 
 
 class StateMachine(StateMachine):
