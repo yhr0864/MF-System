@@ -11,29 +11,22 @@ update-requirements-job:
   script:
     - echo "Checking for changes in requirements.txt..."
 
-    # Check if there are any changes in requirements.txt
-    - git diff --exit-code requirements.txt
-    - |
-      if [ $? -eq 0 ]; then
-        echo "No changes detected in requirements.txt. Skipping commit and push."
-      else
-        echo "Changes detected. Updating requirements.txt and pushing changes..." 
-      - git checkout $CI_COMMIT_REF_NAME
-      - echo "Setting up virtual environment"
-      - python -m venv venv
-      - source venv/bin/activate
-      - echo "Installing current dependencies"
-      - pip install --upgrade pip
-      - pip install -r requirements.txt
-      - echo "Updating requirements.txt"
-      - pip freeze > requirements.txt
-      - echo "Committing and pushing changes"
-      - git config --global user.name "GitLab CI"
-      - git config --global user.email "ci@gitlab.kit.edu"
-      - git add requirements.txt
-      - git commit -m "Update requirements.txt"
-      - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.kit.edu/haoran.yu/mf-system.git
-      - git push origin $CI_COMMIT_REF_NAME
+    # - git checkout $CI_COMMIT_REF_NAME
+    # - echo "Setting up virtual environment"
+    # - python -m venv venv
+    # - source venv/bin/activate
+    # - echo "Installing current dependencies"
+    # - pip install --upgrade pip
+    # - pip install -r requirements.txt
+    # - echo "Updating requirements.txt"
+    # - pip freeze > requirements.txt
+    # - echo "Committing and pushing changes"
+    # - git config --global user.name "GitLab CI"
+    # - git config --global user.email "ci@gitlab.kit.edu"
+    # - git add requirements.txt
+    # - git commit -m "Update requirements.txt"
+    # - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.kit.edu/haoran.yu/mf-system.git
+    # - git push origin $CI_COMMIT_REF_NAME
 
 test-job:   
   stage: test
