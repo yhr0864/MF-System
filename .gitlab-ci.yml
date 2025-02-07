@@ -21,7 +21,7 @@ update-requirements-job:
     - echo "Committing and pushing changes"
     - git config --global user.name "GitLab CI"
     - git config --global user.email "ci@gitlab.kit.edu"
-    - git add requirements.txt
+    - git add .
     - git commit -m "Update requirements.txt"
     - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.kit.edu/haoran.yu/mf-system.git
     - git push origin $CI_COMMIT_REF_NAME
