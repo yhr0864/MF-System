@@ -22,7 +22,7 @@ update-requirements-job:
     - git config --global user.email "ci@gitlab.com"
     - git add requirements.txt
     - git commit -m "Update requirements.txt"
-    - git push origin $CI_COMMIT_REF_NAME
+    - git push origin main
 
 test-job:   
   stage: test
