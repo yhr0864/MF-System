@@ -1,7 +1,7 @@
 import pytest
 import time
 from unittest.mock import MagicMock, patch
-from src.devices.pump import SyringePump
+from src.hardware.devices.pump import SyringePump
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
-from src.devices.dls import DLS_Analyzer
+from src.hardware.devices.dls import DLS_Analyzer
 
 
 @patch("serial.Serial")

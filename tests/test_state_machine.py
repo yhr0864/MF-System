@@ -1,7 +1,7 @@
 import pytest
 from unittest import mock
-from src.state_machine_boundary_con import StateMachine
-from src.hardware import Hardware
+from src.logic.state_machine_boundary_con import StateMachine
+from src.hardware.hardware import Hardware
 
 
 @pytest.fixture
