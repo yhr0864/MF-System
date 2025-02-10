@@ -4,8 +4,12 @@ import serial
 from tqdm import tqdm
 import pandas as pd
 
-from hardware import devices
-from hardware.devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from mf_system.hardware import devices
+from mf_system.hardware.devices.utils import (
+    RequestFailed,
+    UnexpectedResponse,
+    ErrorOccurred,
+)
 
 
 class DLS_Analyzer:

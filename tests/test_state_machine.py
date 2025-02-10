@@ -1,8 +1,8 @@
 import pytest
 from unittest import mock
-from logic.state_machine_boundary_con import StateMachine
-from hardware.hardware import Hardware
-from logic.utils import (
+from mf_system.logic.state_machine_boundary_con import StateMachine
+from mf_system.hardware.hardware import Hardware
+from mf_system.logic.utils import (
     states,
     states_dispense,
     states_measure,
@@ -38,7 +38,7 @@ def state_machine(mock_hardware):
         transitions=transitions,
         name="test state machine",
         num_bottles=7,
-        # test_mode=True,
+        test_mode=True,
     )
 
     return sm

@@ -2,9 +2,9 @@ import sys
 import time
 import logging
 
-from hardware.hardware import Hardware
-from logic.utils import states, transitions, parallel_action_handle
-from logic.state_machine import StateMachine
+from mf_system.hardware.hardware import Hardware
+from mf_system.logic.utils import states, transitions, parallel_action_handle
+from mf_system.logic.state_machine import StateMachine
 
 
 class StateMachine(StateMachine):

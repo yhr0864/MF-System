@@ -3,9 +3,9 @@ import time
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from logic.state_machine import StateMachine
-from hardware.hardware import Hardware
-from logic.utils import (
+from mf_system.logic.state_machine import StateMachine
+from mf_system.hardware.hardware import Hardware
+from mf_system.logic.utils import (
     states_dispense,
     transitions_dispense,
     parallel_action_handle,

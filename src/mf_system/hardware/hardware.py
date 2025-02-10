@@ -4,18 +4,22 @@ import json
 import functools
 from concurrent.futures import ThreadPoolExecutor
 
-from hardware.devices.arduino import ArduinoBoard
-from hardware.devices.gantry import Gantry
-from hardware.devices.pump import SyringePump
-from hardware.devices.dls import DLS_Analyzer
-from hardware.devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from mf_system.hardware.devices.arduino import ArduinoBoard
+from mf_system.hardware.devices.gantry import Gantry
+from mf_system.hardware.devices.pump import SyringePump
+from mf_system.hardware.devices.dls import DLS_Analyzer
+from mf_system.hardware.devices.utils import (
+    RequestFailed,
+    UnexpectedResponse,
+    ErrorOccurred,
+)
 
 
 class Hardware:
     def __init__(
         self,
-        pump_config_path="src/database/pump_config.yaml",
-        sample_config_path="src/database/sample_config.json",
+        pump_config_path="src/mf_system/database/pump_config.yaml",
+        sample_config_path="src/mf_system/database/sample_config.json",
     ):
         # self.gantry = Gantry(excl_ip="", excl_port="")
         # self.arduino = ArduinoBoard(port="COM14", baudrate=9600, timeout=0.1)

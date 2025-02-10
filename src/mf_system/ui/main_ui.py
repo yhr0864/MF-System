@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel
-from logic.controller import Controller
+from mf_system.logic.controller import Controller
 
 
 class MainUI(QWidget):

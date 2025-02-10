@@ -1,7 +1,7 @@
-from logic.state_machine_dispense import StateMachineDispense
-from logic.state_machine_measure import StateMachineMeasure
-from logic.state_machine_boundary_con import StateMachine
-from logic.utils import (
+from mf_system.logic.state_machine_dispense import StateMachineDispense
+from mf_system.logic.state_machine_measure import StateMachineMeasure
+from mf_system.logic.state_machine_boundary_con import StateMachine
+from mf_system.logic.utils import (
     states,
     states_dispense,
     states_measure,

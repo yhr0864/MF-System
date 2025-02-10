@@ -1,5 +1,5 @@
 import sys
-from ui.main_ui import MainUI
+from mf_system.ui.main_ui import MainUI
 from PyQt6.QtWidgets import QApplication
 
 
@@ -13,4 +13,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    import mf_system.hardware

@@ -5,8 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 from transitions_gui import WebMachine
 
-from hardware.hardware import Hardware
-from utils import states, transitions
+from mf_system.hardware.hardware import Hardware
+from mf_system.logic.utils import states, transitions
 
 
 class StateMachine:

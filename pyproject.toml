@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -64,11 +64,5 @@ dependencies = [
     "virtualenv==20.29.1",
 ]
 
-    
-[tool.setuptools]
-packages = ["hardware", "logic", "ui"]
-package-dir = {"" = "src"}
-
-
-
-
+[tool.setuptools.packages.find]
+where = ["src"] 

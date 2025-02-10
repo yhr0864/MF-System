@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from transitions import Machine
 
-from hardware.hardware import Hardware
+from mf_system.hardware.hardware import Hardware
 
 
 class StateMachine:

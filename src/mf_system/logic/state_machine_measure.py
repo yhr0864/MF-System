@@ -3,9 +3,13 @@ import time
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from src.logic.state_machine import StateMachine
-from src.hardware.hardware import Hardware
-from src.logic.utils import states_measure, transitions_measure, parallel_action_handle
+from mf_system.logic.state_machine import StateMachine
+from mf_system.hardware.hardware import Hardware
+from mf_system.logic.utils import (
+    states_measure,
+    transitions_measure,
+    parallel_action_handle,
+)
 
 
 class StateMachineMeasure(StateMachine):

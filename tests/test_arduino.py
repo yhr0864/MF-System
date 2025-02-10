@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
-from src.hardware.devices.arduino import ArduinoBoard
+from mf_system.hardware.devices.arduino import ArduinoBoard
 
 
 @patch("serial.Serial")
