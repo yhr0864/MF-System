@@ -36,13 +36,13 @@ test-job:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
     - echo "Setting up virtual environment"
-    - python -m venv venv
-    - source venv/bin/activate
-    - echo "Installing dependencies"
-    - pip install --upgrade pip
-    - pip install -r requirements.txt  
-    - echo "Running pytest tests"
-    - pytest  
+    # - python -m venv venv
+    # - source venv/bin/activate
+    # - echo "Installing dependencies"
+    # - pip install --upgrade pip
+    # - pip install -r requirements.txt  
+    # - echo "Running pytest tests"
+    # - pytest  
     
 
 

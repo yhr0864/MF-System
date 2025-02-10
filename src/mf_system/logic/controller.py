@@ -12,7 +12,7 @@ from mf_system.logic.utils import (
 
 
 class Controller:
-    def __init__(self, user_input, config_file):
+    def __init__(self, user_input, config_file=1):
         self.user_input = user_input
         self.config = config_file
 
@@ -23,7 +23,7 @@ class Controller:
     def generate_experiment(self):
         select = self.data_parse()
 
-        if select == "dispensing only":
+        if select == "Dispense Only":
             self.sm = StateMachineDispense(
                 states=states_dispense,
                 transitions=transitions_dispense,
@@ -31,7 +31,7 @@ class Controller:
                 num_bottles=5,
             )
 
-        elif select == "measuring only":
+        elif select == "Measure Only":
             self.sm = StateMachineMeasure(
                 states=states_measure,
                 transitions=transitions_measure,
@@ -48,4 +48,5 @@ class Controller:
             )
 
     def run_experiment(self):
+        self.generate_experiment()
         self.sm.auto_run()

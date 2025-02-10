@@ -13,5 +13,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    import mf_system.hardware
+    main()
