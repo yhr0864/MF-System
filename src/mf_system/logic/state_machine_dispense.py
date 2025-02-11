@@ -83,7 +83,7 @@ class StateMachineDispense(StateMachine):
             # self.hardware.pump_to_tray()
 
             print("Experiment Finished!")
-            sys.exit()
+            self.stop()
 
         # transition
         self.trigger("command_finished")
@@ -116,7 +116,7 @@ class StateMachineDispense(StateMachine):
         )
         # self.hardware.pump_to_tray()
         print("Experiment Finished!")
-        sys.exit()
+        self.stop()
 
 
 if __name__ == "__main__":

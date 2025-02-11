@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
     QButtonGroup,
 )
 from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtGui import QTextCursor
 
 from mf_system.logic.controller import Controller
 
@@ -23,6 +24,7 @@ class PrintRedirect:
 
     def write(self, text):
         self.text_edit.append(text)  # Append text to QTextEdit
+        self.text_edit.moveCursor(QTextCursor.MoveOperation.End)  # Move cursor to end
 
     def flush(self):
         pass  # Needed for compatibility with sys.stdout
@@ -38,9 +40,7 @@ class ExperimentThread(QThread):
         self.controller = controller
 
     def run(self):
-        print("Starting experiment in a separate thread...")
         self.controller.run_experiment()  # Run the experiment
-        print("Experiment completed!")
         self.finished.emit()  # Emit signal when done
 
 
@@ -53,7 +53,7 @@ class MainUI(QWidget):
 
     def init_ui(self):
         self.setWindowTitle("State Machine")
-        self.setGeometry(100, 100, 300, 200)
+        self.setGeometry(100, 100, 600, 400)
 
         layout = QVBoxLayout()
 
@@ -96,6 +96,8 @@ class MainUI(QWidget):
         sys.stdout = PrintRedirect(self.text_edit)
 
     def start_state_machine(self):
+        # Disable Start button
+        self.start_button.setEnabled(False)
         self.label.setText("Status: Running")
         print("start exp")
 
@@ -107,6 +109,11 @@ class MainUI(QWidget):
         # Initialize controller with the selected option
         self.controller = Controller(user_input=selected_option)
 
+        # # Ensure the thread persists
+        # if hasattr(self, "experiment_thread") and self.experiment_thread.isRunning():
+        #     print("Experiment already running.")
+        #     return  # Avoid starting multiple threads
+
         # Run experiment in a separate thread
         self.experiment_thread = ExperimentThread(self.controller)
         self.experiment_thread.finished.connect(self.on_experiment_finished)
@@ -114,11 +121,19 @@ class MainUI(QWidget):
 
     def on_experiment_finished(self):
         """Handle experiment completion"""
-        print("Experiment completed!")
-        self.label.setText("Pump Status: Completed")
+
+        self.label.setText("Completed")
+
+        # Re-enable the Start button after experiment finishes
+        self.start_button.setEnabled(True)
+
+        # Ensure the thread is cleaned up properly
+        if hasattr(self, "experiment_thread"):
+            self.experiment_thread.deleteLater()  # Mark for deletion
+            self.experiment_thread = None  # Remove reference
 
     def stop_state_machine(self):
-        self.label.setText("Pump Status: Stopped")
+        self.label.setText("Stopped")
         # self.controller.pump.stop()
 
 

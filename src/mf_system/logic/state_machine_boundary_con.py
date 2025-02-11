@@ -307,7 +307,7 @@ class StateMachine(StateMachine):
 
         if self.num_bottles == 1:
             print("Experiment Finished!")
-            sys.exit()
+            self.stop()
 
         # transition
         self.trigger("command_finished")
@@ -405,7 +405,7 @@ class StateMachine(StateMachine):
         )
         if self.num_bottles == 2:
             print("Experiment Finished!")
-            sys.exit()
+            self.stop()
 
         # transition
         self.trigger("command_finished")
@@ -450,7 +450,7 @@ class StateMachine(StateMachine):
                 )
                 # self.hardware.measure_to_tray()
                 print("Experiment Finished!")
-                sys.exit()
+                self.stop()
             case 4:
                 print(
                     f"after_cycle_stage_5: measure_to_tray + measure_DLS - cur_bottles: {self.current_num_bottles}"
@@ -494,7 +494,7 @@ class StateMachine(StateMachine):
                 )
                 # self.hardware.measure_to_tray()
                 print("Experiment Finished!")
-                sys.exit()
+                self.stop()
             case _:
                 print(
                     f"after_cycle_stage_7: measure_to_tray + measure_DLS - cur_bottles: {self.current_num_bottles}"
@@ -524,7 +524,7 @@ class StateMachine(StateMachine):
         )
         # self.hardware.measure_to_tray()
         print("Experiment Finished!")
-        sys.exit()
+        self.stop()
 
 
 if __name__ == "__main__":

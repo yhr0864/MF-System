@@ -115,7 +115,7 @@ class StateMachineMeasure(StateMachine):
                 )
                 # self.hardware.measure_to_tray()
                 print("Experiment Finished!")
-                sys.exit()
+                self.stop()
             case 2:
                 print(
                     f"cycle_stage_2: measure_DLS + Measure_to_tray - cur_bottles: {self.current_num_bottles}"
@@ -172,7 +172,7 @@ class StateMachineMeasure(StateMachine):
                 )
                 # self.hardware.measure_to_tray()
                 print("Experiment Finished!")
-                sys.exit()
+                self.stop()
             case _:
                 print(
                     f"after_cycle_stage_2: measure_DLS + Measure_to_tray - cur_bottles: {self.current_num_bottles}"
@@ -198,7 +198,7 @@ class StateMachineMeasure(StateMachine):
         )
         # self.hardware.measure_to_tray()
         print("Experiment Finished!")
-        sys.exit()
+        self.stop()
 
 
 if __name__ == "__main__":
