@@ -1,8 +1,10 @@
 stages:          # List of stages for jobs, and their order of execution
   - update_requirements
   - test
+  - build
+  - deploy
 
-update-requirements-job:
+update-requirements:
   stage: update_requirements
   image: python:3.12
   before_script:
@@ -28,21 +30,51 @@ update-requirements-job:
     # - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.kit.edu/haoran.yu/mf-system.git
     # - git push origin $CI_COMMIT_REF_NAME
 
-test-job:   
+test:   
   stage: test
   image: python:3.12
   before_script:
     - apt-get update && apt-get install -y docker.io
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
-    - echo "Setting up virtual environment"
+    - echo "Runing test..."
     # - python -m venv venv
     # - source venv/bin/activate
     # - echo "Installing dependencies"
     # - pip install --upgrade pip
     # - pip install -r requirements.txt  
+    # - pip install pytest
     # - echo "Running pytest tests"
-    # - pytest  
-    
+    # - pytest 
 
+build:
+  stage: build
+  image: python:3.12
+  script:
+    - echo "Runing build..."
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install pyinstaller
+    - pyinstaller --onefile --noconsole src/main.py
+  artifacts:
+    paths:
+      - dist/main.exe  # Save the .exe as a build artifact 
+    
+deploy:
+  stage: deploy
+  image: alpine:latest  # Lightweight image for deployment
+  script:
+    - apk add --no-cache openssh  # Install SSH
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan $DEPLOY_SERVER >> ~/.ssh/known_hosts
+    - scp dist/main.exe user@$DEPLOY_SERVER:/path/to/deploy
+  only:
+    - main  # Only deploy from the main branch
+  environment:
+    name: production
+    url: https://your-app-url.com
 
