@@ -52,29 +52,29 @@ build:
   image: python:3.12
   script:
     - echo "Runing build..."
-    - python -m venv venv
-    - source venv/bin/activate
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - pip install pyinstaller
-    - pyinstaller --onefile --noconsole src/main.py
-  artifacts:
-    paths:
-      - dist/main.exe  # Save the .exe as a build artifact 
+  #   - python -m venv venv
+  #   - source venv/bin/activate
+  #   - pip install --upgrade pip
+  #   - pip install -r requirements.txt
+  #   - pip install pyinstaller
+  #   - pyinstaller --onefile --noconsole src/main.py
+  # artifacts:
+  #   paths:
+  #     - dist/main.exe  # Save the .exe as a build artifact 
     
 deploy:
   stage: deploy
   image: alpine:latest  # Lightweight image for deployment
   script:
-    - apk add --no-cache openssh  # Install SSH
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan $DEPLOY_SERVER >> ~/.ssh/known_hosts
-    - scp dist/main.exe user@$DEPLOY_SERVER:/path/to/deploy
-  only:
-    - main  # Only deploy from the main branch
-  environment:
-    name: production
-    url: https://your-app-url.com
+  #   - apk add --no-cache openssh  # Install SSH
+  #   - mkdir -p ~/.ssh
+  #   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+  #   - chmod 600 ~/.ssh/id_rsa
+  #   - ssh-keyscan $DEPLOY_SERVER >> ~/.ssh/known_hosts
+  #   - scp dist/main.exe user@$DEPLOY_SERVER:/path/to/deploy
+  # only:
+  #   - main  # Only deploy from the main branch
+  # environment:
+  #   name: production
+  #   url: https://your-app-url.com
 
