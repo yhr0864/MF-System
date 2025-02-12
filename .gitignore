@@ -1,0 +1,9 @@
+**venv/
+**__pycache__/
+**.vscode/
+*.csv
+*.dll
+**.egg-info/
+**dist/
+**database/
+**build/
