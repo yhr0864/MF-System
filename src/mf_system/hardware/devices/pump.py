@@ -17,9 +17,9 @@ class SyringePump:
         super().__init__()
         script_dir = os.path.dirname(os.path.abspath(__file__))
         self.deviceconfig = os.path.join(script_dir, "pump_lib/PumpConfig")
-        self.pressure_limit = pressure_limit
-        self.inner_diameter_mm = inner_diameter_mm
-        self.max_piston_stroke_mm = max_piston_stroke_mm
+        self.__pressure_limit = pressure_limit
+        self.__inner_diameter_mm = inner_diameter_mm
+        self.__max_piston_stroke_mm = max_piston_stroke_mm
 
         # Make sure bus only opened once
         if not self._bus_opened:
@@ -44,15 +44,17 @@ class SyringePump:
         """
 
         # Step 1. Enable the pump
-        # If pump is in fault state, clear it.
+        # If pump is in fault state, clear it
         if self.pump.is_in_fault_state():
             self.pump.clear_fault()
 
         if not self.pump.is_enabled():
             self.pump.enable(True)
 
-        # Step 2. Set syringe parameters.
-        self.pump.set_syringe_param(self.inner_diameter_mm, self.max_piston_stroke_mm)
+        # Step 2. Set syringe parameters
+        self.pump.set_syringe_param(
+            self.__inner_diameter_mm, self.__max_piston_stroke_mm
+        )
 
         # Step 3. Initialize valves
         if not self.pump.has_valve():
@@ -87,7 +89,7 @@ class SyringePump:
                 raise TimeoutError("Timeout!")
             # Monitor the force if it is below the threshold
             current_pressure = self.pressure_channel.read_input()
-            if current_pressure >= self.pressure_limit:
+            if current_pressure >= self.__pressure_limit:
                 print(
                     f"Warning: Current pressure {current_pressure} is over the limit. Pump stops!"
                 )

@@ -3,6 +3,7 @@ import yaml
 import json
 import functools
 from concurrent.futures import ThreadPoolExecutor
+from typing import Dict, Any, Tuple
 
 from mf_system.hardware.devices.arduino import ArduinoBoard
 from mf_system.hardware.devices.gantry import Gantry
@@ -18,214 +19,228 @@ from mf_system.hardware.devices.utils import (
 class Hardware:
     def __init__(
         self,
-        pump_config_path="src/mf_system/database/pump_config.yaml",
+        hardware_config_path="src/mf_system/database/hardware_config.yaml",
         sample_config_path="src/mf_system/database/sample_config.json",
     ):
-        # self.gantry = Gantry(excl_ip="", excl_port="")
-        # self.arduino = ArduinoBoard(port="COM14", baudrate=9600, timeout=0.1)
-        # self.pump1 = SyringePump(
-        #     pump_name="Nemesys_M_1_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=14.70520755382068,
-        #     max_piston_stroke_mm=60,
-        # )
-        # self.pump2 = SyringePump(
-        #     pump_name="Nemesys_M_2_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=14.70520755382068,
-        #     max_piston_stroke_mm=60,
-        # )
-        # self.pump3 = SyringePump(
-        #     pump_name="Nemesys_M_3_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=32.80671055737278,
-        #     max_piston_stroke_mm=60,
-        # )
-        # self.pump4 = SyringePump(
-        #     pump_name="Nemesys_M_4_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=32.80671055737278,
-        #     max_piston_stroke_mm=60,
-        # )
-        # self.pump5 = SyringePump(
-        #     pump_name="Nemesys_M_5_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=23.207658393177034,
-        #     max_piston_stroke_mm=60,
-        # )
-        # self.pump6 = SyringePump(
-        #     pump_name="Nemesys_M_6_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=23.207658393177034,
-        #     max_piston_stroke_mm=60,
-        # )
-        # self.pump7 = SyringePump(
-        #     pump_name="Nemesys_M_7_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=23.207658393177034,
-        #     max_piston_stroke_mm=60,
-        # )
-        # self.pump8 = SyringePump(
-        #     pump_name="Nemesys_M_8_Pump",
-        #     pressure_limit=10,
-        #     inner_diameter_mm=10.40522314849599,
-        #     max_piston_stroke_mm=60,
-        # )
+        # Read the config files for the experiment
+        self.hardware_config = self._load_config(
+            hardware_config_path, loader=yaml.safe_load
+        )
+        self.sample_data = self._load_config(sample_config_path, loader=json.load)
 
-        # self.dls = DLS_Analyzer(port="COM7", baudrate=9600, timeout=1)
+        self.gantry = Gantry(
+            excl_ip=self.hardware_config["Gantry"]["ip"],
+            excl_port=self.hardware_config["Gantry"]["port"],
+        )
 
+        self.arduino = ArduinoBoard(
+            port=self.hardware_config["Arduino"]["port"],
+            baudrate=self.hardware_config["Arduino"]["baudrate"],
+            timeout=self.hardware_config["Arduino"]["timeout"],
+        )
+
+        self.dls = DLS_Analyzer(
+            port=self.hardware_config["DLS"]["port"],
+            baudrate=self.hardware_config["DLS"]["baudrate"],
+            timeout=self.hardware_config["DLS"]["timeout"],
+        )
+
+        # Initialize pumps dynamically (self.pumps -> dict)
+        self.pumps = self._initialize_pumps()
+
+        # Test Only
         # self.pump6 = "Pump 6 is ready"
         # self.pump2 = "Pump 2 is ready"
 
         self.sample_id = 0
 
-        # Read the config files for the experiment
-        with open(pump_config_path, "r") as file:
-            self.pump_config = yaml.safe_load(file)
+    def _load_config(self, file_path: str, loader) -> Dict[str, Any]:
+        """Load configuration from a file using the specified loader."""
+        try:
+            with open(file_path, "r") as file:
+                return loader(file)
+        except Exception as e:
+            raise FileNotFoundError(f"Failed to load config file {file_path}: {e}")
 
-        with open(sample_config_path, "r") as file:
-            self.sample_data = json.load(file)
+    def _initialize_pumps(self) -> Dict[str, SyringePump]:
+        """Initialize all pumps dynamically based on the hardware configuration."""
+        pumps = {}
+        for pump_id, pump_config in self.hardware_config["Pumps"].items():
+            pumps[pump_id] = SyringePump(
+                pump_name=pump_config["name"],
+                pressure_limit=pump_config["pressure_limit"],
+                inner_diameter_mm=pump_config["inner_diameter_mm"],
+                max_piston_stroke_mm=pump_config["max_piston_stroke_mm"],
+            )
+        return pumps
 
     def initialize(self):
-        # self.gantry.initialize()
-        # self.arduino.initialize()
+        self.gantry.initialize()
+        self.arduino.initialize()
         time.sleep(1)
-        # print(self.home_table_p())
-        # print(self.home_table_m())
-        # print(self.home_probe_dls())
-        # print(self.home_probe_uv())
+        print(self.home_table_p())
+        print(self.home_table_m())
+        print(self.home_probe_dls())
+        print(self.home_probe_uv())
 
-        # self.dls.initialize()
-        # self.pump1.initialize()
-        # self.pump2.initialize()
-        # self.pump3.initialize()
-        # self.pump4.initialize()
-        # self.pump5.initialize()
-        # self.pump6.initialize()
-        # self.pump7.initialize()
-        # self.pump8.initialize()
-        # self.prepare_pump()
+        self.dls.initialize()
 
-    def tray_to_pump(self, coord: tuple):
-        coord_on_tray = coord[0]
-        coord_on_table_p = coord[1]
+        # Initialize all pumps
+        for _, pump in self.pumps.items():
+            pump.initialize()
+
+        self.prepare_pump()
+
+    def tray_to_pump(self, coord: Tuple[Tuple[float, float], Tuple[float, float]]):
+        """Move from tray to pump."""
+        coord_on_tray, coord_on_table_p = coord
         # self.gantry.move_from_to(coord_on_tray, coord_on_table_p)
         print("tray to pump")
 
-    def tray_to_measure(self, coord: tuple):
-        coord_on_tray = coord[0]
-        coord_on_table_m = coord[1]
+    def tray_to_measure(self, coord: Tuple[Tuple[float, float], Tuple[float, float]]):
+        """Move from tray to measurement table."""
+        coord_on_tray, coord_on_table_m = coord
         # self.gantry.move_from_to(coord_on_tray, coord_on_table_m)
         print("tray to measure")
 
-    def pump_to_measure(self, coord: tuple):
-        coord_on_table_p = coord[0]
-        coord_on_table_m = coord[1]
+    def pump_to_measure(self, coord: Tuple[Tuple[float, float], Tuple[float, float]]):
+        """Move from pump to measurement table."""
+        coord_on_table_p, coord_on_table_m = coord
         # self.gantry.move_from_to(coord_on_table_p, coord_on_table_m)
         print("pump to measure")
 
-    def pump_to_tray(self, coord: tuple):
-        coord_on_table_p = coord[0]
-        coord_on_tray = coord[1]
+    def pump_to_tray(self, coord: Tuple[Tuple[float, float], Tuple[float, float]]):
+        """Move from pump to tray."""
+        coord_on_table_p, coord_on_tray = coord
         # self.gantry.move_from_to(coord_on_table_p, coord_on_tray)
         print("pump to tray")
 
-    def measure_to_tray(self, coord: tuple):
-        coord_on_table_m = coord[0]
-        coord_on_tray = coord[1]
+    def measure_to_tray(self, coord: Tuple[Tuple[float, float], Tuple[float, float]]):
+        """Move from measurement table to tray."""
+        coord_on_table_m, coord_on_tray = coord
         # self.gantry.move_from_to(coord_on_table_m, coord_on_tray)
         print("measure to tray")
 
-    def home_table_p(self):
+    def home_table_p(self) -> str:
+        """Home the pump table."""
         return self.arduino.send_command("motor1 home")
 
-    def home_table_m(self):
+    def home_table_m(self) -> str:
+        """Home the measurement table."""
         return self.arduino.send_command("motor2 home")
 
-    def rotate_table_p(self):
+    def rotate_table_p(self) -> str:
+        """Rotate the pump table."""
         return self.arduino.send_command("motor1 rotate")
 
-    def rotate_table_m(self):
+    def rotate_table_m(self) -> str:
+        """Rotate the measurement table."""
         return self.arduino.send_command("motor2 rotate")
 
-    def home_probe_uv(self):
+    def home_probe_uv(self) -> str:
+        """Home the UV probe."""
         return self.arduino.send_command("cylinder1 home")
 
-    def home_probe_dls(self):
+    def home_probe_dls(self) -> str:
+        """Home the DLS probe."""
         return self.arduino.send_command("cylinder2 home")
 
-    def dip_out_probe_uv(self):
+    def dip_out_probe_uv(self) -> str:
+        """Extend the UV probe."""
         return self.arduino.send_command("cylinder1 extend")
 
-    def dip_in_probe_uv(self):
+    def dip_in_probe_uv(self) -> str:
+        """Retract the UV probe."""
         return self.arduino.send_command("cylinder1 retract")
 
-    def dip_out_probe_dls(self):
+    def dip_out_probe_dls(self) -> str:
+        """Extend the DLS probe."""
         return self.arduino.send_command("cylinder2 extend")
 
-    def dip_in_probe_dls(self):
+    def dip_in_probe_dls(self) -> str:
+        """Retract the DLS probe."""
         return self.arduino.send_command("cylinder2 retract")
 
     def prepare_pump(self):
-        """
-        Prepare the pumps before experiemnt => Refilling
-        """
+        """Prepare the pumps before experiemnt (e.g., charging)."""
 
         # Refill all the pumps in the config files (Maybe NOT ALL)
-        for key in self.pump_config.keys():
-            pump = getattr(self, key)
-            flow = self.pump_config[key]["flow"]
+        pump_config = self.hardware_config["Pumps"]
 
-            if isinstance(pump, SyringePump):
-                self.refill(pump=pump, flow=float(flow))
+        with ThreadPoolExecutor() as executor:
+            futures = []
+            for key, config in pump_config.items():
+                pump = self.pumps[key]
+                flow = config["flow"]
+                #########################################################
+                volume = 0  # Set volume to 0 for testing
+                #########################################################
+                futures.append(
+                    executor.submit(
+                        self.charge, pump=pump, volume=float(volume), flow=float(flow)
+                    )
+                )
+
+            # Wait for all tasks to complete
+            for future in futures:
+                future.result()
 
     def refill(self, pump: SyringePump, flow: float):
+        """Refill the pump with the specified flow rate."""
         pump.refill(flow)
 
     def empty(self, pump: SyringePump, flow: float):
+        """Empty the pump with the specified flow rate."""
         pump.empty(flow)
 
+    def charge(self, pump: SyringePump, volume: float, flow: float):
+        """Charge the pump by aspirating the specified volume at the given flow rate."""
+        pump.aspirate(volume, flow)
+
     def dose(self, pump: SyringePump, volume: float, flow: float):
+        """Dispense the specified volume at the given flow rate."""
         pump.dispense(volume, flow)
 
     def fill_bottle(self):
-        # 1. Load sample data
+        """
+        Fill the bottle by dispensing from multiple pumps in parallel.
+        Uses multi-threading for parallel execution.
+        """
+
+        # Load sample data
         num_samples = self.sample_data["num_samples"]
         out_flow = self.sample_data["out_flow"]
-        self.sample_id = self.sample_id + 1
+        self.sample_id += 1
+
         if self.sample_id > num_samples:
             raise ValueError("Sample ID is out of range!")
 
         sample_info = self.sample_data[str(self.sample_id)]
-
         volume = sample_info["volume"]
         proportion = sample_info["proportion"]
         solution = sample_info["solution"]
         pumps = sample_info["pumps"]
 
+        # Calculate total proportion for normalization
+        total_proportion = sum(proportion)
+
         # Parallelly dispensing with multi-threading
         with ThreadPoolExecutor() as executor:
             futures = []
-            for i in range(len(proportion)):
-                ratio = proportion[i] / sum(proportion)
+            for i, pump_id in enumerate(pumps):
+                ratio = proportion[i] / total_proportion
                 sub_flow = out_flow * ratio
                 sub_volume = volume * ratio
-                p = pumps[i]
-                # print(ratio)
-                # print(sub_flow)
-                # print(sub_volume)
-                # print(p)
-                pump = getattr(self, p)
-                if isinstance(pump, SyringePump):
-                    futures.append(
-                        executor.submit(
-                            self.dose(
-                                pump=pump,
-                                volume=float(sub_volume),
-                                flow=float(sub_flow),
-                            )
-                        )
+                pump = self.pumps[pump_id]
+
+                futures.append(
+                    executor.submit(
+                        self.dose,
+                        pump=pump,
+                        volume=float(sub_volume),
+                        flow=float(sub_flow),
                     )
+                )
 
             # Wait for all tasks to complete
             for future in futures:
@@ -272,15 +287,15 @@ class Hardware:
 
 
 if __name__ == "__main__":
-    hardware = Hardware()
-    print("start init")
-    hardware.initialize()
-    print("finish init")
-    # hardware.prepare_pump()
-    # hardware.fill_bottle()
-
-    f = hardware.measure_DLS(
-        setup_id=5, num_of_measure=3, save_path="./database/measurement_dls.csv"
-    )
-
-    f.result()
+    try:
+        with open("src/mf_system/database/hardware_config.yaml", "r") as file:
+            hardware_config = yaml.safe_load(file)
+            # print(hardware_config["Pumps"])
+            pump_config = hardware_config["Pumps"]
+            for key in pump_config.keys():
+                print(key)
+                # pump = self.pumps[key]
+                # flow = pump_config[key]["flow"]
+                # volume = 0
+    except Exception as e:
+        raise FileNotFoundError(f"Failed to load config file : {e}")
