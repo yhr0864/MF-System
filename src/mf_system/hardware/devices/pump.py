@@ -1,13 +1,10 @@
 import os
 import time
 
-import unittest
-from devices.pump_lib.qmixsdk import qmixbus
-from devices.pump_lib.qmixsdk import qmixpump
-from devices.pump_lib.qmixsdk import qmixanalogio
+from mf_system.hardware.devices.pump_lib.qmixsdk import qmixbus, qmixpump, qmixanalogio
 
 
-class SyringePump(unittest.TestCase):
+class SyringePump:
     _bus_opened = False
 
     def __init__(
@@ -41,8 +38,6 @@ class SyringePump(unittest.TestCase):
         # print(self.pump_name)
         self.pressure_channel.lookup_channel_by_name(f"{self.pump_name[:-5]}_AnIN1")
 
-        self.finished = None
-
     def initialize(self):
         """
         Initialize the pump
@@ -52,29 +47,31 @@ class SyringePump(unittest.TestCase):
         # If pump is in fault state, clear it.
         if self.pump.is_in_fault_state():
             self.pump.clear_fault()
-        self.assertFalse(self.pump.is_in_fault_state())
+
         if not self.pump.is_enabled():
             self.pump.enable(True)
-        self.assertTrue(self.pump.is_enabled())
 
-        # Set Syringe Parameters.
+        # Step 2. Set syringe parameters.
         self.pump.set_syringe_param(self.inner_diameter_mm, self.max_piston_stroke_mm)
 
-        # Check Valves
+        # Step 3. Initialize valves
         if not self.pump.has_valve():
             raise ModuleNotFoundError("no valve installed")
         self.valve = self.pump.get_valve()
         self.switch_valve_to(0)
 
-        # Ckeck if pressuren sensor works
+        # Step 4. Initialize pressure sensor
         self.current_pressure_sensor_status = self.pressure_channel.read_status()
         self.pressure_channel.enable_software_scaling(True)
         self.pressure_channel.set_scaling_param(0.05, -25)
         print(f"Current sensor status: {self.current_pressure_sensor_status}")
         print(f"Current scaling factors: {self.pressure_channel.get_scaling_param()}")
 
-        # Setup the unit (milli/s by default)
-        self.set_units()
+        # Step 5. Setup the unit (milli/s by default)
+        self.set_units(
+            unit_prefix=qmixpump.UnitPrefix.milli,
+            time_unit=qmixpump.TimeUnit.per_second,
+        )
 
     def wait_dosage_finished(self, timeout_seconds):
         """
@@ -107,28 +104,20 @@ class SyringePump(unittest.TestCase):
             result = self.pump.is_pumping()
         return not result
 
-    def set_units(
-        self,
-        unit_prefix=qmixpump.UnitPrefix.milli,
-        time_unit=qmixpump.TimeUnit.per_second,
-    ):
+    def set_units(self, unit_prefix, time_unit):
         """
         Setup the unit for volume and flow rate
         """
 
         self.pump.set_volume_unit(unit_prefix, qmixpump.VolumeUnit.litres)
-        max_ml = self.pump.get_volume_max()
-        print("Max. volume ml: ", max_ml, self.pump.get_volume_unit())
+        max_vol = self.pump.get_volume_max()
+        print(f"Max. volume: {max_vol} {self.pump.get_volume_unit()}")
 
-        self.pump.set_flow_unit(
-            unit_prefix,
-            qmixpump.VolumeUnit.litres,
-            time_unit,
-        )
-        max_ml_s = self.pump.get_flow_rate_max()
-        print("Max. flow ml/s: ", max_ml_s, self.pump.get_flow_unit())
+        self.pump.set_flow_unit(unit_prefix, qmixpump.VolumeUnit.litres, time_unit)
+        max_flow = self.pump.get_flow_rate_max()
+        print(f"Max. flow: {max_flow} {self.pump.get_flow_unit()}")
 
-    def aspirate(self, volume, flow):
+    def aspirate(self, volume, flow, timeout=600):
         """
         Aspirate a certain volume with a certain flow rate.
         """
@@ -136,45 +125,43 @@ class SyringePump(unittest.TestCase):
         self.switch_valve_to(1)
         self.pump.aspirate(volume, flow)
 
-        self.finished = self.wait_dosage_finished(600)
-        self.assertEqual(True, self.finished)
+        isFinished = self.wait_dosage_finished(timeout)
         self.switch_valve_to(0)
-        return self.finished
+        return isFinished
 
-    def dispense(self, volume, flow):
+    def dispense(self, volume, flow, timeout=600):
         """
         Dispense a certain volume with a certain flow rate.
         """
 
         self.switch_valve_to(2)
         self.pump.dispense(volume, flow)
-        self.finished = self.wait_dosage_finished(600)
-        self.assertEqual(True, self.finished)
+        isFinished = self.wait_dosage_finished(timeout)
         self.switch_valve_to(0)
-        return self.finished
+        return isFinished
 
-    def refill(self, flow):
+    def refill(self, flow, timeout=1200):
         """
         Refill the syringe with a certain flow rate.
         """
 
         self.switch_valve_to(1)
         flow = 0 - flow
-        self.finished = self.generate_flow(flow)
+        isFinished = self.generate_flow(flow, timeout)
         self.switch_valve_to(0)
-        return self.finished
+        return isFinished
 
-    def empty(self, flow):
+    def empty(self, flow, timeout=1200):
         """
         Empty the syringe with a certain flow rate.
         """
 
         self.switch_valve_to(2)
-        self.finished = self.generate_flow(flow)
+        isFinished = self.generate_flow(flow, timeout)
         self.switch_valve_to(0)
-        return self.finished
+        return isFinished
 
-    def generate_flow(self, flow):
+    def generate_flow(self, flow, timeout):
         """
         Generate a continuous flow.
 
@@ -183,9 +170,8 @@ class SyringePump(unittest.TestCase):
         """
 
         self.pump.generate_flow(flow)
-        self.finished = self.wait_dosage_finished(1200)
-        self.assertEqual(True, self.finished)
-        return self.finished
+        isFinished = self.wait_dosage_finished(timeout)
+        return isFinished
 
     def switch_valve_to(self, position: int):
         """
@@ -199,7 +185,8 @@ class SyringePump(unittest.TestCase):
 
         # Ensure the valve is in the right position
         valve_pos_is = self.valve.actual_valve_position()
-        self.assertEqual(position, valve_pos_is)
+        if not (valve_pos_is == position):
+            raise RuntimeError("Valve failed to be switched")
 
     def stop_pump(self):
         """

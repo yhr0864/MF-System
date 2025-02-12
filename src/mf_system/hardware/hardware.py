@@ -4,21 +4,25 @@ import json
 import functools
 from concurrent.futures import ThreadPoolExecutor
 
-from devices.arduino import ArduinoBoard
-from devices.gantry import Gantry
-from devices.pump import SyringePump
-from devices.dls import DLS_Analyzer
-from devices.utils import RequestFailed, UnexpectedResponse, ErrorOccurred
+from mf_system.hardware.devices.arduino import ArduinoBoard
+from mf_system.hardware.devices.gantry import Gantry
+from mf_system.hardware.devices.pump import SyringePump
+from mf_system.hardware.devices.dls import DLS_Analyzer
+from mf_system.hardware.devices.utils import (
+    RequestFailed,
+    UnexpectedResponse,
+    ErrorOccurred,
+)
 
 
 class Hardware:
     def __init__(
         self,
-        pump_config_path="./database/pump_config.yaml",
-        sample_config_path="./database/sample_config.json",
+        pump_config_path="src/mf_system/database/pump_config.yaml",
+        sample_config_path="src/mf_system/database/sample_config.json",
     ):
-        # self.gantry = Gantry()
-        self.arduino = ArduinoBoard(port="COM14", baudrate=9600, timeout=0.1)
+        # self.gantry = Gantry(excl_ip="", excl_port="")
+        # self.arduino = ArduinoBoard(port="COM14", baudrate=9600, timeout=0.1)
         # self.pump1 = SyringePump(
         #     pump_name="Nemesys_M_1_Pump",
         #     pressure_limit=10,
@@ -68,7 +72,7 @@ class Hardware:
         #     max_piston_stroke_mm=60,
         # )
 
-        self.dls = DLS_Analyzer(port="COM7", baudrate=9600, timeout=1)
+        # self.dls = DLS_Analyzer(port="COM7", baudrate=9600, timeout=1)
 
         # self.pump6 = "Pump 6 is ready"
         # self.pump2 = "Pump 2 is ready"
@@ -84,12 +88,12 @@ class Hardware:
 
     def initialize(self):
         # self.gantry.initialize()
-        self.arduino.initialize()
+        # self.arduino.initialize()
         time.sleep(1)
-        print(self.home_table_p())
-        print(self.home_table_m())
-        print(self.home_probe_dls())
-        print(self.home_probe_uv())
+        # print(self.home_table_p())
+        # print(self.home_table_m())
+        # print(self.home_probe_dls())
+        # print(self.home_probe_uv())
 
         # self.dls.initialize()
         # self.pump1.initialize()
@@ -108,11 +112,23 @@ class Hardware:
         # self.gantry.move_from_to(coord_on_tray, coord_on_table_p)
         print("tray to pump")
 
+    def tray_to_measure(self, coord: tuple):
+        coord_on_tray = coord[0]
+        coord_on_table_m = coord[1]
+        # self.gantry.move_from_to(coord_on_tray, coord_on_table_m)
+        print("tray to measure")
+
     def pump_to_measure(self, coord: tuple):
         coord_on_table_p = coord[0]
         coord_on_table_m = coord[1]
         # self.gantry.move_from_to(coord_on_table_p, coord_on_table_m)
         print("pump to measure")
+
+    def pump_to_tray(self, coord: tuple):
+        coord_on_table_p = coord[0]
+        coord_on_tray = coord[1]
+        # self.gantry.move_from_to(coord_on_table_p, coord_on_tray)
+        print("pump to tray")
 
     def measure_to_tray(self, coord: tuple):
         coord_on_table_m = coord[0]

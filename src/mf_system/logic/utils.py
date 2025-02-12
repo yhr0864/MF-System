@@ -1,3 +1,16 @@
+from concurrent.futures import ThreadPoolExecutor
+
+
+def parallel_action_handle(*args):
+    futures = []
+    with ThreadPoolExecutor() as executor:
+        for arg in args:
+            futures.append(executor.submit(arg))
+
+        for future in futures:
+            future.result()
+
+
 states = [
     "initialize",
     "before_cycle_stage_1",
@@ -21,7 +34,7 @@ states = [
     "cycle_stage_2",
     "cycle_stage_3",
     "cycle_stage_4",
-    "cycle_stage_branch",
+    "cycle_stage_5",
     "cycle_stage_6",
     "cycle_stage_7",
     "after_cycle_stage",
@@ -144,12 +157,12 @@ transitions = [
     {
         "trigger": "command_finished",
         "source": "cycle_stage_4",
-        "dest": "cycle_stage_branch",
+        "dest": "cycle_stage_5",
         "conditions": "is_bottle_on_tray",
     },
     {
         "trigger": "command_finished",
-        "source": "cycle_stage_branch",
+        "source": "cycle_stage_5",
         "dest": "cycle_stage_6",
     },
     {
@@ -207,5 +220,153 @@ transitions = [
         "trigger": "command_finished",
         "source": "after_cycle_stage_8",
         "dest": "after_cycle_stage_9",
+    },
+]
+
+states_dispense = [
+    "initialize",
+    "before_cycle_stage_1",
+    "before_cycle_stage_2",
+    "before_cycle_stage_3",
+    "cycle_stage_1",
+    "cycle_stage_2",
+    "cycle_stage_3",
+    "after_cycle_stage",
+    "after_cycle_stage_2",
+]
+
+transitions_dispense = [
+    {
+        "trigger": "initialize_finished",
+        "source": "initialize",
+        "dest": "before_cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_1",
+        "dest": "before_cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_2",
+        "dest": "before_cycle_stage_3",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_3",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_1",
+        "dest": "cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "cycle_stage_3",
+        "conditions": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_3",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "after_cycle_stage",
+        "unless": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage",
+        "dest": "after_cycle_stage_2",
+    },
+]
+
+states_measure = [
+    "initialize",
+    "before_cycle_stage_1",
+    "before_cycle_stage_2",
+    "before_cycle_stage_3",
+    "before_cycle_stage_4",
+    "before_cycle_stage_5",
+    "cycle_stage_1",
+    "cycle_stage_2",
+    "cycle_stage_3",
+    "after_cycle_stage",
+    "after_cycle_stage_2",
+    "after_cycle_stage_3",
+    "after_cycle_stage_4",
+]
+
+transitions_measure = [
+    {
+        "trigger": "initialize_finished",
+        "source": "initialize",
+        "dest": "before_cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_1",
+        "dest": "before_cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_2",
+        "dest": "before_cycle_stage_3",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_3",
+        "dest": "before_cycle_stage_4",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_4",
+        "dest": "before_cycle_stage_5",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "before_cycle_stage_5",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_1",
+        "dest": "cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "cycle_stage_3",
+        "conditions": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_3",
+        "dest": "cycle_stage_1",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "cycle_stage_2",
+        "dest": "after_cycle_stage",
+        "unless": "is_bottle_on_tray",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage",
+        "dest": "after_cycle_stage_2",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage_2",
+        "dest": "after_cycle_stage_3",
+    },
+    {
+        "trigger": "command_finished",
+        "source": "after_cycle_stage_3",
+        "dest": "after_cycle_stage_4",
     },
 ]
