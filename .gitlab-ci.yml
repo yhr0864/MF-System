@@ -52,20 +52,23 @@ build:
   image: python:3.12
   script:
     - echo "Runing build..."
-  #   - python -m venv venv
-  #   - source venv/bin/activate
-  #   - pip install --upgrade pip
-  #   - pip install -r requirements.txt
-  #   - pip install pyinstaller
-  #   - pyinstaller --onefile --noconsole src/main.py
-  # artifacts:
-  #   paths:
-  #     - dist/main.exe  # Save the .exe as a build artifact 
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install pyinstaller
+    - pyinstaller --onefile --noconsole --icon=resources/icon.ico src/mf_system/main.py
+  artifacts:
+    paths:
+      - dist/main.exe  # Save the .exe as a build artifact 
+  only:
+    - main
     
 deploy:
   stage: deploy
   image: alpine:latest  # Lightweight image for deployment
   script:
+    - echo "Runing deploy..."
   #   - apk add --no-cache openssh  # Install SSH
   #   - mkdir -p ~/.ssh
   #   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
