@@ -29,6 +29,6 @@ jobs:
 
       - name: Push changes to GitHub
         run: |
-          git remote set-url origin https://:${{ secrets.GITHUB_TOKEN }}@github.com/yhr0864/MF-System.git
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/yhr0864/MF-System.git
           git push origin main
           
