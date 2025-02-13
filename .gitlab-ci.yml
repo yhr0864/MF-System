@@ -49,7 +49,9 @@ test:
 
 build:
   stage: build
-  image: python:3.12
+  image: mcr.microsoft.com/windows/servercore:ltsc2022  # Use a Windows container image
+  tags:
+    - windows  # Ensure this matches a Windows runner tag
   script:
     - echo "Running build..."
     - python -m venv venv
@@ -58,10 +60,9 @@ build:
     - pip install -r requirements.txt
     - pip install pyinstaller
     - pyinstaller --onefile --noconsole --icon=resources/icon.ico src/mf_system/main.py
-    - ls dist  # List the files in the dist folder to check if main.exe exists
   artifacts:
     paths:
-      - dist/main  # Save the Linux executable
+      - dist/main.exe  # Save the Linux executable
   only:
     - main
     
