@@ -49,7 +49,7 @@ test:
 
 build:
   stage: build
-  image: mcr.microsoft.com/windows/servercore:ltsc2022  # Use a Windows container image
+  image: python:3.12
   tags:
     - windows  # Ensure this matches a Windows runner tag
   script:
