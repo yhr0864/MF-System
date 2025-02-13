@@ -1,4 +1,4 @@
-# 📌 Microfluidic System Automation
+# 📌 Microfluidic System Automation (TEMPLATE README FILE)
 
 ![](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/main/images/MF.png)
 
@@ -8,7 +8,7 @@ This project automates a microfluidic system using a state machine-based automat
 
 ## 🚀 Project Overview
 This project automates a microfluidic system using **state machine-based automation**. It includes:
-- **Hardware control** for valves, robotic arms, a turntable, and a pump.
+- **Hardware control** for valves, robotic arms, turntables, and syringe pumps.
 - **Multi-threading** to ensure smooth execution without UI blocking.
 - **PyQt6 GUI** with radio buttons, logs, and start/stop controls.
 - **Serial Communication** using `pyserial`.
