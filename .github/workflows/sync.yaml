@@ -25,7 +25,7 @@ jobs:
         run: |
           git remote add gitlab https://oauth2:${{ secrets.GITLAB_ACCESS_TOKEN }}@gitlab.kit.edu/haoran.yu/mf-system.git
           git fetch gitlab
-          git merge gitlab/main --allow-unrelated-histories -m "Sync GitLab to GitHub"
+          git merge gitlab/main -X theirs -m "Sync GitLab to GitHub"
 
       - name: Push changes to GitHub
         run: |
