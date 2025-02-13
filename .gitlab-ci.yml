@@ -49,7 +49,6 @@ test:
 
 build:
   stage: build
-  image: python:3.12
   tags:
     - windows  # This should match a Windows runner tag
   script:
