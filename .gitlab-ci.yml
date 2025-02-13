@@ -49,8 +49,7 @@ test:
 
 build:
   stage: build
-  tags:
-    - windows  # This should match a Windows runner tag
+  image: python:3.12
   script:
     - echo "Running build..."
     - python -m venv venv
