@@ -167,14 +167,26 @@ class Hardware:
         # Refill all the pumps in the config files (Maybe NOT ALL)
         pump_config = self.hardware_config["Pumps"]
 
+        # Calculate the required volume for each pump
+        samples = self.sample_data["samples"]
+        pump_volume = {}
+        for sample in samples.values():
+            total_proportion = sum(sample["proportion"])
+            for prop, pump_id in zip(sample["proportion"], sample["pumps"]):
+                ratio = prop / total_proportion
+                if pump_id in pump_volume:
+                    pump_volume[pump_id] += ratio * sample["volume"]
+                else:
+                    pump_volume[pump_id] = ratio * sample["volume"]
+
         with ThreadPoolExecutor() as executor:
             futures = []
-            for key, config in pump_config.items():
-                pump = self.pumps[key]
+            for pump_id, config in pump_config.items():
+                pump = self.pumps[pump_id]
                 flow = config["flow"]
-                #########################################################
-                volume = 0  # Set volume to 0 for testing
-                #########################################################
+
+                volume = pump_volume[pump_id]
+
                 futures.append(
                     executor.submit(
                         self.charge, pump=pump, volume=float(volume), flow=float(flow)
@@ -288,14 +300,23 @@ class Hardware:
 
 if __name__ == "__main__":
     try:
-        with open("src/mf_system/database/hardware_config.yaml", "r") as file:
-            hardware_config = yaml.safe_load(file)
+        with open("src/mf_system/database/sample_config.json", "r") as file:
+            sample_config = json.load(file)
             # print(hardware_config["Pumps"])
-            pump_config = hardware_config["Pumps"]
-            for key in pump_config.keys():
-                print(key)
-                # pump = self.pumps[key]
-                # flow = pump_config[key]["flow"]
-                # volume = 0
+            samples = sample_config["samples"]
+            pump_volume = {}
+            for _, sample in samples.items():
+                total_proportion = sum(sample["proportion"])
+                for prop, p in zip(sample["proportion"], sample["pumps"]):
+                    ratio = prop / total_proportion
+                    if p in pump_volume:
+                        pump_volume[p] += ratio * sample["volume"]
+                    else:
+                        pump_volume[p] = ratio * sample["volume"]
+
+            # print(key)
+            # pump = self.pumps[key]
+            # flow = pump_config[key]["flow"]
+            # volume = 0
     except Exception as e:
         raise FileNotFoundError(f"Failed to load config file : {e}")
