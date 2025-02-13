@@ -62,7 +62,7 @@ build:
     - ls dist  # List the files in the dist folder to check if main.exe exists
   artifacts:
     paths:
-      - dist/main.exe  # Save the .exe as a build artifact 
+      - dist/main  # Save the Linux executable
   only:
     - main
     
