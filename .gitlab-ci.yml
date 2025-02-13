@@ -50,8 +50,6 @@ test:
 build:
   stage: build
   image: python:3.12
-  tags:
-    - windows  # Ensure this matches a Windows runner tag
   script:
     - echo "Running build..."
     - python -m venv venv
@@ -62,7 +60,7 @@ build:
     - pyinstaller --onefile --noconsole --icon=resources/icon.ico src/mf_system/main.py
   artifacts:
     paths:
-      - dist/main.exe  # Save the Linux executable
+      - dist/main  # Save the Linux executable
   only:
     - main
     
