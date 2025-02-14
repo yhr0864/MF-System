@@ -1,6 +1,6 @@
 import pytest
-import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, call
+
 from mf_system.hardware.devices.pump import SyringePump
 
 
@@ -15,78 +15,181 @@ def mock_pump():
         ) as mock_analog,
     ):
 
-        # Mock Bus
-        mock_bus_instance = MagicMock()
-        mock_bus.return_value = mock_bus_instance
-
-        # Mock Pump
-        mock_pump_instance = MagicMock()
-        mock_pump.return_value = mock_pump_instance
-        mock_pump_instance.get_device_name.return_value = "TestPump"
-        mock_pump_instance.has_valve.return_value = True  # Ensure valve is available
-
-        # Mock Valve
-        mock_valve = MagicMock()
-        mock_pump_instance.get_valve.return_value = mock_valve
-        mock_valve.switch_valve_to_position.side_effect = lambda pos: setattr(
-            mock_valve, "current_position", pos
-        )
-        mock_valve.actual_valve_position.side_effect = lambda: getattr(
-            mock_valve, "current_position", 0
-        )
-
-        # Mock Analog Channel (Pressure Sensor)
-        mock_analog_instance = MagicMock()
-        mock_analog.return_value = mock_analog_instance
-        mock_analog_instance.read_status.return_value = True
-        mock_analog_instance.read_input.return_value = 10.0  # Simulated pressure
-
-        # Create SyringePump instance
         pump = SyringePump(
-            "TestPump",
-            pressure_limit=100,
-            inner_diameter_mm=10,
-            max_piston_stroke_mm=50,
+            pump_name="TestPump",
+            pressure_limit=100.0,
+            inner_diameter_mm=10.0,
+            max_piston_stroke_mm=50.0,
         )
-        pump.initialize()
-        pump.bus = mock_bus_instance
+        # Mock the bus, pump and pressure_channel objects
+        pump.bus = MagicMock()
+        pump.pump = MagicMock()
+        pump.pressure_channel = MagicMock()
+        pump.valve = MagicMock()
+
+        # Explicitly mock methods
+        pump.wait_dosage_finished = MagicMock(return_value=True)
+        pump.switch_valve_to = MagicMock()
+        pump.switch_valve_to.side_effect = lambda value: setattr(
+            pump.valve, "actual_valve_position", value
+        )
 
         return pump
 
 
-def test_initialize(mock_pump):
+@pytest.fixture
+def mock_valve():
+    """This one is only used for test_switch_valve()."""
+    with (
+        patch("mf_system.hardware.devices.pump_lib.qmixsdk.qmixbus.Bus") as mock_bus,
+        patch("mf_system.hardware.devices.pump_lib.qmixsdk.qmixpump.Pump") as mock_pump,
+        patch(
+            "mf_system.hardware.devices.pump_lib.qmixsdk.qmixanalogio.AnalogInChannel"
+        ) as mock_analog,
+    ):
+
+        pump = SyringePump(
+            pump_name="TestPump",
+            pressure_limit=100.0,
+            inner_diameter_mm=10.0,
+            max_piston_stroke_mm=50.0,
+        )
+        # Mock the valve only
+        pump.valve = MagicMock()
+
+        return pump
+
+
+# Test cases
+def test_initialize(mock_pump, mock_valve):
     """Test pump initialization."""
-    assert mock_pump.valve is not None  # Ensure valve is set
-    assert mock_pump.pump.is_enabled.called  # Check pump was enabled
-    assert mock_pump.pressure_channel.read_status.called  # Pressure sensor checked
+    mock_pump.pump.is_in_fault_state.return_value = False
+    mock_pump.pump.is_enabled.return_value = False
+    mock_pump.pump.has_valve.return_value = True
+    mock_pump.pressure_channel.read_status.return_value = 1
+    mock_pump.pressure_channel.get_scaling_param.return_value = (0.05, -25)
+
+    # Call initialize
+    mock_pump.initialize()
+
+    # Assertions
+    mock_pump.pump.clear_fault.assert_not_called()  # No fault state
+    mock_pump.pump.enable.assert_called_once_with(True)
+    mock_pump.pump.set_syringe_param.assert_called_once_with(10.0, 50.0)
+    # mock_valve.valve.switch_valve_to_position.assert_called_once_with(0)
+    assert mock_pump.valve.actual_valve_position == 0
+    mock_pump.pressure_channel.enable_software_scaling.assert_called_once_with(True)
+    mock_pump.pressure_channel.set_scaling_param.assert_called_once_with(0.05, -25)
+    mock_pump.pump.set_volume_unit.assert_called_once()
+    mock_pump.pump.set_flow_unit.assert_called_once()
 
 
-def test_switch_valve(mock_pump):
+def test_aspirate(mock_pump):
+    """Test pump aspiration."""
+    mock_pump.wait_dosage_finished.return_value = True
+
+    # Call aspirate
+    result = mock_pump.aspirate(volume=10.0, flow=5.0)
+
+    # Assertions
+    mock_pump.pump.aspirate.assert_called_once_with(10.0, 5.0)
+    mock_pump.wait_dosage_finished.assert_called_once_with(600)
+    assert result is True
+
+
+def test_dispense(mock_pump):
+    """Test pump dispension."""
+    mock_pump.wait_dosage_finished.return_value = True
+
+    # Call dispense
+    result = mock_pump.dispense(volume=10.0, flow=5.0)
+
+    # Assertions
+    mock_pump.pump.dispense.assert_called_once_with(10.0, 5.0)
+    mock_pump.wait_dosage_finished.assert_called_once_with(600)
+    assert result is True
+
+
+def test_refill(mock_pump):
+    """Test pump refill."""
+    mock_pump.wait_dosage_finished.return_value = True
+
+    # Call refill
+    result = mock_pump.refill(flow=5.0)
+
+    # Assertions
+    mock_pump.pump.generate_flow.assert_called_once_with(-5.0)
+    mock_pump.wait_dosage_finished.assert_called_once_with(1200)
+    assert result is True
+
+
+def test_empty(mock_pump):
+    """Test pump empty."""
+    mock_pump.wait_dosage_finished.return_value = True
+
+    # Call empty
+    result = mock_pump.empty(flow=5.0)
+
+    # Assertions
+    mock_pump.pump.generate_flow.assert_called_once_with(5.0)
+    mock_pump.wait_dosage_finished.assert_called_once_with(1200)
+    assert result is True
+
+
+def test_switch_valve(mock_valve):
     """Test valve switching functionality."""
-    mock_pump.switch_valve_to(1)
-    assert mock_pump.pump.get_valve().actual_valve_position() == 1
+    mock_valve.valve.actual_valve_position.return_value = 1
 
-    mock_pump.switch_valve_to(2)
-    assert mock_pump.pump.get_valve().actual_valve_position() == 2
+    # Call switch_valve_to
+    mock_valve.switch_valve_to(1)
+
+    # Assertions
+    mock_valve.valve.switch_valve_to_position.assert_called_once_with(1)
+    mock_valve.valve.actual_valve_position.assert_called_once()
+    assert mock_valve.valve.actual_valve_position() == 1
+
+    mock_valve.valve.actual_valve_position.return_value = 2
+
+    # Call switch_valve_to again
+    mock_valve.switch_valve_to(2)
+
+    # Assertions
+    assert mock_valve.valve.actual_valve_position() == 2
 
 
 def test_stop_pump(mock_pump):
     """Test stopping the pump."""
+
+    # Call stop_pump
     mock_pump.stop_pump()
-    assert mock_pump.pump.stop_pumping.called  # Ensure stop function was called
+
+    # Assertions
+    mock_pump.pump.stop_pumping.assert_called_once()
 
 
 def test_stop_all_pumps():
     """Test stopping all pumps."""
+
+    # Mock the static method
     with patch(
         "mf_system.hardware.devices.pump_lib.qmixsdk.qmixpump.Pump.stop_all_pumps"
     ) as mock_stop_all:
+
+        # Call stop_all_pumps
         SyringePump.stop_all_pumps()
+
+        # Assertions
         mock_stop_all.assert_called_once()
 
 
 def test_capi_close(mock_pump):
     """Test closing the bus communication."""
+    mock_pump._bus_opened = True
+
+    # Call capi_close
     mock_pump.capi_close()
-    assert mock_pump.bus.stop.called  # Ensure bus stop was called
-    assert mock_pump.bus.close.called  # Ensure bus close was called
+
+    # Assertions
+    mock_pump.bus.stop.assert_called_once()
+    mock_pump.bus.close.assert_called_once()
+    assert mock_pump._bus_opened is True

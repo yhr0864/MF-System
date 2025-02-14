@@ -1,4 +1,4 @@
-from uv_vis_lib.uvvissdk import uvvisremotecontrol
+from mf_system.hardware.devices.uv_vis_lib.uvvissdk import uvvisremotecontrol
 
 
 class UV_Vis:

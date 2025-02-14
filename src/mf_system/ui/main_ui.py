@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QRadioButton,
     QButtonGroup,
+    QProgressBar,
 )
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtGui import QTextCursor
@@ -80,6 +81,14 @@ class MainUI(QWidget):
         self.label = QLabel("Click start to start")
         layout.addWidget(self.label)
 
+        # Create Progress Bar
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setMinimum(0)
+        self.progress_bar.setMaximum(100)
+        self.progress_bar.setValue(0)  # Start at 0%
+        self.progress_bar.setVisible(False)  # Hide initially
+        layout.addWidget(self.progress_bar)
+
         # Push Button "Start"
         self.start_button = QPushButton("Start")
         self.start_button.clicked.connect(self.start_state_machine)
@@ -116,6 +125,8 @@ class MainUI(QWidget):
 
         # Run experiment in a separate thread
         self.experiment_thread = ExperimentThread(self.controller)
+        self.progress_bar.setVisible(True)  # Show progress bar
+        self.experiment_thread.finished.connect(self.progress_bar.setValue)
         self.experiment_thread.finished.connect(self.on_experiment_finished)
         self.experiment_thread.start()
 
