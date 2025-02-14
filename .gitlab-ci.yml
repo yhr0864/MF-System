@@ -36,8 +36,8 @@ test:
   before_script:
     - apt-get update && apt-get install -y docker.io
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  script:
-    - echo "Runing test..."
+  script: 
+    - echo "Running test..."
     # - python -m venv venv
     # - source venv/bin/activate
     # - echo "Installing dependencies"
@@ -51,7 +51,7 @@ build:
   stage: build
   image: python:3.12
   script:
-    - echo "Runing build..."
+    - echo "Running build..."
     - python -m venv venv
     - source venv/bin/activate
     - pip install --upgrade pip
@@ -60,7 +60,7 @@ build:
     - pyinstaller --onefile --noconsole --icon=resources/icon.ico src/mf_system/main.py
   artifacts:
     paths:
-      - dist/main.exe  # Save the .exe as a build artifact 
+      - dist/main  # Save the Linux executable
   only:
     - main
     
@@ -68,7 +68,7 @@ deploy:
   stage: deploy
   image: alpine:latest  # Lightweight image for deployment
   script:
-    - echo "Runing deploy..."
+    - echo "Running deploy..."
   #   - apk add --no-cache openssh  # Install SSH
   #   - mkdir -p ~/.ssh
   #   - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
