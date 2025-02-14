@@ -1,8 +1,8 @@
-# 📌 Microfluidic System Automation (TEMPLATE README FILE)
+# 🚀🤖 Microfluidic System Automation ⚙️💡 (TEMPLATE README FILE)
 
 ![](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/main/images/MF.png)
 
-## Description:
+## 📝 Description:
 
 This project automates a microfluidic system using a state machine-based automation process. It includes hardware control, real-time monitoring, and a GUI (PyQt6) for user interaction.
 
@@ -93,7 +93,7 @@ hardware:
 ---
 
 ## 📜 License
-MIT License. See `LICENSE` file for details.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
