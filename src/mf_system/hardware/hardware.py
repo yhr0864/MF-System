@@ -1,7 +1,6 @@
 import time
 import yaml
 import json
-import functools
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any, Tuple
 
@@ -227,7 +226,7 @@ class Hardware:
         if self.sample_id > num_samples:
             raise ValueError("Sample ID is out of range!")
 
-        sample_info = self.sample_data[str(self.sample_id)]
+        sample_info = self.sample_data["samples"][str(self.sample_id)]
         volume = sample_info["volume"]
         proportion = sample_info["proportion"]
         solution = sample_info["solution"]

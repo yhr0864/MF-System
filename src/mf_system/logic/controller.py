@@ -29,6 +29,7 @@ class Controller:
                 transitions=transitions_dispense,
                 name="State Machine Dispense",
                 num_bottles=5,
+                test_mode=True,
             )
 
         elif select == "Measure Only":
@@ -37,6 +38,7 @@ class Controller:
                 transitions=transitions_measure,
                 name="State Machine Measure",
                 num_bottles=4,
+                test_mode=True,
             )
 
         else:
@@ -45,6 +47,7 @@ class Controller:
                 transitions=transitions,
                 name="State Machine",
                 num_bottles=5,
+                test_mode=True,
             )
 
     def run_experiment(self):
