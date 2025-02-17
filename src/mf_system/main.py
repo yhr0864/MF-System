@@ -12,6 +12,7 @@ def main():
     sys.exit(app.exec())
 
 
+# use local files
 if __name__ == "__main__":
     # use database to save data
     main()
