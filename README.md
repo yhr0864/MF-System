@@ -23,7 +23,6 @@ project-root/
 │── requirements.txt         # Dependencies list
 │── README.md                # Project documentation
 │── resources/               # Icons, UI assets, etc.
-│── dist/                    # Compiled EXE output (after build)
 │── src/
 │   ├── mf_system
 │       ├── hardware/        # Low-level hardware control scripts
