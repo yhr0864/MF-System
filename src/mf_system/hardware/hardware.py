@@ -1,6 +1,5 @@
 import time
 import yaml
-from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any, Tuple
 
 from mf_system.hardware.devices.interface import IHardwareAdapter
@@ -8,17 +7,12 @@ from mf_system.hardware.devices.arduino import ArduinoAdapter
 from mf_system.hardware.devices.gantry import GantryAdapter
 from mf_system.hardware.devices.pump import SyringePumpAdapter
 from mf_system.hardware.devices.dls import DLSAdapter
-from mf_system.hardware.devices.utils import (
-    RequestFailed,
-    UnexpectedResponse,
-    ErrorOccurred,
-    DeviceNotFoundError,
-)
+from mf_system.hardware.devices.utils import DeviceNotFoundError
 
 
 class HardwareFactory:
     @staticmethod
-    def _load_config(self, file_path: str, loader) -> Dict[str, Any]:
+    def _load_config(file_path: str, loader) -> Dict[str, Any]:
         """Load configuration from a file using the specified loader."""
         try:
             with open(file_path, "r") as file:
@@ -47,7 +41,7 @@ class HardwareManager:
         # {"Pumps": {"pump1": SyringePumpAdapter(p_config), ...}, "Arduino": ArduinoAdapter(config)}
         self.adapters: Dict[str, IHardwareAdapter] = {}
         self.hw_config = HardwareFactory._load_config(
-            hardware_config_path, loader=yaml.safe_load
+            file_path=hardware_config_path, loader=yaml.safe_load
         )
         self._init_adapters()
 
@@ -96,3 +90,5 @@ if __name__ == "__main__":
     hwm = HardwareManager(
         hardware_config_path="src/mf_system/database/hardware_config.yaml",
     )
+
+    print(hwm.adapters)

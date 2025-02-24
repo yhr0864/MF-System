@@ -64,3 +64,4 @@ if __name__ == "__main__":
     command = {"action": "motor2 home"}
     f = arduino.execute(command)
     print(f)
+    arduino.shutdown()

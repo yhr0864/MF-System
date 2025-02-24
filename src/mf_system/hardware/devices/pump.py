@@ -12,26 +12,19 @@ class SyringePumpAdapter(IHardwareAdapter):
         super().__init__()
         script_dir = os.path.dirname(os.path.abspath(__file__))
         self.deviceconfig = os.path.join(script_dir, "pump_lib/PumpConfig")
+        self.pump_name = config["name"]
         self.__pressure_limit = config["pressure_limit"]
         self.__inner_diameter_mm = config["inner_diameter_mm"]
         self.__max_piston_stroke_mm = config["max_piston_stroke_mm"]
 
-        # Make sure bus only opened once
-        if not self._bus_opened:
-            print("Opening bus with deviceconfig ", self.deviceconfig)
-            self.bus = qmixbus.Bus()
-            self.bus.open(self.deviceconfig, "")
-            self.__class__._bus_opened = True
-            print("Starting bus communication...")
-            self.bus.start()
-
-        self.pump = qmixpump.Pump()
-        self.pump.lookup_by_name(config["pump_name"])
-        self.pump_name = self.pump.get_device_name()
-
-        self.pressure_channel = qmixanalogio.AnalogInChannel()
-        # print(self.pump_name)
-        self.pressure_channel.lookup_channel_by_name(f"{self.pump_name[:-5]}_AnIN1")
+    @staticmethod
+    def connect(deviceconfig):
+        print("Opening bus with deviceconfig ", deviceconfig)
+        bus = qmixbus.Bus()
+        bus.open(deviceconfig, "")
+        __class__._bus_opened = True
+        print("Starting bus communication...")
+        bus.start()
 
     def initialize(self) -> bool:
         """
@@ -39,7 +32,17 @@ class SyringePumpAdapter(IHardwareAdapter):
         """
 
         try:
-            # Step 1. Enable the pump
+            # Step 1. Connect to pumps controller
+            # Make sure bus only opened once
+            if not self._bus_opened:
+                SyringePumpAdapter.connect()
+
+            # Step 2. Create pump 1 ~ 8
+            self.pump = qmixpump.Pump()
+            self.pump.lookup_by_name(self.pump_name)
+            # self.pump_name = self.pump.get_device_name()
+
+            # Step 3. Enable the pump
             # If pump is in fault state, clear it
             if self.pump.is_in_fault_state():
                 self.pump.clear_fault()
@@ -47,18 +50,20 @@ class SyringePumpAdapter(IHardwareAdapter):
             if not self.pump.is_enabled():
                 self.pump.enable(True)
 
-            # Step 2. Set syringe parameters
+            # Step 4. Set syringe parameters
             self.pump.set_syringe_param(
                 self.__inner_diameter_mm, self.__max_piston_stroke_mm
             )
 
-            # Step 3. Initialize valves
+            # Step 5. Initialize valves
             if not self.pump.has_valve():
                 raise ModuleNotFoundError("no valve installed")
             self.valve = self.pump.get_valve()
             self.switch_valve_to(0)
 
-            # Step 4. Initialize pressure sensor
+            # Step 6. Initialize pressure sensor
+            self.pressure_channel = qmixanalogio.AnalogInChannel()
+            self.pressure_channel.lookup_channel_by_name(f"{self.pump_name[:-5]}_AnIN1")
             self.current_pressure_sensor_status = self.pressure_channel.read_status()
             self.pressure_channel.enable_software_scaling(True)
             self.pressure_channel.set_scaling_param(0.05, -25)
