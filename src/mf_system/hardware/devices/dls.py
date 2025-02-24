@@ -4,7 +4,7 @@ import serial
 from tqdm import tqdm
 import pandas as pd
 
-from mf_system.hardware import devices
+from mf_system.hardware.devices.interface import IHardwareAdapter
 from mf_system.hardware.devices.utils import (
     RequestFailed,
     UnexpectedResponse,
@@ -12,7 +12,7 @@ from mf_system.hardware.devices.utils import (
 )
 
 
-class DLS_Analyzer:
+class DLSAdapter(IHardwareAdapter):
     """
     A class to interface with a DLS (Dynamic Light Scattering) analyzer through a serial connection.
 
@@ -21,19 +21,16 @@ class DLS_Analyzer:
     and interacting with a DLS analyzer through RS232 serial communication.
 
     Attributes:
-        port (str): The serial port to connect to (default is "COM7").
-        baudrate (int): The baud rate for the serial connection (default is 9600).
-        timeout (int): The timeout period (in seconds) for reading from the serial port (default is 1).
-        feedback (str or None): Stores the response from the DLS device after sending a command.
+        config (dict): The configuration file that defines serial port, baud rate and timeout.
     """
 
-    def __init__(self, port="COM7", baudrate=9600, timeout=1):
-        self.port = port
-        self.baudrate = baudrate
-        self.timeout = timeout
-        self.feedback = None
+    def __init__(self, config: dict):
+        self.port = config["port"]
+        self.baudrate = config["baudrate"]
+        self.timeout = config["timeout"]
+        self._connection = None
 
-    def initialize(self, skip_com_check=False):
+    def initialize(self, skip_com_check=False) -> bool:
         """
         Initialize and check the serial connection to the DLS device.
 
@@ -43,17 +40,38 @@ class DLS_Analyzer:
 
         Args:
             skip_com_check (bool): Flag to be used for testing only.
+
+        Returns:
+            bool: True if connect successfully, else False.
         """
 
-        # Initialize the serial port
-        self.dls_ser = serial.Serial(
-            port=self.port, baudrate=self.baudrate, timeout=self.timeout
-        )
-        # Check COM port
-        if not skip_com_check:
-            self.com_check()
+        try:
+            # Initialize the serial port
+            self._connection = serial.Serial(
+                port=self.port, baudrate=self.baudrate, timeout=self.timeout
+            )
 
-    def send_command(self, cmd: bytes, timeout=5):
+            # Check COM port
+            if not skip_com_check:
+                self.com_check()
+
+            return True
+        except ConnectionError:
+            return False
+
+    def execute(self, command: dict) -> str:
+        if command["action"] == "select_measurement_setup":
+            return self.select_measurement_setup(command["id"])
+        elif command["action"] == "request_data":
+            return self.request_data(command["num_of_runs"])
+        else:
+            raise ValueError("Unsupported command")
+
+    def shutdown(self) -> None:
+        if self._connection.is_open:
+            self._connection.close()
+
+    def send_command(self, cmd: bytes, timeout=5) -> str:
         """
         Sends a command to the DLS device and waits for a response.
 
@@ -73,15 +91,15 @@ class DLS_Analyzer:
         """
 
         # Send command to DLS
-        self.dls_ser.write(cmd)
+        self._connection.write(cmd)
 
         start_time = time.time()
 
         # Wait for a response
         while time.time() - start_time < timeout:
             # Check if get feedback
-            if self.dls_ser.in_waiting:
-                self.feedback = self.dls_ser.readline().decode("utf-8").strip()
+            if self._connection.in_waiting:
+                self.feedback = self._connection.readline().decode("utf-8").strip()
                 if self.feedback:
                     return self.feedback
         else:
@@ -301,17 +319,16 @@ class DLS_Analyzer:
 
 
 if __name__ == "__main__":
-    # dls = DLS_Analyzer()
-    # print("start init")
-    # dls.initialize()
-    # print("finish init")
+    dls = DLSAdapter({"port": "COM7", "baudrate": 9600, "timeout": 1})
+    print("start init")
+    dls.initialize()
+    print("finish init")
 
-    # # time.sleep(1)
+    time.sleep(1)
 
-    # dls.select_measurement_setup(5)
+    dls.execute({"action": "select_measurement_setup", "id": 5})
 
-    # # time.sleep(1)
+    time.sleep(1)
     # # # dls.set_zero()
 
-    # dls.request_data(num_of_runs=3)
-    pass
+    dls.execute({"action": "request_data", "num_of_runs": 3})

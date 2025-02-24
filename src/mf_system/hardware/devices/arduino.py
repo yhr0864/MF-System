@@ -1,40 +1,54 @@
 import serial
 import time
 
+from mf_system.hardware.devices.interface import IHardwareAdapter
 
-class ArduinoBoard:
-    def __init__(self, port="COM14", baudrate=9600, timeout=0.1):
-        self.port = port
-        self.baudrate = baudrate
-        self.timeout = timeout
-        self.feedback = None
 
-    def initialize(self):
-        self.arduino = serial.Serial(
-            port=self.port, baudrate=self.baudrate, timeout=self.timeout
-        )
+class ArduinoAdapter(IHardwareAdapter):
+    def __init__(self, config: dict):
+        self.port = config["port"]
+        self.baudrate = config["baudrate"]
+        self.timeout = config["timeout"]
+        self._connection = None
 
-    def send_command(self, cmd, timeout=30):
+    def initialize(self) -> bool:
+        try:
+            self._connection = serial.Serial(
+                port=self.port, baudrate=self.baudrate, timeout=self.timeout
+            )
+            return True
+        except ConnectionError:
+            return False
+
+    def execute(self, command: str) -> str:
+        return self.send_command(command["action"])
+
+    def send_command(self, cmd: str, timeout=30) -> str:
         # Send command to Arduino
-        self.arduino.write(bytes(cmd, "utf-8"))
+        self._connection.write(bytes(cmd, "utf-8"))
 
         start_time = time.time()
         # Wait for a response
         while time.time() - start_time < timeout:
             # Check if get feedback
-            if self.arduino.in_waiting:
-                self.feedback = self.arduino.readline().decode("utf-8").strip()
+            if self._connection.in_waiting:
+                self.feedback = self._connection.readline().decode("utf-8").strip()
                 if self.feedback:
                     return self.feedback
         else:
             raise TimeoutError("No response from Arduino within the specified timeout.")
 
+    def shutdown(self) -> None:
+        if self._connection.is_open:
+            self._connection.close()
+
 
 if __name__ == "__main__":
-    arduino = ArduinoBoard()
+    arduino = ArduinoAdapter({"port": "COM14", "baudrate": 9600, "timeout": 0.1})
     arduino.initialize()
     time.sleep(1)
 
     # f = arduino.send_command("motor1 home \n motor2 home")
-    f = arduino.send_command("motor2 home")
+    command = {"action": "motor2 home"}
+    f = arduino.execute(command)
     print(f)

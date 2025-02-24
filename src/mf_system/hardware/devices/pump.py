@@ -1,10 +1,11 @@
 import os
 import time
 
+from mf_system.hardware.devices.interface import IHardwareAdapter
 from mf_system.hardware.devices.pump_lib.qmixsdk import qmixbus, qmixpump, qmixanalogio
 
 
-class SyringePump:
+class SyringePump(IHardwareAdapter):
     _bus_opened = False
 
     def __init__(
