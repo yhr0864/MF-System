@@ -5,22 +5,16 @@ from mf_system.hardware.devices.interface import IHardwareAdapter
 from mf_system.hardware.devices.pump_lib.qmixsdk import qmixbus, qmixpump, qmixanalogio
 
 
-class SyringePump(IHardwareAdapter):
+class SyringePumpAdapter(IHardwareAdapter):
     _bus_opened = False
 
-    def __init__(
-        self,
-        pump_name: str,
-        pressure_limit: float,
-        inner_diameter_mm: float,
-        max_piston_stroke_mm: float,
-    ):
+    def __init__(self, config: dict):
         super().__init__()
         script_dir = os.path.dirname(os.path.abspath(__file__))
         self.deviceconfig = os.path.join(script_dir, "pump_lib/PumpConfig")
-        self.__pressure_limit = pressure_limit
-        self.__inner_diameter_mm = inner_diameter_mm
-        self.__max_piston_stroke_mm = max_piston_stroke_mm
+        self.__pressure_limit = config["pressure_limit"]
+        self.__inner_diameter_mm = config["inner_diameter_mm"]
+        self.__max_piston_stroke_mm = config["max_piston_stroke_mm"]
 
         # Make sure bus only opened once
         if not self._bus_opened:
@@ -32,49 +26,70 @@ class SyringePump(IHardwareAdapter):
             self.bus.start()
 
         self.pump = qmixpump.Pump()
-        self.pump.lookup_by_name(pump_name)
+        self.pump.lookup_by_name(config["pump_name"])
         self.pump_name = self.pump.get_device_name()
 
         self.pressure_channel = qmixanalogio.AnalogInChannel()
         # print(self.pump_name)
         self.pressure_channel.lookup_channel_by_name(f"{self.pump_name[:-5]}_AnIN1")
 
-    def initialize(self):
+    def initialize(self) -> bool:
         """
         Initialize the pump
         """
 
-        # Step 1. Enable the pump
-        # If pump is in fault state, clear it
-        if self.pump.is_in_fault_state():
-            self.pump.clear_fault()
+        try:
+            # Step 1. Enable the pump
+            # If pump is in fault state, clear it
+            if self.pump.is_in_fault_state():
+                self.pump.clear_fault()
 
-        if not self.pump.is_enabled():
-            self.pump.enable(True)
+            if not self.pump.is_enabled():
+                self.pump.enable(True)
 
-        # Step 2. Set syringe parameters
-        self.pump.set_syringe_param(
-            self.__inner_diameter_mm, self.__max_piston_stroke_mm
-        )
+            # Step 2. Set syringe parameters
+            self.pump.set_syringe_param(
+                self.__inner_diameter_mm, self.__max_piston_stroke_mm
+            )
 
-        # Step 3. Initialize valves
-        if not self.pump.has_valve():
-            raise ModuleNotFoundError("no valve installed")
-        self.valve = self.pump.get_valve()
-        self.switch_valve_to(0)
+            # Step 3. Initialize valves
+            if not self.pump.has_valve():
+                raise ModuleNotFoundError("no valve installed")
+            self.valve = self.pump.get_valve()
+            self.switch_valve_to(0)
 
-        # Step 4. Initialize pressure sensor
-        self.current_pressure_sensor_status = self.pressure_channel.read_status()
-        self.pressure_channel.enable_software_scaling(True)
-        self.pressure_channel.set_scaling_param(0.05, -25)
-        print(f"Current sensor status: {self.current_pressure_sensor_status}")
-        print(f"Current scaling factors: {self.pressure_channel.get_scaling_param()}")
+            # Step 4. Initialize pressure sensor
+            self.current_pressure_sensor_status = self.pressure_channel.read_status()
+            self.pressure_channel.enable_software_scaling(True)
+            self.pressure_channel.set_scaling_param(0.05, -25)
+            print(f"Current sensor status: {self.current_pressure_sensor_status}")
+            print(
+                f"Current scaling factors: {self.pressure_channel.get_scaling_param()}"
+            )
 
-        # Step 5. Setup the unit (milli/s by default)
-        self.set_units(
-            unit_prefix=qmixpump.UnitPrefix.milli,
-            time_unit=qmixpump.TimeUnit.per_second,
-        )
+            # Step 5. Setup the unit (milli/s by default)
+            self.set_units(
+                unit_prefix=qmixpump.UnitPrefix.milli,
+                time_unit=qmixpump.TimeUnit.per_second,
+            )
+        except ConnectionError:
+            return False
+
+    def execute(self, command: dict) -> str:
+        if command["action"] == "aspirate":
+            return self.aspirate(command["volume"], command["flow"])
+        elif command["action"] == "dispense":
+            return self.dispense(command["volume"], command["flow"])
+        elif command["action"] == "refill":
+            return self.refill(command["flow"])
+        elif command["action"] == "empty":
+            return self.empty(command["flow"])
+        elif command["action"] == "stop_pump":
+            return self.stop_pump()
+
+    def shutdown(self) -> None:
+        SyringePumpAdapter.stop_all_pumps()
+        self.capi_close()
 
     def wait_dosage_finished(self, timeout_seconds):
         """
@@ -221,7 +236,7 @@ class SyringePump(IHardwareAdapter):
             print("Bus closed")
 
 
-def test(pump: SyringePump):
+def test(pump: SyringePumpAdapter):
     pump.initialize()
     # pump.pressure_monitor()
 
@@ -258,7 +273,7 @@ def decorator_parallel_executor(func):
 
 
 @decorator_parallel_executor
-def multi_thread_test(pump: SyringePump):
+def multi_thread_test(pump: SyringePumpAdapter):
     pump.initialize()
     # pump.pressure_monitor()
 
@@ -283,14 +298,14 @@ def multi_thread_test(pump: SyringePump):
 
 if __name__ == "__main__":
 
-    pump1 = SyringePump("Nemesys_M_1_Pump", 10, 14.70520755382068, 60)
-    pump2 = SyringePump("Nemesys_M_2_Pump", 10, 14.70520755382068, 60)
-    pump3 = SyringePump("Nemesys_M_3_Pump", 10, 32.80671055737278, 60)
-    pump4 = SyringePump("Nemesys_M_4_Pump", 10, 32.80671055737278, 60)
-    pump5 = SyringePump("Nemesys_M_5_Pump", 10, 23.207658393177034, 60)
-    pump6 = SyringePump("Nemesys_M_6_Pump", 10, 23.207658393177034, 60)
-    pump7 = SyringePump("Nemesys_M_7_Pump", 10, 23.207658393177034, 60)
-    pump8 = SyringePump("Nemesys_M_8_Pump", 10, 10.40522314849599, 60)
+    pump1 = SyringePumpAdapter("Nemesys_M_1_Pump", 10, 14.70520755382068, 60)
+    pump2 = SyringePumpAdapter("Nemesys_M_2_Pump", 10, 14.70520755382068, 60)
+    pump3 = SyringePumpAdapter("Nemesys_M_3_Pump", 10, 32.80671055737278, 60)
+    pump4 = SyringePumpAdapter("Nemesys_M_4_Pump", 10, 32.80671055737278, 60)
+    pump5 = SyringePumpAdapter("Nemesys_M_5_Pump", 10, 23.207658393177034, 60)
+    pump6 = SyringePumpAdapter("Nemesys_M_6_Pump", 10, 23.207658393177034, 60)
+    pump7 = SyringePumpAdapter("Nemesys_M_7_Pump", 10, 23.207658393177034, 60)
+    pump8 = SyringePumpAdapter("Nemesys_M_8_Pump", 10, 10.40522314849599, 60)
 
     # test(pump6)
 

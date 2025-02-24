@@ -1,5 +1,6 @@
 import serial
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 from mf_system.hardware.devices.interface import IHardwareAdapter
 
@@ -16,6 +17,17 @@ class ArduinoAdapter(IHardwareAdapter):
             self._connection = serial.Serial(
                 port=self.port, baudrate=self.baudrate, timeout=self.timeout
             )
+            time.sleep(1)
+            # Home position parallelly
+            with ThreadPoolExecutor() as executor:
+                f1 = executor.submit(self.execute, {"action": "motor1 home"})
+                f2 = executor.submit(self.execute, {"action": "motor2 home"})
+                f3 = executor.submit(self.execute, {"action": "cylinder1 home"})
+                f4 = executor.submit(self.execute, {"action": "cylinder2 home"})
+                f1.result()
+                f2.result()
+                f3.result()
+                f4.result()
             return True
         except ConnectionError:
             return False

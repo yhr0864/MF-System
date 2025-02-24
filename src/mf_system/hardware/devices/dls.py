@@ -63,7 +63,7 @@ class DLSAdapter(IHardwareAdapter):
         if command["action"] == "select_measurement_setup":
             return self.select_measurement_setup(command["id"])
         elif command["action"] == "request_data":
-            return self.request_data(command["num_of_runs"])
+            return self.request_data(command["num_of_runs"], command["save_path"])
         else:
             raise ValueError("Unsupported command")
 

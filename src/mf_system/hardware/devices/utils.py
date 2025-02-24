@@ -87,3 +87,7 @@ class ErrorOccurred(Exception):
     """
 
     pass
+
+
+class DeviceNotFoundError(Exception):
+    pass
