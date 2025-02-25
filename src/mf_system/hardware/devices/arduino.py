@@ -1,6 +1,5 @@
 import serial
 import time
-from concurrent.futures import ThreadPoolExecutor
 
 from mf_system.hardware.devices.interface import IHardwareAdapter
 
