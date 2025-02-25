@@ -37,7 +37,7 @@ class SyringePumpAdapter(IHardwareAdapter):
             if not self._bus_opened:
                 SyringePumpAdapter.connect()
 
-            # Step 2. Create pump 1 ~ 8
+            # Step 2. Create pump
             self.pump = qmixpump.Pump()
             self.pump.lookup_by_name(self.pump_name)
             # self.pump_name = self.pump.get_device_name()
