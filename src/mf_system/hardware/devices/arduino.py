@@ -18,16 +18,16 @@ class ArduinoAdapter(IHardwareAdapter):
                 port=self.port, baudrate=self.baudrate, timeout=self.timeout
             )
             time.sleep(1)
-            # Home position parallelly
-            with ThreadPoolExecutor() as executor:
-                f1 = executor.submit(self.execute, {"action": "motor1 home"})
-                f2 = executor.submit(self.execute, {"action": "motor2 home"})
-                f3 = executor.submit(self.execute, {"action": "cylinder1 home"})
-                f4 = executor.submit(self.execute, {"action": "cylinder2 home"})
-                f1.result()
-                f2.result()
-                f3.result()
-                f4.result()
+
+            commands = [
+                {"action": "motor1 home"},
+                {"action": "motor2 home"},
+                {"action": "cylinder1 home"},
+                {"action": "cylinder2 home"},
+            ]
+
+            for command in commands:
+                self.execute(command)
             return True
         except ConnectionError:
             return False
@@ -57,11 +57,12 @@ class ArduinoAdapter(IHardwareAdapter):
 
 if __name__ == "__main__":
     arduino = ArduinoAdapter({"port": "COM14", "baudrate": 9600, "timeout": 0.1})
-    arduino.initialize()
+    res = arduino.initialize()
     time.sleep(1)
 
     # f = arduino.send_command("motor1 home \n motor2 home")
-    command = {"action": "motor2 home"}
-    f = arduino.execute(command)
-    print(f)
-    arduino.shutdown()
+    # f = arduino.execute({"action": "motor1 home"})
+    # f = arduino.execute({"action": "motor2 home"})
+    # f = arduino.execute({"action": "cylinder1 home"})
+    # print(f, res)
+    # arduino.shutdown()
