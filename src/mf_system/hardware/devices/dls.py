@@ -208,7 +208,7 @@ class DLSAdapter(IHardwareAdapter):
         else:
             raise UnexpectedResponse(f"Unexpected response received: {feedback}")
 
-    def request_data(self, num_of_runs: int, data_file: str = "measurement.csv"):
+    def request_data(self, num_of_runs: int, save_path: str) -> bool:
         """
         Perform multiple measurements, collect requested data, and save results in a .csv file.
 
@@ -219,7 +219,7 @@ class DLSAdapter(IHardwareAdapter):
 
         Args:
             num_of_runs (int): The number of measurements to perform.
-            data_file (str, optional): The file path where the data will be saved. Defaults to "measurement.csv".
+            save_path (str): The file path where the data will be saved.
 
         Returns:
             bool: The feedback is True if requested data is ready, else False.
@@ -311,10 +311,10 @@ class DLSAdapter(IHardwareAdapter):
         results_df.insert(loc=3, column="Signal Quality", value=signal_quality)
 
         # Save the results to a CSV file
-        results_df.to_csv(data_file, index=False)
+        results_df.to_csv(save_path, index=False)
 
         isFinished = True
-        print(f"Measurement finished, data is saved under {data_file}")
+        print(f"Measurement finished, data is saved under {save_path}")
         return isFinished
 
 
