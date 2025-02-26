@@ -35,7 +35,7 @@ class SyringePumpAdapter(IHardwareAdapter):
             # Step 1. Connect to pumps controller
             # Make sure bus only opened once
             if not self._bus_opened:
-                SyringePumpAdapter.connect()
+                SyringePumpAdapter.connect(self.deviceconfig)
 
             # Step 2. Create pump
             self.pump = qmixpump.Pump()
@@ -240,21 +240,33 @@ class SyringePumpAdapter(IHardwareAdapter):
         else:
             print("Bus closed")
 
+
 if __name__ == "__main__":
+    config1 = {
+        "name": "Nemesys_M_2_Pump",
+        "pressure_limit": 10,
+        "inner_diameter_mm": 14.70520755382068,
+        "max_piston_stroke_mm": 60,
+    }
+    config2 = {
+        "name": "Nemesys_M_6_Pump",
+        "pressure_limit": 10,
+        "inner_diameter_mm": 23.207658393177034,
+        "max_piston_stroke_mm": 60,
+    }
+    pump1 = SyringePumpAdapter(config1)
+    pump2 = SyringePumpAdapter(config2)
 
-    pump1 = SyringePumpAdapter("Nemesys_M_1_Pump", 10, 14.70520755382068, 60)
-    pump2 = SyringePumpAdapter("Nemesys_M_2_Pump", 10, 14.70520755382068, 60)
-    pump3 = SyringePumpAdapter("Nemesys_M_3_Pump", 10, 32.80671055737278, 60)
-    pump4 = SyringePumpAdapter("Nemesys_M_4_Pump", 10, 32.80671055737278, 60)
-    pump5 = SyringePumpAdapter("Nemesys_M_5_Pump", 10, 23.207658393177034, 60)
-    pump6 = SyringePumpAdapter("Nemesys_M_6_Pump", 10, 23.207658393177034, 60)
-    pump7 = SyringePumpAdapter("Nemesys_M_7_Pump", 10, 23.207658393177034, 60)
-    pump8 = SyringePumpAdapter("Nemesys_M_8_Pump", 10, 10.40522314849599, 60)
+    print(pump1)
 
-    # test(pump6)
+    # pump1.initialize()
+    # pump2.initialize()
 
-    multi_thread_test(pump6)
-    time.sleep(0.01)
-    multi_thread_test(pump2)
-    # # time.sleep(0.001)
-    # multi_thread_test(pump7)
+    # from concurrent.futures import ThreadPoolExecutor
+
+    # with ThreadPoolExecutor() as executor:
+    #     f1 = executor.submit(pump1.execute, {"action":"aspirate", "volume":0.1, "flow":0.005})
+    #     f2 = executor.submit(pump2.execute, {"action":"aspirate", "volume":0.1, "flow":0.005})
+
+    #     f1.result()
+    #     f2.result()
