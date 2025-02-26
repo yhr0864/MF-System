@@ -240,67 +240,6 @@ class SyringePumpAdapter(IHardwareAdapter):
         else:
             print("Bus closed")
 
-
-def test(pump: SyringePumpAdapter):
-    pump.initialize()
-    # pump.pressure_monitor()
-
-    # pump.aspirate(1, 0.05)
-    # pump.dispense(0.5, 0.005)
-    pump.empty(0.05)
-    # pump.pump_volume()
-    # pump.generate_flow()
-    # pump.set_syringe_level()  # Test with this one first
-    # pump.valve()
-    # pump.switch_valve_to(1)
-    # time.sleep(3)
-    # pump.switch_valve_to(0)
-    # time.sleep(1)
-    # pump.capi_close()
-
-
-from concurrent.futures import ThreadPoolExecutor
-import functools
-import time
-
-# Create a single global ThreadPoolExecutor
-executor = ThreadPoolExecutor()
-
-
-def decorator_parallel_executor(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        # Submit the function to the shared executor
-        future = executor.submit(func, *args, **kwargs)
-        return future
-
-    return wrapper
-
-
-@decorator_parallel_executor
-def multi_thread_test(pump: SyringePumpAdapter):
-    pump.initialize()
-    # pump.pressure_monitor()
-
-    pump.empty(0.05)
-    # pump.dispense()
-    # pump.pump_volume()
-    # pump.generate_flow()
-    # pump.set_syringe_level()  # Test with this one first
-    # pump.valve()
-
-    # valve switch test
-    # pump.switch_valve_to(0)
-    # time.sleep(2)
-    # pump.switch_valve_to(1)
-    # time.sleep(3)
-    # pump.switch_valve_to(2)
-    # time.sleep(2)
-    # pump.switch_valve_to(3)
-    # time.sleep(2)
-    # pump.capi_close()
-
-
 if __name__ == "__main__":
 
     pump1 = SyringePumpAdapter("Nemesys_M_1_Pump", 10, 14.70520755382068, 60)
