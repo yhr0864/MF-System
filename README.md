@@ -15,15 +15,15 @@ This project automates a **high-throughput system for accelerated production and
 
 ### 🧪 Synthesis Module
 **Cetoni Nemeys M Syringe Pump System**  
-<p align="center">
+<div align="center">
   <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png" width="400" alt="System Architecture">
-  <br><strong>Figure 1:</strong> Syringe Pump System
-</p>
+  <p><strong>Figure 1:</strong> Syringe Pump System</p>
+</div>
 
-<p align="center">
-  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png" width="400" alt="System Architecture">
-  <br><strong>Figure 2:</strong> Micro Chip
-</p>
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png" width="400" alt="System Architecture" width="400" alt="System Architecture">
+  <p><strong>Figure 2:</strong> Micro Chip</p>
+</div>
 
 - Precision fluid handling with adjustable flow rates 
 - Integrated microfluidic mixer chips for nanoparticle synthesis  
