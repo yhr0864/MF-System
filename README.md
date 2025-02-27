@@ -1,6 +1,9 @@
 # 🚀🤖 Automated High-Throughput Nanoparticle Synthesis System ⚙️💡 (TO BE CONTINUED)
 
-![](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/MF.png)
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/MF.png">
+  <p> Automated High-Throughput Nanoparticle Synthesis System</p>
+</div>
 
 ## 📝 Project Overview:
 
@@ -16,13 +19,13 @@ This project automates a **high-throughput system for accelerated production and
 ### 🧪 Synthesis Module
 **Cetoni Nemeys M Syringe Pump System**  
 <div align="center">
-  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png" width="400" alt="System Architecture">
-  <p><strong>Figure 1:</strong> Syringe Pump System</p>
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png" alt="System Architecture">
+  <p> Syringe Pump System</p>
 </div>
 
 <div align="center">
-  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png" width="400" alt="System Architecture" width="400" alt="System Architecture">
-  <p><strong>Figure 2:</strong> Micro Chip</p>
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png" alt="System Architecture" alt="System Architecture">
+  <p> Micro Chip</p>
 </div>
 
 - Precision fluid handling with adjustable flow rates 
@@ -32,7 +35,11 @@ This project automates a **high-throughput system for accelerated production and
 
 ### 🎛️ Pneumatic & Motion Control Module
 **Custom Microcontroller System** ([Arduino Mega 2560](https://docs.arduino.cc/hardware/mega-2560/))
-![Pneumatic & Motion Unit](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/characterization.png)
+
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/characterization.png">
+  <p> Characterization Module</p>
+</div>
 
 - Controls 4 pneumatic actuators for immersion probe positioning  
 - Manages rotary table motion for vial handling  
@@ -54,7 +61,11 @@ This project automates a **high-throughput system for accelerated production and
 ---
 
 ## 🎯 Workflow Overview
-![Workflow](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/workflow.png)  
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/workflow.png">
+  <p> Workflow </p>
+</div>
+ 
 1. **Synthesis Phase**
    - Microfluidic mixing with parameter optimization
    - Automated vial filling via rotary table
