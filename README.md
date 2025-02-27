@@ -1,38 +1,51 @@
 # 🚀🤖 Automated High-Throughput Nanoparticle Synthesis System ⚙️💡 (TO BE CONTINUED)
 
-![](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/main/images/MF.png)
+![](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/MF.png)
 
-## 📝 Description:
+## 📝 Project Overview:
 
-This project automates a **high-throughput system for accelerated production and characterization of organic semiconductor nanoparticle dispersions** for photovoltaic applications. The software integrates a state machine-based automation process with hardware control, real-time monitoring, and a PyQt6 GUI for user interaction.
-
----
-
-## 🚀 Project Overview
-
+This project automates a **high-throughput system for accelerated production and characterization of organic semiconductor nanoparticle dispersions** for photovoltaic applications. The system integrates a gantry-based sample handler, turntables for vial handling, a microfluidic synthesis unit, and characterization tools for dynamic light scattering (DLS) and UV-Vis spectroscopy. The software enables precise control of process parameters, sample handling, and measurement workflows to achieve high-throughput optimization.
+ 
 ### 🌟 Core Capabilities
 - Automated synthesis of nanoparticle dispersions using **precision microfluidics**
 - Integrated characterization via **Dynamic Light Scattering (DLS)** and **UV-Vis spectroscopy**
 - Robotic sample handling with **gantry systems** and **Turntables**
 
-### 🔬 System Components
-1. **Synthesis Module**
-   - Cetoni Nemeys M Syringe Pump System (SDK-controlled)
-   - Microfluidic mixer chips
-   - Automated turntable filling (microcontroller-driven)
+## 🔬 System Components & Hardware Integration 🔌
 
-2. **Characterization Module**
-   - **Dynamic Light Scattering**: Microtrac Nanotrac Flex (remote-controlled)
-   - **UV-Vis Spectroscopy**: Sarspec Absorbance Flex (SDK-controlled)
-   - Immersion probes with pneumatic actuation
+### 🧪 Synthesis Module
+**Cetoni Nemeys M Syringe Pump System**  
+![Microfluidic System](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png) 
+![Microfluidic System](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png) 
+- Precision fluid handling with adjustable flow rates 
+- Integrated microfluidic mixer chips for nanoparticle synthesis  
+- **Control Method:** Cetoni offered SDK integration  
+- Centralized configuration via `hardware_config.yaml`
 
-3. **Control Infrastructure**
-   - Custom microcontroller scripts (C-based) for pneumatic/hardware control
-   - PySerial communication for device interfacing
-   - Centralized configuration via `hardware_config.yaml`
+### 🎛️ Pneumatic & Motion Control Module
+**Custom Microcontroller System** ![Arduino Mega 2560](https://docs.arduino.cc/hardware/mega-2560/)
+![Pneumatic & Motion Unit](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/characterization.png)
+- Controls 4 pneumatic actuators for immersion probe positioning  
+- Manages rotary table motion for vial handling  
+- **Control Method:** Custom C/C++ scripts via Serial/UART 
 
-### 🎯 Workflow Overview
-![Workflow](https://example.com/workflow.jpg)  
+### 📊 Characterization Module
+
+#### 🔍 Dynamic Light Scattering (DLS)  
+**Microtrac Nanotrac Flex** ![DLS Analyzer](https://www.microtrac.com/products/dynamic-light-scattering/nanotrac-flex/)
+- Measures particle size distribution: **range ???**  
+- **Control Method:** Remote API through Microtrac Software and SDK
+
+#### 🌈 UV-Vis Spectroscopy 
+**Sarspec Absorbance Flex** ![UV-Vis](https://www.sarspec.com/products/spectrometers/flex)
+- Spectral range: **range ???** (1 nm resolution)  
+- Fiber-optic immersion probe with 10 mm pathlength  
+- **Control Method:** Direct SDK control via Python 
+
+---
+
+## 🎯 Workflow Overview
+![Workflow](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/workflow.png)  
 1. **Synthesis Phase**
    - Microfluidic mixing with parameter optimization
    - Automated vial filling via rotary table
@@ -44,35 +57,15 @@ This project automates a **high-throughput system for accelerated production and
 
 ---
 
-## 🔌 Hardware Integration
+## ⚙️ Control Infrastructure
+| Component                | Protocol                | Interface             |
+|--------------------------|-------------------------|-----------------------|
+| Syringe Pumps            | Modbus-TCP              | Vendor SDK            |
+| DLS System               | REST API                | Vendor Software & SDK |
+| UV-Vis Spectrometer      | USB-HID                 | Vendor SDK            |
+| Pneumatic System         | Serial (9600 baud)      | Custom C/C++ Firmware |
 
-### 🧪 Microfluidic Control System
-
-**Cetoni Nemeys M Syringe Pump System**  
-- Precision fluid handling 
-- Integrated microfluidic mixer chips
-- **Control Method:** Native Python SDK integration  
-
-### 🎛️ Pneumatic Control Unit
-![Pneumatic Control Unit](https://example.com/p.jpg)  
-**Custom Microcontroller System** (Arduino Mega 2560)
-- Controls 4 pneumatic actuators for probe immersion
-- Manages rotary table positioning
-- **Control Method:** Custom C++ scripts via Serial
-
-### 📏 Nanoparticle Characterization
-![Nanoparticle Characterization](https://example.com/nano.jpg) 
-**Microtrac Nanotrac Flex DLS**
-- Measures particle size distribution (1-1000 nm range) ???
-- Integrated temperature control
-- **Control Method:** Remote API through Microtrac Software
-
-### 🌈 Optical Spectroscopy
-![Optical Spectroscopy](https://example.com/spect.jpg) 
-**Sarspec Absorbance Flex UV-Vis**
-- 200-850 nm wavelength range ???
-- Fiber-optic immersion probe
-- **Control Method:** Direct SDK control
+---
 
 ## 📂 Folder Structure
 
