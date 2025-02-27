@@ -17,7 +17,6 @@ This project automates a **high-throughput system for accelerated production and
 ## 🔬 System Components & Hardware Integration 🔌
 
 ### 🧪 Synthesis Module
-**Cetoni Nemeys M Syringe Pump System**  
 <div align="center">
   <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png" alt="System Architecture">
   <p> Syringe Pump System</p>
@@ -28,19 +27,20 @@ This project automates a **high-throughput system for accelerated production and
   <p> Micro Chip</p>
 </div>
 
+**Cetoni Nemeys M Syringe Pump System** ([Nemesys M
+Syringe pump](https://cetoni.com/nemesys-m/))
 - Precision fluid handling with adjustable flow rates 
 - Integrated microfluidic mixer chips for nanoparticle synthesis  
 - **Control Method:** Cetoni offered SDK integration  
 - Centralized configuration via `hardware_config.yaml`
 
 ### 🎛️ Pneumatic & Motion Control Module
-**Custom Microcontroller System** ([Arduino Mega 2560](https://docs.arduino.cc/hardware/mega-2560/))
-
 <div align="center">
   <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/characterization.png">
   <p> Characterization Module</p>
 </div>
 
+**Custom Microcontroller System** ([Arduino Mega 2560](https://docs.arduino.cc/hardware/mega-2560/))
 - Controls 4 pneumatic actuators for immersion probe positioning  
 - Manages rotary table motion for vial handling  
 - **Control Method:** Custom C/C++ scripts via Serial/UART 
