@@ -1,18 +1,89 @@
-# 🚀🤖 Microfluidic System Automation ⚙️💡 (TEMPLATE README FILE)
+# 🚀🤖 Automated High-Throughput Nanoparticle Synthesis System ⚙️💡 (TO BE CONTINUED)
 
-![](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/main/images/MF.png)
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/MF.png">
+  <p> Automated High-Throughput Nanoparticle Synthesis System</p>
+</div>
 
-## 📝 Description:
+## 📝 Project Overview:
 
-This project automates a microfluidic system using a state machine-based automation process. It includes hardware control, real-time monitoring, and a GUI (PyQt6) for user interaction.
+This project automates a **high-throughput system for accelerated production and characterization of organic semiconductor nanoparticle dispersions** for photovoltaic applications. The system integrates a gantry-based sample handler, turntables for vial handling, a microfluidic synthesis unit, and characterization tools for dynamic light scattering (DLS) and UV-Vis spectroscopy. The software enables precise control of process parameters, sample handling, and measurement workflows to achieve high-throughput optimization.
+ 
+### 🌟 Core Capabilities
+- Automated synthesis of nanoparticle dispersions using **precision microfluidics**
+- Integrated characterization via **Dynamic Light Scattering (DLS)** and **UV-Vis spectroscopy**
+- Robotic sample handling with **gantry systems** and **Turntables**
 
-## 🚀 Project Overview
-This project automates a microfluidic system using **state machine-based automation**. It includes:
-- **Hardware control** for valves, robotic arms, turntables, and syringe pumps.
-- **Multi-threading** to ensure smooth execution without UI blocking.
-- **PyQt6 GUI** with radio buttons, logs, and start/stop controls.
-- **Serial Communication** using `pyserial`.
-- **Logging & Monitoring** for real-time experiment tracking.
+## 🔬 System Components & Hardware Integration 🔌
+
+### 🧪 Synthesis Module
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png" alt="System Architecture">
+  <p> Syringe Pump System</p>
+</div>
+
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png" alt="System Architecture" alt="System Architecture">
+  <p> Micro Chip</p>
+</div>
+
+**Cetoni Nemeys M Syringe Pump System** ([Nemesys M
+Syringe pump](https://cetoni.com/nemesys-m/))
+- Precision fluid handling with adjustable flow rates 
+- Integrated microfluidic mixer chips for nanoparticle synthesis  
+- **Control Method:** Cetoni offered SDK integration  
+- Centralized configuration via `hardware_config.yaml`
+
+### 🎛️ Pneumatic & Motion Control Module
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/characterization.png">
+  <p> Characterization Module</p>
+</div>
+
+**Custom Microcontroller System** ([Arduino Mega 2560](https://docs.arduino.cc/hardware/mega-2560/))
+- Controls 4 pneumatic actuators for immersion probe positioning  
+- Manages rotary table motion for vial handling  
+- **Control Method:** Custom C/C++ scripts via Serial/UART 
+
+### 📊 Characterization Module
+
+#### 🔍 Dynamic Light Scattering (DLS)  
+**Microtrac Nanotrac Flex** ([DLS Analyzer](https://www.microtrac.com/products/dynamic-light-scattering/nanotrac-flex/))
+- Measures particle size distribution: **range ???**  
+- **Control Method:** Remote API through Microtrac Software and SDK
+
+#### 🌈 UV-Vis Spectroscopy 
+**Sarspec Absorbance Flex** ([UV-Vis](https://www.sarspec.com/products/spectrometers/flex))
+- Spectral range: **range ???** (1 nm resolution)  
+- Fiber-optic immersion probe with 10 mm pathlength  
+- **Control Method:** Direct SDK control via Python 
+
+---
+
+## 🎯 Workflow Overview
+<div align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/workflow.png">
+  <p> Workflow </p>
+</div>
+ 
+1. **Synthesis Phase**
+   - Microfluidic mixing with parameter optimization
+   - Automated vial filling via rotary table
+
+2. **Characterization Phase**
+   - DLS for nanoparticle size distribution
+   - UV-Vis for optical absorption analysis
+   - Probe cleaning/repositioning between measurements
+
+---
+
+## ⚙️ Control Infrastructure
+| Component                | Protocol                | Interface             |
+|--------------------------|-------------------------|-----------------------|
+| Syringe Pumps            | Modbus-TCP              | Vendor SDK            |
+| DLS System               | REST API                | Vendor Software & SDK |
+| UV-Vis Spectrometer      | USB-HID                 | Vendor SDK            |
+| Pneumatic System         | Serial (9600 baud)      | Custom C/C++ Firmware |
 
 ---
 
@@ -29,7 +100,7 @@ project-root/
 │       ├── logic/           # State machine logic
 │       ├── ui/              # PyQt6 UI components
 │── tests/                   # Unit tests
-│── .github/workflows/       # CI/CD pipeline
+│── .github/workflows/       # CI/CD pipelines
 ```
 
 ---
@@ -41,33 +112,19 @@ project-root/
 pip install -r requirements.txt
 ```
 
-### 2️⃣ Run the Application
+### 2️⃣ Configure Hardware Setups
+Modify `hardware_config.yaml` to customize settings, such as:
+```yaml
+Arduino:
+   port: "COM14"
+   baudrate: 9600
+   timeout: 0.1
+```
+
+### 3️⃣ Run the Application
 ```sh
 python main.py
 ```
-
-### 3️⃣ Build Executable (Windows)
-```sh
-pyinstaller --onefile --noconsole --icon=resources/app.ico main.py
-```
-- The **EXE file** will be in the `dist/` folder.
-
----
-
-## 📜 Configuration
-Modify `config.yaml` to customize settings, such as:
-```yaml
-hardware:
-  port: COM3
-  baudrate: 115200
-```
-
----
-
-## 🛠 CI/CD & Deployment
-- **Build Automation:** GitHub Actions builds the EXE on each commit.
-- **Sync to GitLab:** Uses a workflow to mirror GitHub repo.
-- **Deployment:** Copies the latest `dist/main.exe` to a remote server.
 
 ---
 
@@ -93,16 +150,6 @@ hardware:
 
 ## 📜 License
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-## ❓ Troubleshooting & FAQ
-
-### ❓ Why is my serial port not detected?
-Check `Device Manager` and update the port in `config.yaml`.
-
-### ❓ The GUI freezes while running!
-Ensure multi-threading is correctly implemented in the experiment thread.
 
 ---
 

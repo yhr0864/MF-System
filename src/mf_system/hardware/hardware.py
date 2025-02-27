@@ -1,6 +1,5 @@
-import time
 import yaml
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 
 from mf_system.hardware.devices.interface import IHardwareAdapter
 from mf_system.hardware.devices.arduino import ArduinoAdapter
