@@ -15,13 +15,15 @@ This project automates a **high-throughput system for accelerated production and
 
 ### 🧪 Synthesis Module
 **Cetoni Nemeys M Syringe Pump System**  
-| ![Figure 1:Microfluidic System](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png)  |
-|:--:|
-| **Figure 1: Syringe Pump System** |
+<p align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/pumps.png" width="400" alt="System Architecture">
+  <br><strong>Figure 1:</strong> Syringe Pump System
+</p>
 
-| ![Microfluidic System](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png)   |
-|:--:|
-| **Figure 2: Micro Chip** |
+<p align="center">
+  <img src="https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/micro_chip.png" width="400" alt="System Architecture">
+  <br><strong>Figure 2:</strong> Micro Chip
+</p>
 
 - Precision fluid handling with adjustable flow rates 
 - Integrated microfluidic mixer chips for nanoparticle synthesis  
@@ -29,8 +31,9 @@ This project automates a **high-throughput system for accelerated production and
 - Centralized configuration via `hardware_config.yaml`
 
 ### 🎛️ Pneumatic & Motion Control Module
-**Custom Microcontroller System** [Arduino Mega 2560](https://docs.arduino.cc/hardware/mega-2560/)
+**Custom Microcontroller System** ([Arduino Mega 2560](https://docs.arduino.cc/hardware/mega-2560/))
 ![Pneumatic & Motion Unit](https://gitlab.kit.edu/haoran.yu/mf-system/-/raw/new_interface/images/characterization.png)
+
 - Controls 4 pneumatic actuators for immersion probe positioning  
 - Manages rotary table motion for vial handling  
 - **Control Method:** Custom C/C++ scripts via Serial/UART 
@@ -38,12 +41,12 @@ This project automates a **high-throughput system for accelerated production and
 ### 📊 Characterization Module
 
 #### 🔍 Dynamic Light Scattering (DLS)  
-**Microtrac Nanotrac Flex** [DLS Analyzer](https://www.microtrac.com/products/dynamic-light-scattering/nanotrac-flex/)
+**Microtrac Nanotrac Flex** ([DLS Analyzer](https://www.microtrac.com/products/dynamic-light-scattering/nanotrac-flex/))
 - Measures particle size distribution: **range ???**  
 - **Control Method:** Remote API through Microtrac Software and SDK
 
 #### 🌈 UV-Vis Spectroscopy 
-**Sarspec Absorbance Flex** [UV-Vis](https://www.sarspec.com/products/spectrometers/flex)
+**Sarspec Absorbance Flex** ([UV-Vis](https://www.sarspec.com/products/spectrometers/flex))
 - Spectral range: **range ???** (1 nm resolution)  
 - Fiber-optic immersion probe with 10 mm pathlength  
 - **Control Method:** Direct SDK control via Python 
