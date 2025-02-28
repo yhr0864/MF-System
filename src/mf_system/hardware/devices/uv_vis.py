@@ -22,17 +22,17 @@ if __name__ == "__main__":
         else:
             return f"Unknown: {hex(machine)}"
 
-    dll_path = "C:/Users/Yu/Desktop/mf-system/src/mf_system/hardware/devices/uv_vis_lib/dll/SpecDLL.dll"
+    dll_path = "U:/projects/mf-system/src/mf_system/hardware/devices/uv_vis_lib/dll/SpecDLL.dll"
     # dll_32_path = "U:/projects/devices/UV Vis/SDK/Sample/SpecDLL.dll"
 
-    cetoni_dll = "C:/Users/Yu/Desktop/mf-system/src/mf_system/hardware/devices/pump_lib/dll/LABBCAN_ANALOGIO_API.dll"
+    # cetoni_dll = "C:/Users/Yu/Desktop/mf-system/src/mf_system/hardware/devices/pump_lib/dll/LABBCAN_ANALOGIO_API.dll"
 
     print(
         f"{dll_path} is {get_architecture(dll_path)}, with size {os.path.getsize(dll_path)}B"
     )
-    print(
-        f"{cetoni_dll} is {get_architecture(cetoni_dll)}, with size {os.path.getsize(cetoni_dll)}B"
-    )
+    # print(
+    #     f"{cetoni_dll} is {get_architecture(cetoni_dll)}, with size {os.path.getsize(cetoni_dll)}B"
+    # )
 
     import platform
 
