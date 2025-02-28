@@ -1,7 +1,17 @@
-# from mf_system.hardware.devices.uv_vis_lib.uvvissdk import uvvisremotecontrol
+from mf_system.hardware.devices.interface import IHardwareAdapter
+from mf_system.hardware.devices.uv_vis_lib.uvvissdk import uvvisremotecontrol
 
 
-class UV_Vis:
+class UV_Vis(IHardwareAdapter):
+    def initialize(self):
+        return super().initialize()
+
+    def execute(self, command):
+        return super().execute(command)
+
+    def shutdown(self):
+        return super().shutdown()
+
     def test_lib():
         pass
 

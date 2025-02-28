@@ -1,13 +1,39 @@
-from ctypes import POINTER, cast, c_int, c_double, c_char
+import ctypes
 from collections import namedtuple
 
-from mf_system.hardware.devices.interface import IHardwareAdapter
+from mf_system.hardware.devices.utils import RequestFailed
 from mf_system.hardware.devices.uv_vis_lib.uvvissdk import _uvvisloadlib
 
 uvvis_api = _uvvisloadlib.load_lib("SpecDLL")
 
+# The function names are encrypted within the DLL
+encrypted_function_names = {
+    "ChangeIntegrationTime": "?ChangeIntegrationTime@classSpec@specspace@@SA_NHH@Z",
+    "Connect": "?Connect@classSpec@specspace@@SAHH@Z",
+    "Disconnect": "?Disconnect@classSpec@specspace@@SA_NH@Z",
+    "GetSerial": "?GetSerial@classSpec@specspace@@SAPEBDH@Z",
+    "LED": "?LED@classSpec@specspace@@SA_N_NH@Z",
+    "LibTest": "?LibTest@classSpec@specspace@@SAXXZ",
+    "ReadEEPROMCoeff": "?ReadEEPROMCoeff@classSpec@specspace@@SAPEANH@Z",
+    "ScanDevices": "?ScanDevices@classSpec@specspace@@SAPEAHXZ",
+    "Shutter": "?Shutter@classSpec@specspace@@SA_N_NH@Z",
+    "SpecACK": "?SpecACK@classSpec@specspace@@SA_NH@Z",
+    "TriggerInDisable": "?TriggerInDisable@classSpec@specspace@@SA_NH@Z",
+    "TriggerInEnable": "?TriggerInEnable@classSpec@specspace@@SA_NHH@Z",
+    "TriggerOutOnOff": "?TriggerOutOnOff@classSpec@specspace@@SA_NHH@Z",
+    "XData": "?XData@classSpec@specspace@@SAPEANNNNNH@Z",
+    "YData": "?YData@classSpec@specspace@@SAPEAN_NH@Z",
+}
 
-class Uvvis:
+# Tracking connections
+connected = {"FThandle": "ID"}
+scanDevices = [False]
+
+# Types of FLEX devices
+FLEX_types = ["STD", "RES+"]
+
+
+class UVvis:
     def lib_test(self) -> None:
         """
         Checks if library is communicating with user application.
@@ -18,8 +44,12 @@ class Uvvis:
             None
         """
 
-        result = getattr(uvvis_api, "?LibTest@classSpec@specspace@@SAXXZ")
-        return result()
+        # Setting the LibTest function
+        function = getattr(uvvis_api, encrypted_function_names["LibTest"])
+        function.argtypes = []
+        function.restype = None
+
+        return function()
 
     def scan_devices(self):
         """
@@ -35,14 +65,22 @@ class Uvvis:
                 - 1: Flex RES+
         """
 
-        result = getattr(uvvis_api, "?ScanDevices@classSpec@specspace@@SAPEAHXZ")
-        result.restype = POINTER(c_int)
-        arr_ptr = result()
-        size = arr_ptr[0] * 2 + 1
+        # Setting the ScanDevices function
+        function = getattr(uvvis_api, encrypted_function_names["ScanDevices"])
+        function.argtypes = []
+        function.restype = ctypes.POINTER(ctypes.c_int)
 
-        # Convert pointer to an array
-        arr = cast(arr_ptr, POINTER(c_int * size)).contents
-        return arr
+        # Determine the amount of data to output
+        size = function()[0] * 2 + 1
+
+        # Set flag for ScanDevice use
+        try:
+            scanDevices.remove(False)
+            scanDevices.append(True)
+        except ValueError:
+            pass
+
+        return function()[:size]
 
     def get_serial(self, id: int) -> str:
         """
@@ -56,9 +94,20 @@ class Uvvis:
             str: Serial number of the specified device.
         """
 
-        result = getattr(uvvis_api, "?GetSerial@classSpec@specspace@@SAPEBDH@Z")
-        result.restype = POINTER(c_char)
-        return result
+        if scanDevices[0]:  # ScanDevices() needs to be run first
+            if id not in connected.values():
+
+                # Setting the GetSerial function
+                function = getattr(uvvis_api, encrypted_function_names["GetSerial"])
+                function.argtypes = [ctypes.c_int]
+                function.restype = ctypes.c_char_p
+
+                # Returns the serial number converted from bytes type to str
+                return str(function(id))[2:-1]
+            else:
+                raise RequestFailed("This function cannot be used in connected devices")
+        else:
+            raise RequestFailed("Use ScanDevices() first!")
 
     def connect(self, id: int) -> int:
         """
@@ -71,8 +120,22 @@ class Uvvis:
             int: FTHandle_ID if connection is successful, -1 if unsuccessful.
         """
 
-        result = getattr(uvvis_api, "?Connect@classSpec@specspace@@SAHH@Z")
-        return result(id)
+        if id % 2 == 0:
+            # Setting the Connect function
+            function = getattr(uvvis_api, encrypted_function_names["Connect"])
+            function.argtypes = []
+            function.restype = ctypes.c_int
+
+            # Attempts to connect
+            FThandle_ID = function(id)
+
+            # Saving the FThandle_ID in case of a successful connection
+            if FThandle_ID != -1:
+                connected[FThandle_ID] = id
+
+            return FThandle_ID
+        else:
+            return -1
 
     def disconnect(self, id: int) -> bool:
         """
@@ -82,11 +145,23 @@ class Uvvis:
             id (int): FTHandle_ID of the device
 
         Returns:
-            bool: True if disconnected successfully, False if failed.
+            success (bool): True if disconnected successfully, False if failed.
         """
 
-        result = getattr(uvvis_api, "?Disconnect@classSpec@specspace@@SA_NH@Z")
-        return result(id)
+        # Setting the Disconnect function
+        function = getattr(uvvis_api, encrypted_function_names["Disconnect"])
+        function.argtypes = [ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        # Attempts to disconnect
+        success = function(id)
+
+        # Removes the device from the connected dictionary
+        if success:
+            connected.pop(id)
+
+        # Returns whether it was successful or not (True/False)
+        return success
 
     def switch_LED(self, switch: bool, id: int) -> bool:
         """
@@ -100,8 +175,12 @@ class Uvvis:
             bool: True if the command succeeded, False otherwise.
         """
 
-        result = getattr(uvvis_api, "?LED@classSpec@specspace@@SA_N_NH@Z")
-        return result(switch, id)
+        # Setting the LED function
+        function = getattr(uvvis_api, encrypted_function_names["LED"])
+        function.argtypes = [ctypes.c_bool, ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        return function(switch, id)
 
     def change_integration_time(self, int_time: int, id: int) -> bool:
         """
@@ -117,10 +196,12 @@ class Uvvis:
             bool: True if the time was changed successfully, False otherwise.
         """
 
-        result = getattr(
-            uvvis_api, "?ChangeIntegrationTime@classSpec@specspace@@SA_NHH@Z"
-        )
-        return result(int_time, id)
+        # Setting the ChangeIntegrationTime function
+        function = getattr(uvvis_api, encrypted_function_names["ChangeIntegrationTime"])
+        function.argtypes = [ctypes.c_int, ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        return function(int_time, id)
 
     def get_YData(self, external_trigger: bool, id: int):
         """
@@ -136,15 +217,13 @@ class Uvvis:
             List[float]: Intensity values for each pixel.
         """
 
-        result = getattr(uvvis_api, "?YData@classSpec@specspace@@SAPEAN_NH@Z")
-        result.restype = POINTER(c_double)
+        # Setting the YData function
+        function = getattr(uvvis_api, encrypted_function_names["YData"])
+        function.argtypes = [ctypes.c_bool, ctypes.c_int]
+        function.restype = ctypes.POINTER(ctypes.c_double)
 
-        arr_ptr = result(external_trigger, id)
-        size = 3648  # depends on Spectrometer Product Report
-
-        # Convert pointer to an array
-        arr = cast(arr_ptr, POINTER(c_double * size)).contents
-        return arr
+        # Returns the the intensity of the pixels
+        return function(external_trigger, id)
 
     def get_XData(self, c0: float, c1: float, c2: float, c3: float, id: int):
         """
@@ -164,15 +243,27 @@ class Uvvis:
             Wavelength(PixelN) = c0 + c1 * PixelN + c2 * (PixelN ** 2) + c3 * (PixelN ** 3)
         """
 
-        result = getattr(uvvis_api, "?XData@classSpec@specspace@@SAPEANNNNNH@Z")
-        result.restype = POINTER(c_double)
+        # Setting the XData function
+        function = getattr(uvvis_api, encrypted_function_names["XData"])
+        function.argtypes = [
+            ctypes.c_double,
+            ctypes.c_double,
+            ctypes.c_double,
+            ctypes.c_double,
+            ctypes.c_int,
+        ]
+        function.restype = ctypes.POINTER(ctypes.c_double)
 
-        arr_ptr = result(c0, c1, c2, c3, id)
-        size = 3648  # depends on Spectrometer Product Report
+        wavelengths = function(c0, c1, c2, c3, id)
 
-        # Convert pointer to an array
-        arr = cast(arr_ptr, POINTER(c_double * size)).contents
-        return arr
+        # Calculate the number of pixels
+        i = 0
+        while wavelengths[i] != 0:
+            i += 1
+        n_pixels = i
+
+        # Returns the wavelengths corresponding to the pixels
+        return wavelengths[:n_pixels]
 
     def read_EEPROMCoeff(self, id: int) -> float:
         """
@@ -185,15 +276,13 @@ class Uvvis:
             list[float]: A list containing four wavelength coefficients [c0, c1, c2, c3].
         """
 
-        result = getattr(uvvis_api, "?XData@classSpec@specspace@@SAPEANNNNNH@Z")
-        result.restype = POINTER(c_double)
+        # Setting the ReadEEPROMCoeff function
+        function = getattr(uvvis_api, encrypted_function_names["ReadEEPROMCoeff"])
+        function.argtypes = [ctypes.c_int]
+        function.restype = ctypes.POINTER(ctypes.c_double)
 
-        arr_ptr = result(id)
-        size = 4
-
-        # Convert pointer to an array
-        arr = cast(arr_ptr, POINTER(c_double * size)).contents
-        return arr
+        # Returns the wavelength coefficients saved on the EEPROM
+        return function(id)[:4]
 
     def switch_shutter(self, switch: bool, id: int) -> bool:
         """
@@ -207,8 +296,12 @@ class Uvvis:
             bool: True if successful, False otherwise.
         """
 
-        result = getattr(uvvis_api, "?Shutter@classSpec@specspace@@SA_N_NH@Z")
-        return result(switch, id)
+        # Setting the Shutter function
+        function = getattr(uvvis_api, encrypted_function_names["Shutter"])
+        function.argtypes = [ctypes.c_bool, ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        return function(switch, id)
 
     def trigger_out_on_off(self, switch: bool, id: int):
         """
@@ -222,8 +315,12 @@ class Uvvis:
             bool: True if successful, False otherwise.
         """
 
-        result = getattr(uvvis_api, "?TriggerOutOnOff@classSpec@specspace@@SA_NHH@Z")
-        return result(switch, id)
+        # Setting the TriggerOutOnOff function
+        function = getattr(uvvis_api, encrypted_function_names["TriggerOutOnOff"])
+        function.argtypes = [ctypes.c_bool, ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        return function(switch, id)
 
     def trigger_in_enable(self, trigger_in_delay: int, id: int) -> bool:
         """
@@ -237,8 +334,12 @@ class Uvvis:
             bool: True if activated, False otherwise.
         """
 
-        result = getattr(uvvis_api, "?TriggerInEnable@classSpec@specspace@@SA_NHH@Z")
-        return result(trigger_in_delay, id)
+        # Setting the TriggerInEnable function
+        function = getattr(uvvis_api, encrypted_function_names["TriggerInEnable"])
+        function.argtypes = [ctypes.c_int, ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        return function(trigger_in_delay, id)
 
     def trigger_in_disable(self, id: int) -> bool:
         """
@@ -251,8 +352,20 @@ class Uvvis:
             bool: True if disabled successfully, False otherwise.
         """
 
-        result = getattr(uvvis_api, "?TriggerInDisable@classSpec@specspace@@SA_NH@Z")
-        return result(id)
+        # Setting the TriggerInDisable function
+        function = getattr(uvvis_api, encrypted_function_names["TriggerInDisable"])
+        function.argtypes = [ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        # Attempts to disable external trigger mode
+        success = function(id)
+
+        if success:
+            # Clean data output
+            self.get_YData(False, id)
+
+        # Returns whether it was successful or not (True/False)
+        return success
 
     def prepare_SpecACK(self, id: int) -> bool:
         """
@@ -265,12 +378,112 @@ class Uvvis:
             bool: True if successful, False otherwise.
         """
 
-        result = getattr(uvvis_api, "?SpecACK@classSpec@specspace@@SA_NH@Z")
-        return result(id)
+        # Setting the SpecACK function
+        function = getattr(uvvis_api, encrypted_function_names["SpecACK"])
+        function.argtypes = [ctypes.c_int]
+        function.restype = ctypes.c_bool
+
+        return function(id)
 
 
 if __name__ == "__main__":
-    uvvis = Uvvis()
-    arr = uvvis.scan_devices()
+    import time
+    import numpy as np
+    import matplotlib.pyplot as plt
 
-    print(len(arr))
+    uvvis = UVvis()
+
+    # Test DLL presence
+    uvvis.lib_test()
+
+    device_info = uvvis.scan_devices()  # Get information of connected FLEX devices
+
+    n_devices = device_info[0]  # Index 0 contains the number of connected devices
+
+    if n_devices != 0:
+
+        for n in range(n_devices):
+
+            ID = device_info[1 + 2 * n]  # Odd indexes contain the IDs
+
+            print(uvvis.get_serial(ID))
+
+            FLEX_type_n = device_info[
+                2 * (n + 1)
+            ]  # Even natural indexes contain the number corresponding to the type of FLEX device
+
+            print(FLEX_types[FLEX_type_n])
+
+        # Connect to the first device on the list
+        ID = device_info[1]
+        FLEX_type_n = device_info[2]
+
+        # Connects and gets handle to use with other functions
+        FThandle_ID = uvvis.connect(ID)
+
+        if FThandle_ID != -1:  # Test if the connection was successful
+
+            uvvis.switch_LED(True, FThandle_ID)  # Turn the LED on
+
+            # Change integration time to the lowest value possible
+            if FLEX_type_n == 0:
+                integration_time = 2
+            else:
+                integration_time = 3
+            uvvis.change_integration_time(integration_time, FThandle_ID)
+
+            # Get wavelenth array (list type)
+            c0, c1, c2, c3 = uvvis.read_EEPROMCoeff(FThandle_ID)
+            wavelengths = uvvis.get_XData(c0, c1, c2, c3, FThandle_ID)
+            n_pixels = len(wavelengths)
+
+            uvvis.trigger_in_disable(FThandle_ID)  # Internal trigger mode
+
+            uvvis.trigger_out_on_off(False, FThandle_ID)  # Trigger out disabled
+
+            # Dark measurement
+            uvvis.switch_shutter(True, FThandle_ID)  # Close shutter
+            time.sleep(0.1)
+            dark = uvvis.get_YData(False, FThandle_ID)[
+                :n_pixels
+            ]  # Perform a measurement
+            uvvis.switch_shutter(False, FThandle_ID)  # Open shutter
+            time.sleep(0.1)
+
+            # Internal trigger measureme
+            spectrum = uvvis.get_YData(False, FThandle_ID)[:n_pixels]
+
+            # External trigger example with trigger out
+            """
+            TriggerOutOnOff(True, FThandle_ID) # Trigger out enabled
+            
+            TriggerInEnable(0, FThandle_ID) # External trigger mode
+            
+            SpecACK(FThandle_ID) # Ready the spectrometer for the next trigger
+            
+            input("Press Enter after external trigger! ")
+            
+            spectrum = YData(True, FThandle_ID)[:n_pixels] # External trigger measurement
+            
+            TriggerOutOnOff(False, FThandle_ID) # Trigger out disabled
+            """
+
+            spectrum_minus_dark = np.array(spectrum) - np.array(dark)  # Removing dark
+
+            # Plotting the spectrum
+            plt.subplots()
+            plt.plot(wavelengths, spectrum_minus_dark)
+            plt.xlabel(r"$\lambda$ (nm)")
+            plt.ylabel("Intensity (counts)")
+            plt.xlim(wavelengths[0], wavelengths[-1])
+            plt.ylim(
+                np.min(spectrum_minus_dark)
+                - 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
+                np.max(spectrum_minus_dark)
+                + 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
+            )
+            plt.show()
+
+            uvvis.switch_LED(False, FThandle_ID)
+            # Disconnecting
+            ID = uvvis.disconnect(FThandle_ID)
