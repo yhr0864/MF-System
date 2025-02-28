@@ -123,7 +123,7 @@ class UVvis:
         if id % 2 == 0:
             # Setting the Connect function
             function = getattr(uvvis_api, encrypted_function_names["Connect"])
-            function.argtypes = []
+            function.argtypes = [ctypes.c_int]
             function.restype = ctypes.c_int
 
             # Attempts to connect
@@ -408,9 +408,8 @@ if __name__ == "__main__":
 
             print(uvvis.get_serial(ID))
 
-            FLEX_type_n = device_info[
-                2 * (n + 1)
-            ]  # Even natural indexes contain the number corresponding to the type of FLEX device
+            # Even natural indexes contain the number corresponding to the type of FLEX device
+            FLEX_type_n = device_info[2 * (n + 1)]
 
             print(FLEX_types[FLEX_type_n])
 
@@ -437,53 +436,53 @@ if __name__ == "__main__":
             wavelengths = uvvis.get_XData(c0, c1, c2, c3, FThandle_ID)
             n_pixels = len(wavelengths)
 
-            uvvis.trigger_in_disable(FThandle_ID)  # Internal trigger mode
+            # uvvis.trigger_in_disable(FThandle_ID)  # Internal trigger mode
 
-            uvvis.trigger_out_on_off(False, FThandle_ID)  # Trigger out disabled
+            # uvvis.trigger_out_on_off(False, FThandle_ID)  # Trigger out disabled
 
-            # Dark measurement
-            uvvis.switch_shutter(True, FThandle_ID)  # Close shutter
-            time.sleep(0.1)
-            dark = uvvis.get_YData(False, FThandle_ID)[
-                :n_pixels
-            ]  # Perform a measurement
-            uvvis.switch_shutter(False, FThandle_ID)  # Open shutter
-            time.sleep(0.1)
+            # # Dark measurement
+            # uvvis.switch_shutter(True, FThandle_ID)  # Close shutter
+            # time.sleep(0.1)
+            # dark = uvvis.get_YData(False, FThandle_ID)[
+            #     :n_pixels
+            # ]  # Perform a measurement
+            # uvvis.switch_shutter(False, FThandle_ID)  # Open shutter
+            # time.sleep(0.1)
 
-            # Internal trigger measureme
-            spectrum = uvvis.get_YData(False, FThandle_ID)[:n_pixels]
+            # # Internal trigger measureme
+            # spectrum = uvvis.get_YData(False, FThandle_ID)[:n_pixels]
 
-            # External trigger example with trigger out
-            """
-            TriggerOutOnOff(True, FThandle_ID) # Trigger out enabled
-            
-            TriggerInEnable(0, FThandle_ID) # External trigger mode
-            
-            SpecACK(FThandle_ID) # Ready the spectrometer for the next trigger
-            
-            input("Press Enter after external trigger! ")
-            
-            spectrum = YData(True, FThandle_ID)[:n_pixels] # External trigger measurement
-            
-            TriggerOutOnOff(False, FThandle_ID) # Trigger out disabled
-            """
+            # # External trigger example with trigger out
+            # """
+            # TriggerOutOnOff(True, FThandle_ID) # Trigger out enabled
 
-            spectrum_minus_dark = np.array(spectrum) - np.array(dark)  # Removing dark
+            # TriggerInEnable(0, FThandle_ID) # External trigger mode
 
-            # Plotting the spectrum
-            plt.subplots()
-            plt.plot(wavelengths, spectrum_minus_dark)
-            plt.xlabel(r"$\lambda$ (nm)")
-            plt.ylabel("Intensity (counts)")
-            plt.xlim(wavelengths[0], wavelengths[-1])
-            plt.ylim(
-                np.min(spectrum_minus_dark)
-                - 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
-                np.max(spectrum_minus_dark)
-                + 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
-            )
-            plt.show()
+            # SpecACK(FThandle_ID) # Ready the spectrometer for the next trigger
 
-            uvvis.switch_LED(False, FThandle_ID)
-            # Disconnecting
-            ID = uvvis.disconnect(FThandle_ID)
+            # input("Press Enter after external trigger! ")
+
+            # spectrum = YData(True, FThandle_ID)[:n_pixels] # External trigger measurement
+
+            # TriggerOutOnOff(False, FThandle_ID) # Trigger out disabled
+            # """
+
+            # spectrum_minus_dark = np.array(spectrum) - np.array(dark)  # Removing dark
+
+            # # Plotting the spectrum
+            # plt.subplots()
+            # plt.plot(wavelengths, spectrum_minus_dark)
+            # plt.xlabel(r"$\lambda$ (nm)")
+            # plt.ylabel("Intensity (counts)")
+            # plt.xlim(wavelengths[0], wavelengths[-1])
+            # plt.ylim(
+            #     np.min(spectrum_minus_dark)
+            #     - 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
+            #     np.max(spectrum_minus_dark)
+            #     + 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
+            # )
+            # plt.show()
+
+            # uvvis.switch_LED(False, FThandle_ID)
+            # # Disconnecting
+            # ID = uvvis.disconnect(FThandle_ID)

@@ -65,7 +65,7 @@ class DLSAdapter(IHardwareAdapter):
         elif command["action"] == "request_data":
             return self.request_data(command["num_of_runs"], command["save_path"])
         else:
-            raise ValueError("Unsupported command")
+            raise ValueError(f"Unsupported command: {command["action"]}")
 
     def shutdown(self) -> None:
         if self._connection.is_open:
