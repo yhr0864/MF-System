@@ -38,20 +38,30 @@ if __name__ == "__main__":
 
     print(platform.architecture())
 
-    from ctypes import CDLL, windll, c_short
+    from ctypes import CDLL, windll, POINTER, c_int
     import ctypes
 
-    cetoni = windll.LoadLibrary(cetoni_dll)
+    # cetoni = windll.LoadLibrary(cetoni_dll)
     my_dll = windll.LoadLibrary(dll_path)
 
     name = ctypes.create_string_buffer(255)
-    cetoni.LCAIO_GetChanName(ctypes.c_longlong(), name, ctypes.sizeof(name))
+    # cetoni.LCAIO_GetChanName(ctypes.c_longlong(), name, ctypes.sizeof(name))
 
-    Connect = getattr(my_dll, "?Connect@classSpec@specspace@@SAHH@Z")
+    connect = getattr(my_dll, "?Connect@classSpec@specspace@@SAHH@Z")
     disconnect = getattr(my_dll, "?Disconnect@classSpec@specspace@@SA_NH@Z")
     led = getattr(my_dll, "?LED@classSpec@specspace@@SA_N_NH@Z")
+    lib_test = getattr(my_dll, "?LibTest@classSpec@specspace@@SAXXZ")
+    scan_device = getattr(my_dll, "?ScanDevices@classSpec@specspace@@SAPEAHXZ")
 
-    print(Connect)
+    lib_test()
+    scan_device.restype = POINTER(c_int)
+    arr = scan_device()
+    print(arr[0], arr[1], arr[3])
+    connect(0)
+    arr = scan_device()
+    print(arr[0], arr[1], arr[3])
+    res = led(True, 0)
+    print(res)
     # print(cetoni_dll)
     # print(dir(cetoni))
     # print(dir(my_dll))
