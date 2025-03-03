@@ -21,7 +21,7 @@ class UVvisAdapter(IHardwareAdapter):
         if n_devices == 0:
             raise DeviceNotFoundError("No devices found!")
         else:
-            print(f"Totally {n_devices} found")
+            print(f"Totally {n_devices} devices found")
             print(
                 f"Current device {self.id} with serial number: {self._connection.get_serial(self.id)}"
             )
