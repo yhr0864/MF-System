@@ -120,29 +120,26 @@ class UVvis:
             int: FTHandle_ID if connection is successful, -1 if unsuccessful.
         """
 
-        if id % 2 == 0:
-            # Setting the Connect function
-            function = getattr(uvvis_api, encrypted_function_names["Connect"])
-            function.argtypes = [ctypes.c_int]
-            function.restype = ctypes.c_int
+        # Setting the Connect function
+        function = getattr(uvvis_api, encrypted_function_names["Connect"])
+        function.argtypes = [ctypes.c_int]
+        function.restype = ctypes.c_int
 
-            # Attempts to connect
-            FThandle_ID = function(id)
+        # Attempts to connect
+        FThandle_ID = function(id)
 
-            # Saving the FThandle_ID in case of a successful connection
-            if FThandle_ID != -1:
-                connected[FThandle_ID] = id
+        # Saving the FThandle_ID in case of a successful connection
+        if FThandle_ID != -1:
+            connected[FThandle_ID] = id
 
-            return FThandle_ID
-        else:
-            return -1
+        return FThandle_ID
 
-    def disconnect(self, id: int) -> bool:
+    def disconnect(self, FTHandle_ID: int) -> bool:
         """
         Disconnects from Sarspec FLEX spectrometer.
 
         Args:
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             success (bool): True if disconnected successfully, False if failed.
@@ -154,22 +151,22 @@ class UVvis:
         function.restype = ctypes.c_bool
 
         # Attempts to disconnect
-        success = function(id)
+        success = function(FTHandle_ID)
 
         # Removes the device from the connected dictionary
         if success:
-            connected.pop(id)
+            connected.pop(FTHandle_ID)
 
         # Returns whether it was successful or not (True/False)
         return success
 
-    def switch_LED(self, switch: bool, id: int) -> bool:
+    def switch_LED(self, switch: bool, FTHandle_ID: int) -> bool:
         """
         Turns on/off the LED of device.
 
         Args:
             switch (bool): True to turn on, False to turn off
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             bool: True if the command succeeded, False otherwise.
@@ -180,9 +177,9 @@ class UVvis:
         function.argtypes = [ctypes.c_bool, ctypes.c_int]
         function.restype = ctypes.c_bool
 
-        return function(switch, id)
+        return function(switch, FTHandle_ID)
 
-    def change_integration_time(self, int_time: int, id: int) -> bool:
+    def change_integration_time(self, int_time: int, FTHandle_ID: int) -> bool:
         """
         Changes the integration time of the device.
 
@@ -190,7 +187,7 @@ class UVvis:
             int_time (int): Integration time in milliseconds
                 - 3 to 214500 ms for FLEX RES+
                 - 2 to 214500 ms for FLEX STD
-        id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             bool: True if the time was changed successfully, False otherwise.
@@ -201,9 +198,9 @@ class UVvis:
         function.argtypes = [ctypes.c_int, ctypes.c_int]
         function.restype = ctypes.c_bool
 
-        return function(int_time, id)
+        return function(int_time, FTHandle_ID)
 
-    def get_YData(self, external_trigger: bool, id: int):
+    def get_YData(self, external_trigger: bool, FTHandle_ID: int):
         """
         Obtains a measurement.
 
@@ -211,7 +208,7 @@ class UVvis:
             external_trigger (bool):
                 - True: Uses external trigger
                 - False: Uses internal trigger
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             List[float]: Intensity values for each pixel.
@@ -223,9 +220,9 @@ class UVvis:
         function.restype = ctypes.POINTER(ctypes.c_double)
 
         # Returns the the intensity of the pixels
-        return function(external_trigger, id)
+        return function(external_trigger, FTHandle_ID)
 
-    def get_XData(self, c0: float, c1: float, c2: float, c3: float, id: int):
+    def get_XData(self, c0: float, c1: float, c2: float, c3: float, FTHandle_ID: int):
         """
         Gets wavelength array based on provided wavelength coefficients.
 
@@ -234,7 +231,7 @@ class UVvis:
             c1 (float): Wavelength coefficient c1
             c2 (float): Wavelength coefficient c2
             c3 (float): Wavelength coefficient c3
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             list[float]: A list of wavelength values (in nm) for each pixel.
@@ -254,7 +251,7 @@ class UVvis:
         ]
         function.restype = ctypes.POINTER(ctypes.c_double)
 
-        wavelengths = function(c0, c1, c2, c3, id)
+        wavelengths = function(c0, c1, c2, c3, FTHandle_ID)
 
         # Calculate the number of pixels
         i = 0
@@ -265,12 +262,12 @@ class UVvis:
         # Returns the wavelengths corresponding to the pixels
         return wavelengths[:n_pixels]
 
-    def read_EEPROMCoeff(self, id: int) -> float:
+    def read_EEPROMCoeff(self, FTHandle_ID: int) -> float:
         """
         Reads the coefficients from the EEPROM of device.
 
         Args:
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             list[float]: A list containing four wavelength coefficients [c0, c1, c2, c3].
@@ -282,15 +279,15 @@ class UVvis:
         function.restype = ctypes.POINTER(ctypes.c_double)
 
         # Returns the wavelength coefficients saved on the EEPROM
-        return function(id)[:4]
+        return function(FTHandle_ID)[:4]
 
-    def switch_shutter(self, switch: bool, id: int) -> bool:
+    def switch_shutter(self, switch: bool, FTHandle_ID: int) -> bool:
         """
         Closes or opens the shutter of device, if available.
 
         Args:
             switch (bool): True to close, False to open
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             bool: True if successful, False otherwise.
@@ -301,15 +298,15 @@ class UVvis:
         function.argtypes = [ctypes.c_bool, ctypes.c_int]
         function.restype = ctypes.c_bool
 
-        return function(switch, id)
+        return function(switch, FTHandle_ID)
 
-    def trigger_out_on_off(self, switch: bool, id: int):
+    def trigger_out_on_off(self, switch: bool, FTHandle_ID: int):
         """
         Enables or disables the device's trigger out function.
 
         Args:
             switch (bool): True to enable, False to disable
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             bool: True if successful, False otherwise.
@@ -320,15 +317,15 @@ class UVvis:
         function.argtypes = [ctypes.c_bool, ctypes.c_int]
         function.restype = ctypes.c_bool
 
-        return function(switch, id)
+        return function(switch, FTHandle_ID)
 
-    def trigger_in_enable(self, trigger_in_delay: int, id: int) -> bool:
+    def trigger_in_enable(self, trigger_in_delay: int, FTHandle_ID: int) -> bool:
         """
         Activates Trigger In mode, allowing measurements based on external triggers.
 
         Args:
             trigger_in_delay (int): Delay in microseconds before responding to trigger
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             bool: True if activated, False otherwise.
@@ -339,14 +336,14 @@ class UVvis:
         function.argtypes = [ctypes.c_int, ctypes.c_int]
         function.restype = ctypes.c_bool
 
-        return function(trigger_in_delay, id)
+        return function(trigger_in_delay, FTHandle_ID)
 
-    def trigger_in_disable(self, id: int) -> bool:
+    def trigger_in_disable(self, FTHandle_ID: int) -> bool:
         """
         Deactivates Trigger In mode.
 
         Args:
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             bool: True if disabled successfully, False otherwise.
@@ -358,21 +355,21 @@ class UVvis:
         function.restype = ctypes.c_bool
 
         # Attempts to disable external trigger mode
-        success = function(id)
+        success = function(FTHandle_ID)
 
         if success:
             # Clean data output
-            self.get_YData(False, id)
+            self.get_YData(False, FTHandle_ID)
 
         # Returns whether it was successful or not (True/False)
         return success
 
-    def prepare_SpecACK(self, id: int) -> bool:
+    def prepare_SpecACK(self, FTHandle_ID: int) -> bool:
         """
         Prepares the spectrometer for a new measurement using an external trigger.
 
         Args:
-            id (int): FTHandle_ID of the device
+            FTHandle_ID (int): FTHandle_ID of the device
 
         Returns:
             bool: True if successful, False otherwise.
@@ -383,7 +380,7 @@ class UVvis:
         function.argtypes = [ctypes.c_int]
         function.restype = ctypes.c_bool
 
-        return function(id)
+        return function(FTHandle_ID)
 
 
 if __name__ == "__main__":
@@ -398,7 +395,11 @@ if __name__ == "__main__":
 
     device_info = uvvis.scan_devices()  # Get information of connected FLEX devices
 
+    print(f"device_info: {device_info}")
+
     n_devices = device_info[0]  # Index 0 contains the number of connected devices
+
+    print(n_devices)
 
     if n_devices != 0:
 
@@ -415,11 +416,12 @@ if __name__ == "__main__":
 
         # Connect to the first device on the list
         ID = device_info[1]
+        print(ID)
         FLEX_type_n = device_info[2]
 
         # Connects and gets handle to use with other functions
-        FThandle_ID = uvvis.connect(ID)
-
+        FThandle_ID = uvvis.connect(0)
+        print(FThandle_ID)
         if FThandle_ID != -1:  # Test if the connection was successful
 
             uvvis.switch_LED(True, FThandle_ID)  # Turn the LED on
@@ -429,60 +431,59 @@ if __name__ == "__main__":
                 integration_time = 2
             else:
                 integration_time = 3
-            uvvis.change_integration_time(integration_time, FThandle_ID)
+            uvvis.change_integration_time(1000, FThandle_ID)
 
             # Get wavelenth array (list type)
             c0, c1, c2, c3 = uvvis.read_EEPROMCoeff(FThandle_ID)
             wavelengths = uvvis.get_XData(c0, c1, c2, c3, FThandle_ID)
             n_pixels = len(wavelengths)
 
-            # uvvis.trigger_in_disable(FThandle_ID)  # Internal trigger mode
+            uvvis.trigger_in_disable(FThandle_ID)  # Internal trigger mode
 
-            # uvvis.trigger_out_on_off(False, FThandle_ID)  # Trigger out disabled
+            uvvis.trigger_out_on_off(False, FThandle_ID)  # Trigger out disabled
 
-            # # Dark measurement
-            # uvvis.switch_shutter(True, FThandle_ID)  # Close shutter
-            # time.sleep(0.1)
-            # dark = uvvis.get_YData(False, FThandle_ID)[
-            #     :n_pixels
-            # ]  # Perform a measurement
-            # uvvis.switch_shutter(False, FThandle_ID)  # Open shutter
-            # time.sleep(0.1)
+            # Dark measurement
+            uvvis.switch_shutter(True, FThandle_ID)  # Close shutter
+            time.sleep(0.1)
+            # Perform a measurement
+            dark = uvvis.get_YData(False, FThandle_ID)[:n_pixels]
+            uvvis.switch_shutter(False, FThandle_ID)  # Open shutter
+            time.sleep(0.1)
 
-            # # Internal trigger measureme
-            # spectrum = uvvis.get_YData(False, FThandle_ID)[:n_pixels]
+            # Internal trigger measureme
+            spectrum = uvvis.get_YData(False, FThandle_ID)[:n_pixels]
 
-            # # External trigger example with trigger out
-            # """
-            # TriggerOutOnOff(True, FThandle_ID) # Trigger out enabled
+            # External trigger example with trigger out
+            """
+            TriggerOutOnOff(True, FThandle_ID) # Trigger out enabled
 
-            # TriggerInEnable(0, FThandle_ID) # External trigger mode
+            TriggerInEnable(0, FThandle_ID) # External trigger mode
 
-            # SpecACK(FThandle_ID) # Ready the spectrometer for the next trigger
+            SpecACK(FThandle_ID) # Ready the spectrometer for the next trigger
 
-            # input("Press Enter after external trigger! ")
+            input("Press Enter after external trigger! ")
 
-            # spectrum = YData(True, FThandle_ID)[:n_pixels] # External trigger measurement
+            spectrum = YData(True, FThandle_ID)[:n_pixels] # External trigger measurement
 
-            # TriggerOutOnOff(False, FThandle_ID) # Trigger out disabled
-            # """
+            TriggerOutOnOff(False, FThandle_ID) # Trigger out disabled
+            """
 
-            # spectrum_minus_dark = np.array(spectrum) - np.array(dark)  # Removing dark
+            spectrum_minus_dark = np.array(spectrum) - np.array(dark)  # Removing dark
 
-            # # Plotting the spectrum
-            # plt.subplots()
-            # plt.plot(wavelengths, spectrum_minus_dark)
-            # plt.xlabel(r"$\lambda$ (nm)")
-            # plt.ylabel("Intensity (counts)")
-            # plt.xlim(wavelengths[0], wavelengths[-1])
-            # plt.ylim(
-            #     np.min(spectrum_minus_dark)
-            #     - 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
-            #     np.max(spectrum_minus_dark)
-            #     + 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
-            # )
-            # plt.show()
+            # Plotting the spectrum
+            plt.subplots()
+            plt.plot(wavelengths, spectrum_minus_dark)
+            plt.xlabel(r"$\lambda$ (nm)")
+            plt.ylabel("Intensity (counts)")
+            plt.xlim(wavelengths[0], wavelengths[-1])
+            plt.ylim(
+                np.min(spectrum_minus_dark)
+                - 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
+                np.max(spectrum_minus_dark)
+                + 0.05 * (np.max(spectrum_minus_dark) - np.min(spectrum_minus_dark)),
+            )
+            plt.show()
 
-            # uvvis.switch_LED(False, FThandle_ID)
-            # # Disconnecting
-            # ID = uvvis.disconnect(FThandle_ID)
+            uvvis.switch_LED(False, FThandle_ID)
+            # Disconnecting
+            ID = uvvis.disconnect(FThandle_ID)

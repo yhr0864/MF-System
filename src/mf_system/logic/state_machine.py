@@ -191,11 +191,29 @@ class StateMachine:
         return False
 
     def measure_UV(self):
-        # # Dip the measure rod in the sample
-        # self.arduino.send_command("rod_UV extend")
+        # Step 1: Dark measurement (shutter closes)
+        self.hardware.execute_command(
+            "UV_Vis", {"action": "switch_shutter", "switch": True}
+        )
+        time.sleep(0.1)
+        self.dark = self.hardware.execute_command("UV_Vis", {"action": "measure"})
 
-        # # Measuring
+        # Step 2: Reference measurement (shutter opens)
+        self.hardware.execute_command(
+            "UV_Vis", {"action": "switch_shutter", "switch": False}
+        )
+        time.sleep(0.1)
+        self.refernce = self.hardware.execute_command("UV_Vis", {"action": "measure"})
 
-        # # Measure finished
-        # self.arduino.send_command("rod_UV retract")
-        print("measure uv")
+        # Step 3: Dip the measure rod in the sample
+        fb = self.hardware.execute_command("Arduino", {"action": "cylinder1 retract"})
+        if fb != "Cylinder1 Retraction Finished":
+            raise RequestFailed(
+                "Cylinder_uvvis dip in request failed. Measurement cannot proceed."
+            )
+
+        # Step 4: Sample measurement
+        self.sample = self.hardware.execute_command("UV_Vis", {"action": "measure"})
+
+        # Step 5: Retract the probe rod
+        return self.hardware.execute_command("Arduino", {"action": "cylinder1 extend"})

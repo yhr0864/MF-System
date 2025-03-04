@@ -1,3 +1,7 @@
+import time
+import numpy as np
+import matplotlib.pyplot as plt
+
 from mf_system.hardware.devices.utils import DeviceNotFoundError
 from mf_system.hardware.devices.interface import IHardwareAdapter
 from mf_system.hardware.devices.uv_vis_lib.uvvissdk import uvvisremotecontrol
@@ -8,96 +12,95 @@ FLEX_types = ["STD", "RES+"]
 
 class UVvisAdapter(IHardwareAdapter):
     def __init__(self, config: dict):
+        self.device_id = None
+        self.FTHandle_ID = None
         self._connection = None
-        self.id = config["device_id"]
+        self.int_time = config["integration_time"]
+        self.average = config["average"]
+        self.smoothing = config["smoothing"]
 
     def initialize(self):
         self._connection = uvvisremotecontrol.UVvis()
-
-        # Step 1: Get information of connected FLEX devices
         device_info = self._connection.scan_devices()
         n_devices = device_info[0]  # Index 0 contains the number of connected devices
 
         if n_devices == 0:
             raise DeviceNotFoundError("No devices found!")
-        else:
-            print(f"Totally {n_devices} devices found")
-            print(
-                f"Current device {self.id} with serial number: {self._connection.get_serial(self.id)}"
-            )
 
-            # Even natural indexes contain the number corresponding to the type of FLEX device
-            FLEX_type_n = device_info[2 * (self.id + 1)]
+        self.device_id = device_info[1]
+        print(
+            f"Current device {self.device_id} with serial number: {self._connection.get_serial(self.device_id)}"
+        )
 
-            print(f"Device type: {FLEX_types[FLEX_type_n]}")
+        FLEX_type_n = device_info[2]
 
-            # Connects and gets handle to use with other functions
-            FThandle_ID = self._connection.connect(self.id)
+        print(f"Device type: {FLEX_types[FLEX_type_n]}")
 
-            if FThandle_ID != -1:  # Test if the connection was successful
-                self._connection.switch_LED(True, FThandle_ID)  # Turn the LED on
+        # Connects and gets handle to use with other functions
+        self.FThandle_ID = self._connection.connect(self.device_id)
 
-                # Change integration time to the lowest value possible
-                if FLEX_type_n == 0:
-                    integration_time = 2
-                else:
-                    integration_time = 3
-                self._connection.change_integration_time(integration_time, FThandle_ID)
+        # Disable trigger in/out mode
+        self._connection.trigger_in_disable(self.FThandle_ID)
+        self._connection.trigger_out_on_off(False, self.FThandle_ID)
 
-                # Get wavelenth array (list type)
-                c0, c1, c2, c3 = self._connection.read_EEPROMCoeff(FThandle_ID)
-                wavelengths = self._connection.get_XData(c0, c1, c2, c3, FThandle_ID)
-                n_pixels = len(wavelengths)
-                print(n_pixels)
+        if self.FThandle_ID != -1:  # Test if the connection was successful
+            self._connection.switch_LED(True, self.FThandle_ID)  # Turn the LED on
 
     def execute(self, command: dict) -> str:
         action = command["action"]
 
         match action:
-            case "connect":
-                return self._connection.connect(self.id)
-            case "disconnect":
-                return self._connection.disconnect(self.id)
-            case "scan_devices":
-                return self._connection.scan_devices()
-            case "get_serial":
-                return self._connection.get_serial(self.id)
             case "change_integration_time":
                 return self._connection.change_integration_time(
-                    command["int_time"], self.id
+                    command["int_time"], self.FTHandle_ID
                 )
-            case "get_YData":
-                return self._connection.get_YData(command["external_trigger"], self.id)
-            case "get_XData":
-                return self._connection.get_XData(
-                    command["c0"],
-                    command["c1"],
-                    command["c2"],
-                    command["c3"],
-                    self.id,
-                )
+            case "measure":
+                return self.measure()
             case "switch_LED":
-                return self._connection.switch_LED(command["switch"], self.id)
-            case "read_EEPROMCoeff":
-                return self._connection.read_EEPROMCoeff(self.id)
+                return self._connection.switch_LED(command["switch"], self.FTHandle_ID)
             case "switch_shutter":
-                return self._connection.switch_shutter(self.id)
-            case "trigger_in_disable":
-                return self._connection.trigger_in_disable(self.id)
-            case "trigger_in_enable":
-                return self._connection.trigger_in_enable(
-                    command["trigger_in_delay"], self.id
+                return self._connection.switch_shutter(
+                    command["switch"], self.FTHandle_ID
                 )
-            case "trigger_out_on_off":
-                return self._connection.trigger_out_on_off(command["switch"], self.id)
-            case "prepare_SpecACK":
-                return self._connection.prepare_SpecACK(self.id)
             case _:
                 raise ValueError(f"Unsupported command: {action}")
 
     def shutdown(self) -> None:
         if self._connection:
-            self._connection.disconnect(self.id)
+            self._connection.disconnect(self.FThandle_ID)
+
+    def measure(self):
+        self._connection.change_integration_time(self.int_time, self.FThandle_ID)
+
+        # Get wavelenth array (list type)
+        c0, c1, c2, c3 = self._connection.read_EEPROMCoeff(self.FThandle_ID)
+        wavelengths = self._connection.get_XData(c0, c1, c2, c3, self.FThandle_ID)
+        n_pixels = len(wavelengths)
+
+        return self._connection.get_YData(False, self.FThandle_ID)[:n_pixels]
+
+    def get_Absorbance(self, Sn: list, Dn: list, Rn: list):
+        An = -np.log10((Sn - Dn) / (Rn - Dn))
+        return An
+
+    def get_Transmittance(self, Sn: list, Dn: list, Rn: list):
+        Tn = (Sn - Dn) / (Rn - Dn) * 100
+        return Tn
+
+    def plot_result(self, wavelengths, spectrum, save_path):
+        plt.subplots()
+        plt.plot(wavelengths, spectrum)
+        plt.xlabel(r"$\lambda$ (nm)")
+        plt.ylabel("Intensity (counts)")
+        plt.xlim(wavelengths[0], wavelengths[-1])
+        plt.ylim(
+            np.min(spectrum) - 0.05 * (np.max(spectrum) - np.min(spectrum)),
+            np.max(spectrum) + 0.05 * (np.max(spectrum) - np.min(spectrum)),
+        )
+
+        # Save the plot
+        plt.savefig(save_path)
+        plt.show()
 
 
 if __name__ == "__main__":
