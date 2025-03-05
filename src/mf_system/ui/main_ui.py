@@ -1,6 +1,7 @@
 import sys
 import time
-from pymongo import MongoClient
+import yaml
+
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
@@ -23,6 +24,7 @@ from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtGui import QTextCursor
 
 from mf_system.logic.controller import Controller
+from mf_system.hardware.hardware import HardwareFactory
 
 _pump_init_para = {
     "pump1": {
@@ -108,14 +110,19 @@ class MainUI(QWidget):
     def __init__(self):
         super().__init__()
 
-        # MongoDB Connection
-        client = MongoClient("mongodb://localhost:27017/")
-        db = client["experiment_db"]
-        samples_collection = db["sample_config"]
-        hardware_collection = db["hardware_config"]
-        measure_collection = db["measurements"]
+        # # MongoDB Connection
+        # client = MongoClient("mongodb://localhost:27017/")
+        # db = client["experiment_db"]
+        # samples_collection = db["sample_config"]
+        # hardware_collection = db["hardware_config"]
+        # measure_collection = db["measurements"]
+        self.hw_config_path = (
+            "c:/Users/Yu/Desktop/mf-system/src/mf_system/database/hardware_config.yaml"
+        )
 
-        self.hw_config = hardware_collection.find_one()
+        self.hw_config = HardwareFactory._load_config(
+            self.hw_config_path, yaml.safe_load
+        )
 
         self.init_ui()
         self.controller = None
@@ -300,7 +307,11 @@ class MainUI(QWidget):
             },
             "Gantry": {"ip": self.ip_gantry.text(), "port": self.port_gantry.text()},
         }
-        self.hardware_collection.insert_one(doc)
+
+        self.hw_config.update(doc)
+
+        with open(self.hw_config_path, "w") as file:
+            yaml.dump(self.hw_config, file)
         self.result_label.setText("Status: Data saved successfully!")
 
     def create_pump_tabs(self, tab_name: str, init_dict: dict):

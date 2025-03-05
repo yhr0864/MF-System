@@ -1,4 +1,5 @@
 import yaml
+import json
 from typing import Dict, Any
 
 from mf_system.hardware.devices.interface import IHardwareAdapter
@@ -15,7 +16,22 @@ class HardwareFactory:
         """Load configuration from a file using the specified loader."""
         try:
             with open(file_path, "r") as file:
-                return loader(file)
+                return loader(file) or {}
+        except FileNotFoundError:
+            print(f"Config file '{file_path}' not found. Generating a new one...")
+
+            empty_data = {}  # Default empty dictionary
+
+            # Determine file format and save empty file
+            if file_path.endswith(".yaml") or file_path.endswith(".yml"):
+                with open(file_path, "w") as file:
+                    yaml.dump(empty_data, file, default_flow_style=False)
+            elif file_path.endswith(".json"):
+                with open(file_path, "w") as file:
+                    json.dump(empty_data, file, indent=4)
+
+            return empty_data  # Return an empty dictionary
+
         except Exception as e:
             raise FileNotFoundError(f"Failed to load config file {file_path}: {e}")
 
