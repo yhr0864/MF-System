@@ -19,6 +19,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QComboBox,
     QTabWidget,
+    QSpinBox,
 )
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtGui import QTextCursor
@@ -261,6 +262,23 @@ class MainUI(QWidget):
 
         # UV Layout Box
         uv_layout = QVBoxLayout()
+        formLayout_uv = QFormLayout()
+
+        self.int_time = QSpinBox(parent=self.hw_group_box)
+        self.int_time.setRange(3, 214500)
+        self.int_time.setValue(3)
+        self.avg = QSpinBox(parent=self.hw_group_box)
+        self.avg.setRange(1, 65535)
+        self.avg.setValue(1)
+        self.smoothing = QSpinBox(parent=self.hw_group_box)
+        self.smoothing.setRange(1, 3647)
+        self.smoothing.setValue(1)
+
+        formLayout_uv.addRow("Integration Time:", self.int_time)
+        formLayout_uv.addRow("Average:", self.avg)
+        formLayout_uv.addRow("Smoothing:", self.smoothing)
+
+        uv_layout.addLayout(formLayout_uv)
 
         uv_box = QGroupBox("UV Setup")
         uv_box.setLayout(uv_layout)
@@ -297,15 +315,16 @@ class MainUI(QWidget):
         doc = {
             "Arduino": {
                 "port": self.port_arduino.text(),
-                "baudrate": self.baudrate_arduino.text(),
-                "timeout": self.timeout_arduino.text(),
+                "baudrate": int(self.baudrate_arduino.text()),
+                "timeout": float(self.timeout_arduino.text()),
             },
             "DLS": {
                 "port": self.port_dls.text(),
-                "baudrate": self.baudrate_dls.text(),
-                "timeout": self.timeout_dls.text(),
+                "baudrate": int(self.baudrate_dls.text()),
+                "timeout": float(self.timeout_dls.text()),
             },
             "Gantry": {"ip": self.ip_gantry.text(), "port": self.port_gantry.text()},
+            "Pumps": _pump_init_para,
         }
 
         self.hw_config.update(doc)

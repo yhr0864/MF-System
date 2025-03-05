@@ -1,3 +1,5 @@
+import os
+
 from mf_system.logic.state_machine_dispense import StateMachineDispense
 from mf_system.logic.state_machine_measure import StateMachineMeasure
 from mf_system.logic.state_machine_boundary_con import StateMachine
@@ -12,9 +14,14 @@ from mf_system.logic.utils import (
 
 
 class Controller:
-    def __init__(self, user_input, config_file=1):
+    def __init__(
+        self,
+        user_input,
+        config_root_path="c:/Users/Yu/Desktop/mf-system/src/mf_system/database/",
+    ):
         self.user_input = user_input
-        self.config = config_file
+        self.hw_config_path = os.path.join(config_root_path, "hardware_config.yaml")
+        self.sample_config_path = os.path.join(config_root_path, "sample_config.json")
 
     def data_parse(self):
         after_parsed_data = self.user_input
@@ -30,6 +37,8 @@ class Controller:
                 name="State Machine Dispense",
                 num_bottles=5,
                 test_mode=True,
+                hardware_config_path=self.hw_config_path,
+                sample_config_path=self.sample_config_path,
             )
 
         elif select == "Measure Only":
@@ -39,6 +48,8 @@ class Controller:
                 name="State Machine Measure",
                 num_bottles=4,
                 test_mode=True,
+                hardware_config_path=self.hw_config_path,
+                sample_config_path=self.sample_config_path,
             )
 
         else:
@@ -48,6 +59,8 @@ class Controller:
                 name="State Machine",
                 num_bottles=5,
                 test_mode=True,
+                hardware_config_path=self.hw_config_path,
+                sample_config_path=self.sample_config_path,
             )
 
     def run_experiment(self):
