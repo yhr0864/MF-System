@@ -190,7 +190,7 @@ class StateMachine:
 
         return False
 
-    def measure_UV(self):
+    def measure_UV(self, mode: str, save_path: str):
         # Step 1: Dark measurement (shutter closes)
         self.hardware.execute_command(
             "UV_Vis", {"action": "switch_shutter", "switch": True}
@@ -214,6 +214,8 @@ class StateMachine:
 
         # Step 4: Sample measurement
         self.sample = self.hardware.execute_command("UV_Vis", {"action": "measure"})
+
+        # Step 5: Plot and save data
 
         # Step 5: Retract the probe rod
         return self.hardware.execute_command("Arduino", {"action": "cylinder1 extend"})

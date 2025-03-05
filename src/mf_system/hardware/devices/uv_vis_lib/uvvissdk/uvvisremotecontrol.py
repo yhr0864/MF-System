@@ -420,7 +420,7 @@ if __name__ == "__main__":
         FLEX_type_n = device_info[2]
 
         # Connects and gets handle to use with other functions
-        FThandle_ID = uvvis.connect(0)
+        FThandle_ID = uvvis.connect(ID)
         print(FThandle_ID)
         if FThandle_ID != -1:  # Test if the connection was successful
 
