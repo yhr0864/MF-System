@@ -1,34 +1,34 @@
 stages:          # List of stages for jobs, and their order of execution
-  - update_requirements
+  # - update_requirements
   - test
   - build
   - deploy
 
-update-requirements:
-  stage: update_requirements
-  image: python:3.12
-  before_script:
-    - apt-get update && apt-get install -y docker.io
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  script:
-    - echo "Checking for changes in requirements.txt..."
+# update-requirements:
+#   stage: update_requirements
+#   image: python:3.12
+#   before_script:
+#     - apt-get update && apt-get install -y docker.io
+#     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#   script:
+#     - echo "Checking for changes in requirements.txt..."
 
-    # - git checkout $CI_COMMIT_REF_NAME
-    # - echo "Setting up virtual environment"
-    # - python -m venv venv
-    # - source venv/bin/activate
-    # - echo "Installing current dependencies"
-    # - pip install --upgrade pip
-    # - pip install -r requirements.txt
-    # - echo "Updating requirements.txt"
-    # - pip freeze > requirements.txt
-    # - echo "Committing and pushing changes"
-    # - git config --global user.name "GitLab CI"
-    # - git config --global user.email "ci@gitlab.kit.edu"
-    # - git add requirements.txt
-    # - git commit -m "Update requirements.txt"
-    # - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.kit.edu/haoran.yu/mf-system.git
-    # - git push origin $CI_COMMIT_REF_NAME
+#     - git checkout $CI_COMMIT_REF_NAME
+#     - echo "Setting up virtual environment"
+#     - python -m venv venv
+#     - source venv/bin/activate
+#     - echo "Installing current dependencies"
+#     - pip install --upgrade pip
+#     - pip install -r requirements.txt
+#     - echo "Updating requirements.txt"
+#     - pip freeze > requirements.txt
+#     - echo "Committing and pushing changes"
+#     - git config --global user.name "GitLab CI"
+#     - git config --global user.email "ci@gitlab.kit.edu"
+#     - git add requirements.txt
+#     - git commit -m "Update requirements.txt"
+#     - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.kit.edu/haoran.yu/mf-system.git
+#     - git push origin $CI_COMMIT_REF_NAME
 
 test:   
   stage: test

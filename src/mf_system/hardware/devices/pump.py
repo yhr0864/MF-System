@@ -1,79 +1,100 @@
 import os
 import time
 
+from mf_system.hardware.devices.interface import IHardwareAdapter
 from mf_system.hardware.devices.pump_lib.qmixsdk import qmixbus, qmixpump, qmixanalogio
 
 
-class SyringePump:
+class SyringePumpAdapter(IHardwareAdapter):
     _bus_opened = False
 
-    def __init__(
-        self,
-        pump_name: str,
-        pressure_limit: float,
-        inner_diameter_mm: float,
-        max_piston_stroke_mm: float,
-    ):
+    def __init__(self, config: dict):
         super().__init__()
         script_dir = os.path.dirname(os.path.abspath(__file__))
         self.deviceconfig = os.path.join(script_dir, "pump_lib/PumpConfig")
-        self.__pressure_limit = pressure_limit
-        self.__inner_diameter_mm = inner_diameter_mm
-        self.__max_piston_stroke_mm = max_piston_stroke_mm
+        self.pump_name = config["name"]
+        self.__pressure_limit = config["pressure_limit"]
+        self.__inner_diameter_mm = config["inner_diameter_mm"]
+        self.__max_piston_stroke_mm = config["max_piston_stroke_mm"]
 
-        # Make sure bus only opened once
-        if not self._bus_opened:
-            print("Opening bus with deviceconfig ", self.deviceconfig)
-            self.bus = qmixbus.Bus()
-            self.bus.open(self.deviceconfig, "")
-            self.__class__._bus_opened = True
-            print("Starting bus communication...")
-            self.bus.start()
+    @staticmethod
+    def connect(deviceconfig):
+        print("Opening bus with deviceconfig ", deviceconfig)
+        bus = qmixbus.Bus()
+        bus.open(deviceconfig, "")
+        __class__._bus_opened = True
+        print("Starting bus communication...")
+        bus.start()
 
-        self.pump = qmixpump.Pump()
-        self.pump.lookup_by_name(pump_name)
-        self.pump_name = self.pump.get_device_name()
-
-        self.pressure_channel = qmixanalogio.AnalogInChannel()
-        # print(self.pump_name)
-        self.pressure_channel.lookup_channel_by_name(f"{self.pump_name[:-5]}_AnIN1")
-
-    def initialize(self):
+    def initialize(self) -> bool:
         """
         Initialize the pump
         """
 
-        # Step 1. Enable the pump
-        # If pump is in fault state, clear it
-        if self.pump.is_in_fault_state():
-            self.pump.clear_fault()
+        try:
+            # Step 1. Connect to pumps controller
+            # Make sure bus only opened once
+            if not self._bus_opened:
+                SyringePumpAdapter.connect(self.deviceconfig)
 
-        if not self.pump.is_enabled():
-            self.pump.enable(True)
+            # Step 2. Create pump
+            self.pump = qmixpump.Pump()
+            self.pump.lookup_by_name(self.pump_name)
+            # self.pump_name = self.pump.get_device_name()
 
-        # Step 2. Set syringe parameters
-        self.pump.set_syringe_param(
-            self.__inner_diameter_mm, self.__max_piston_stroke_mm
-        )
+            # Step 3. Enable the pump
+            # If pump is in fault state, clear it
+            if self.pump.is_in_fault_state():
+                self.pump.clear_fault()
 
-        # Step 3. Initialize valves
-        if not self.pump.has_valve():
-            raise ModuleNotFoundError("no valve installed")
-        self.valve = self.pump.get_valve()
-        self.switch_valve_to(0)
+            if not self.pump.is_enabled():
+                self.pump.enable(True)
 
-        # Step 4. Initialize pressure sensor
-        self.current_pressure_sensor_status = self.pressure_channel.read_status()
-        self.pressure_channel.enable_software_scaling(True)
-        self.pressure_channel.set_scaling_param(0.05, -25)
-        print(f"Current sensor status: {self.current_pressure_sensor_status}")
-        print(f"Current scaling factors: {self.pressure_channel.get_scaling_param()}")
+            # Step 4. Set syringe parameters
+            self.pump.set_syringe_param(
+                self.__inner_diameter_mm, self.__max_piston_stroke_mm
+            )
 
-        # Step 5. Setup the unit (milli/s by default)
-        self.set_units(
-            unit_prefix=qmixpump.UnitPrefix.milli,
-            time_unit=qmixpump.TimeUnit.per_second,
-        )
+            # Step 5. Initialize valves
+            if not self.pump.has_valve():
+                raise ModuleNotFoundError("no valve installed")
+            self.valve = self.pump.get_valve()
+            self.switch_valve_to(0)
+
+            # Step 6. Initialize pressure sensor
+            self.pressure_channel = qmixanalogio.AnalogInChannel()
+            self.pressure_channel.lookup_channel_by_name(f"{self.pump_name[:-5]}_AnIN1")
+            self.current_pressure_sensor_status = self.pressure_channel.read_status()
+            self.pressure_channel.enable_software_scaling(True)
+            self.pressure_channel.set_scaling_param(0.05, -25)
+            print(f"Current sensor status: {self.current_pressure_sensor_status}")
+            print(
+                f"Current scaling factors: {self.pressure_channel.get_scaling_param()}"
+            )
+
+            # Step 5. Setup the unit (milli/s by default)
+            self.set_units(
+                unit_prefix=qmixpump.UnitPrefix.milli,
+                time_unit=qmixpump.TimeUnit.per_second,
+            )
+        except ConnectionError:
+            return False
+
+    def execute(self, command: dict) -> str:
+        if command["action"] == "aspirate":
+            return self.aspirate(command["volume"], command["flow"])
+        elif command["action"] == "dispense":
+            return self.dispense(command["volume"], command["flow"])
+        elif command["action"] == "refill":
+            return self.refill(command["flow"])
+        elif command["action"] == "empty":
+            return self.empty(command["flow"])
+        elif command["action"] == "stop_pump":
+            return self.stop_pump()
+
+    def shutdown(self) -> None:
+        SyringePumpAdapter.stop_all_pumps()
+        self.capi_close()
 
     def wait_dosage_finished(self, timeout_seconds):
         """
@@ -220,81 +241,32 @@ class SyringePump:
             print("Bus closed")
 
 
-def test(pump: SyringePump):
-    pump.initialize()
-    # pump.pressure_monitor()
-
-    # pump.aspirate(1, 0.05)
-    # pump.dispense(0.5, 0.005)
-    pump.empty(0.05)
-    # pump.pump_volume()
-    # pump.generate_flow()
-    # pump.set_syringe_level()  # Test with this one first
-    # pump.valve()
-    # pump.switch_valve_to(1)
-    # time.sleep(3)
-    # pump.switch_valve_to(0)
-    # time.sleep(1)
-    # pump.capi_close()
-
-
-from concurrent.futures import ThreadPoolExecutor
-import functools
-import time
-
-# Create a single global ThreadPoolExecutor
-executor = ThreadPoolExecutor()
-
-
-def decorator_parallel_executor(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        # Submit the function to the shared executor
-        future = executor.submit(func, *args, **kwargs)
-        return future
-
-    return wrapper
-
-
-@decorator_parallel_executor
-def multi_thread_test(pump: SyringePump):
-    pump.initialize()
-    # pump.pressure_monitor()
-
-    pump.empty(0.05)
-    # pump.dispense()
-    # pump.pump_volume()
-    # pump.generate_flow()
-    # pump.set_syringe_level()  # Test with this one first
-    # pump.valve()
-
-    # valve switch test
-    # pump.switch_valve_to(0)
-    # time.sleep(2)
-    # pump.switch_valve_to(1)
-    # time.sleep(3)
-    # pump.switch_valve_to(2)
-    # time.sleep(2)
-    # pump.switch_valve_to(3)
-    # time.sleep(2)
-    # pump.capi_close()
-
-
 if __name__ == "__main__":
+    config1 = {
+        "name": "Nemesys_M_2_Pump",
+        "pressure_limit": 10,
+        "inner_diameter_mm": 14.70520755382068,
+        "max_piston_stroke_mm": 60,
+    }
+    config2 = {
+        "name": "Nemesys_M_6_Pump",
+        "pressure_limit": 10,
+        "inner_diameter_mm": 23.207658393177034,
+        "max_piston_stroke_mm": 60,
+    }
+    pump1 = SyringePumpAdapter(config1)
+    pump2 = SyringePumpAdapter(config2)
 
-    pump1 = SyringePump("Nemesys_M_1_Pump", 10, 14.70520755382068, 60)
-    pump2 = SyringePump("Nemesys_M_2_Pump", 10, 14.70520755382068, 60)
-    pump3 = SyringePump("Nemesys_M_3_Pump", 10, 32.80671055737278, 60)
-    pump4 = SyringePump("Nemesys_M_4_Pump", 10, 32.80671055737278, 60)
-    pump5 = SyringePump("Nemesys_M_5_Pump", 10, 23.207658393177034, 60)
-    pump6 = SyringePump("Nemesys_M_6_Pump", 10, 23.207658393177034, 60)
-    pump7 = SyringePump("Nemesys_M_7_Pump", 10, 23.207658393177034, 60)
-    pump8 = SyringePump("Nemesys_M_8_Pump", 10, 10.40522314849599, 60)
+    print(pump1)
 
-    # test(pump6)
+    # pump1.initialize()
+    # pump2.initialize()
 
-    multi_thread_test(pump6)
-    time.sleep(0.01)
-    multi_thread_test(pump2)
-    # # time.sleep(0.001)
-    # multi_thread_test(pump7)
+    # from concurrent.futures import ThreadPoolExecutor
+
+    # with ThreadPoolExecutor() as executor:
+    #     f1 = executor.submit(pump1.execute, {"action":"aspirate", "volume":0.1, "flow":0.005})
+    #     f2 = executor.submit(pump2.execute, {"action":"aspirate", "volume":0.1, "flow":0.005})
+
+    #     f1.result()
+    #     f2.result()

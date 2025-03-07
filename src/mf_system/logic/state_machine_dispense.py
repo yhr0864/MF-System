@@ -4,7 +4,7 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from mf_system.logic.state_machine import StateMachine
-from mf_system.hardware.hardware import Hardware
+from mf_system.hardware.hardware import HardwareManager
 from mf_system.logic.utils import (
     states_dispense,
     transitions_dispense,

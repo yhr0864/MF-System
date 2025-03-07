@@ -29,7 +29,6 @@ def load_lib(libname):
         sys.path.append(libpath)
         os.environ["PATH"] = libpath + os.pathsep + os.environ["PATH"]
 
-    print(libname)
     return ctypes.windll.LoadLibrary(libname)
 
 
